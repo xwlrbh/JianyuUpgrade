@@ -1,0 +1,33 @@
+{include file="index/header" /}
+<link rel="stylesheet" href="{$domain}public/common/css/cropper.min.css">
+<div class="row">
+    <div class="m-auto">
+        <label class="btn btn-info btn-upload m-2" for="inputImage" title="{:lang('Select Image')}">
+            <input type="file" class="sr-only" id="inputImage" name="file" accept=".jpg,.jpeg,.png,.gif,.bmp,.tiff">
+            <span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="{:lang('Select the avatar image you want to upload')}">
+              {:lang('Select Image')}
+            </span>
+        </label>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-9">
+        <div class="mb-3">
+            <img class="img-fluid" name="file" id="image" src="{notempty name="touxiang"}{$touxiang}?{else /}{$domain}public/common/images/avatar.png{/notempty}">
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="clearfix mt-2 mt-md-0">
+            <div class="img-preview overflow-hidden"></div>
+        </div>
+        <div>
+            <button class="btn btn-info my-2" id="upload">{:lang('Save')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+        </div>
+    </div>
+</div>
+<div class="d-none" id="avatarsaved">{:lang('The avatar has been saved')}</div>
+<div class="d-none" id="uploadimg">{:Url('user/Index/myicon')}</div>
+<div class="d-none" id="avatarnotselected">{:lang('Avatar has not been selected')}</div>
+<script src="{$domain}public/common/js/cropper.min.js"></script>
+<script src="{$domain}public/common/js/user/myicon.js"></script>
+{include file="index/footer" /}

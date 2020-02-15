@@ -1,0 +1,10 @@
+﻿Copyright 2019 剑鱼论坛(www.jianyuluntan.com)
+
+本软件基于“Catfish CMS License”许可协议 (CCL);
+如果您不同意许可证中的条款和条件，请勿复制、下载、查看、安装或者以其他方式使用本软件。
+您可以从以下途径获得、阅读、下载许可文本：
+
+    http://www.catfish-cms.com/licenses/ccl
+
+除非有书面约定，在任何情况下，不对本软件提供任何形式的担保和保证。
+请参阅许可证中的具体条款。

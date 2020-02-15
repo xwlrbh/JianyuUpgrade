@@ -1,0 +1,91 @@
+{include file="index/header" /}
+<link href="{$domain}public/common/uploadify/uploadify.css" type="text/css" rel="stylesheet">
+<form>
+    <div class="form-group">
+        <label>{:lang('Forum name')}&nbsp;<b><span class="text-danger">*</span></b></label>
+        <input type="text" class="form-control" name="title" value="{$jianyuItem.title}" placeholder="{:lang('Forum name')}">
+    </div>
+    <div class="form-group">
+        <label>{:lang('Forum subname')}</label>
+        <input type="text" class="form-control" name="subtitle" value="{$jianyuItem.subtitle}" placeholder="{:lang('Forum subname')}">
+    </div>
+    <div class="form-group">
+        <label>{:lang('Forum domain')}&nbsp;<b><span class="text-danger">*</span></b></label>
+        <input type="text" class="form-control" name="domain" value="{$jianyuItem.domain}" placeholder="{:lang('Forum domain')}">
+        <small class="form-text text-muted">{:lang('The domain name should start with "http://" or "https://" and end with "/".')}</small>
+    </div>
+    <div class="form-group">
+        <label>{:lang('Forum Keywords')}</label>
+        <input type="text" class="form-control" name="keyword" value="{$jianyuItem.keyword}" placeholder="{:lang('Forum Keywords')}">
+        <small class="form-text text-muted">{:lang('Keywords separated by commas')}</small>
+    </div>
+    <div class="form-group">
+        <label>{:lang('Forum description')}</label>
+        <textarea class="form-control" name="description" rows="3">{$jianyuItem.description}</textarea>
+    </div>
+    <div class="form-group">
+        <label>{:lang('User name filtering')}</label>
+        <input type="text" class="form-control" name="filtername" value="{$jianyuItem.filtername}" placeholder="">
+        <small class="form-text text-muted">{:lang('You can set the user names that are not allowed to be registered, separated by a comma ","')}</small>
+    </div>
+    <div class="form-group">
+        <label>{:lang('Do I need a verification code to log in?')}</label>
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" name="captcha" id="dengluyanzheng"{if condition="$jianyuItem.captcha eq 1"} checked{/if}>
+            <label class="custom-control-label" for="dengluyanzheng">{:lang('Login requires a verification code')}</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>{:lang('Want to enable pseudo static?')}</label>
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" name="rewrite" id="weijingtai"{if condition="$jianyuItem.rewrite eq 1"} checked{/if}>
+            <label class="custom-control-label" for="weijingtai">{:lang('Enable pseudo static')}</label>
+        </div>
+        <small class="form-text text-muted">{:lang('To enable pseudo-static, you need to enable rewrite. Please confirm that your server environment has rewrite enabled before checking')}</small>
+    </div>
+    <div class="form-group">
+        <label>{:lang('Do you need to enable mailbox verification when registering?')}</label>
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" name="regvery" id="regvery"{if condition="$jianyuItem.regvery eq 1"} checked{/if}>
+            <label class="custom-control-label" for="regvery">{:lang('Need mailbox verification')}</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>{:lang('Forum logo')}</label>
+        <div id="upload"></div>
+        <div style="width: 200px;">
+            <img src="{$domain}public/common/images/default-thumbnail.png" class="img-fluid" id="tubiaoImg">
+        </div>
+        <input type="hidden" value="{$jianyuItem.logo}" name="logo" id="tubiao">
+    </div>
+    <div class="form-group">
+        <label>{:lang('Forum icon')}</label>
+        <div id="upload_ico"></div>
+        <div style="width: 200px;">
+            <img src="{$domain}public/common/images/favicon.ico" class="img-fluid" id="icotubiaoIco">
+        </div>
+        <input type="hidden" value="{$jianyuItem.icon}" name="icon" id="icotubiao">
+    </div>
+    <div class="form-group">
+        <label>{:lang('Record number')}</label>
+        <input type="text" class="form-control" name="record" value="{$jianyuItem.record}" placeholder="{:lang('Record number')}">
+    </div>
+    <div class="form-group">
+        <label>{:lang('Authorization code')}</label>
+        <input type="text" class="form-control" name="serial" value="{$jianyuItem.serial}" placeholder="{:lang('Authorization code')}">
+        <small class="form-text text-muted">{:lang('Authorization code must be applied to the official Swordfish Forum')}</small>
+    </div>
+    <div class="form-group">
+        <label>{:lang('Statistical code')}</label>
+        <textarea class="form-control" name="statistics" rows="5">{$jianyuItem.statistics}</textarea>
+    </div>
+    <div class="text-center mb-5">
+        <input type="hidden" name="verification" value="{$verification}">
+        <button type="button" id="formsubmit" class="btn btn-info submit">{:lang('Submit')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+    </div>
+</form>
+<div class="d-none" id="buttonText">{:lang('Select Image')}</div>
+<div class="d-none" id="icobuttonText">{:lang('Select the icon')}</div>
+<script type="text/javascript" src="{$domain}public/common/uploadify/jquery.uploadify.js"></script>
+<script src="{$domain}public/common/js/websitesettings.js"></script>
+{include file="index/footer" /}

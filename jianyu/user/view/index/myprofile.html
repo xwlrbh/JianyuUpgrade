@@ -1,0 +1,67 @@
+{include file="index/header" /}
+<link href="{$domain}public/common/datetimepicker/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet">
+<form>
+    <div class="form-group">
+        <label>{:lang('Nickname')}&nbsp;<b><span class="text-info">*</span></b></label>
+        <input type="text" class="form-control" value="{$jianyuuinfo.nicheng}" name="nicheng" maxlength="50" placeholder="{:lang('Nickname')}">
+    </div>
+    <div class="form-group">
+        <label>{:lang('Gender')}</label>
+        <select class="form-control" name="xingbie">
+            <option value="0"{if condition="$jianyuuinfo.xingbie eq 0"} selected{/if}>{:lang('Secrecy')}</option>
+            <option value="1"{if condition="$jianyuuinfo.xingbie eq 1"} selected{/if}>{:lang('Male')}</option>
+            <option value="2"{if condition="$jianyuuinfo.xingbie eq 2"} selected{/if}>{:lang('Female')}</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>{:lang('E-mail')}&nbsp;<b><span class="text-info">*</span></b></label>
+        <input type="text" class="form-control" value="{$jianyuuinfo.email}" name="email" maxlength="100" placeholder="{:lang('E-mail')}">
+    </div>
+    <div class="form-group">
+        <label>{:lang('Cellphone number')}</label>
+        <input type="text" class="form-control" value="{$jianyuuinfo.shouji}" name="shouji" maxlength="20" placeholder="{:lang('Cellphone number')}">
+    </div>
+    <div class="form-group">
+        <label>{:lang('Birthday')}</label>
+        <input type="text" class="form-control" value="{$jianyuuinfo.shengri}" name="shengri" id="datepicker" placeholder="{:lang('Birthday')}">
+    </div>
+    <div class="form-group">
+        <label>{:lang('Personal URL')}</label>
+        <input type="text" class="form-control" value="{$jianyuuinfo.url}" name="url" maxlength="200" placeholder="{:lang('Personal URL')}">
+    </div>
+    <div class="form-group">
+        <label>{:lang('School')}</label>
+        <input type="text" class="form-control" value="{$jianyuuinfo.xuexiao}" name="xuexiao" maxlength="200" placeholder="{:lang('School')}">
+    </div>
+    <div class="form-group">
+        <label>{:lang('QQ')}</label>
+        <input type="text" class="form-control" value="{$jianyuuinfo.qq}" name="qq" maxlength="200" placeholder="{:lang('QQ')}">
+    </div>
+    <div class="form-group">
+        <label>{:lang('Weibo')}</label>
+        <input type="text" class="form-control" value="{$jianyuuinfo.weibo}" name="weibo" maxlength="200" placeholder="{:lang('Weibo')}">
+    </div>
+    <div class="form-group">
+        <label>{:lang('WeChat')}</label>
+        <input type="text" class="form-control" value="{$jianyuuinfo.wechat}" name="wechat" maxlength="200" placeholder="{:lang('WeChat')}">
+    </div>
+    <div class="form-group">
+        <label>{:lang('Facebook')}</label>
+        <input type="text" class="form-control" value="{$jianyuuinfo.facebook}" name="facebook" maxlength="200" placeholder="{:lang('Facebook')}">
+    </div>
+    <div class="form-group">
+        <label>{:lang('Twitter')}</label>
+        <input type="text" class="form-control" value="{$jianyuuinfo.twitter}" name="twitter" maxlength="200" placeholder="{:lang('Twitter')}">
+    </div>
+    <div class="form-group">
+        <label>{:lang('Signature')}</label>
+        <textarea class="form-control" rows="5" name="qianming">{$jianyuuinfo.qianming}</textarea>
+    </div>
+    <div class="text-center mb-5">
+        <input type="hidden" name="verification" value="{$verification}">
+        <button type="button" id="formsubmit" class="btn btn-info submit">{:lang('Submit')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+    </div>
+</form>
+<script type="text/javascript" src="{$domain}public/common/datetimepicker/js/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script src="{$domain}public/common/js/user/myprofile.js"></script>
+{include file="index/footer" /}

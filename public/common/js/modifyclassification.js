@@ -1,0 +1,1 @@
+/*** Created by A.J on 2019/9/12.*/$(document).ready(function(){$("#iconinput").val($("#iconid").html());$("#parentdrop a").each(function(){if($(this).data("val") == $("#parentid").val()){$("#parentbtn").text($(this).text());}});});

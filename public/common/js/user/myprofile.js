@@ -1,0 +1,1 @@
+/*** Created by A.J on 2019/9/26.*/$(document).ready(function(){if($("#datepicker").length > 0){var day = new Date();day.setTime(day.getTime());var today = day.getFullYear()+"-" + (day.getMonth()+1) + "-" + day.getDate();$("#datepicker").datetimepicker({format: 'yyyy-mm-dd',minView: 'month',autoclose: true,endDate: today});}});

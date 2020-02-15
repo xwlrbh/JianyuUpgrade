@@ -1,0 +1,48 @@
+<div class="text-secondary pt-3 clearfix">
+    <h6 class="float-left">
+        <i class="fa fa-edit"></i>
+        {:lang('Posting area')}
+    </h6>
+    <i class="fa fa-minus-square-o float-right"></i>
+</div>
+<div>
+    <nav class="nav flex-column">
+        <a href="{:Url('user/Index/index')}" class="nav-link{if $current == 'sendnewposts'} bg-info text-white{else /} text-dark{/if}">{:lang('Send new posts')}</a>
+        <a href="{:Url('user/Index/mymainpost')}" class="nav-link{if $current == 'mymainpost'} bg-info text-white{else /} text-dark{/if}">{:lang('My main post')}</a>
+        <a href="{:Url('user/Index/myfollowuppost')}" class="nav-link{if $current == 'myfollowuppost'} bg-info text-white{else /} text-dark{/if}">{:lang('My follow-up post')}</a>
+        <a href="{:Url('user/Index/recyclebin')}" class="nav-link{if $current == 'recyclebin'} bg-info text-white{else /} text-dark{/if}">{:lang('Recycle bin')}</a>
+    </nav>
+</div>
+<div class="text-secondary pt-3 clearfix">
+    <h6 class="float-left">
+        <i class="fa fa-user"></i>
+        {:lang('Personal information')}
+    </h6>
+    <i class="fa fa-minus-square-o float-right"></i>
+</div>
+<div>
+    <nav class="nav flex-column">
+        <a href="{:Url('user/Index/myicon')}" class="nav-link{if $current == 'myicon'} bg-info text-white{else /} text-dark{/if}">{:lang('My icon')}</a>
+        <a href="{:Url('user/Index/myprofile')}" class="nav-link{if $current == 'myprofile'} bg-info text-white{else /} text-dark{/if}">{:lang('My Profile')}</a>
+        <a href="{:Url('user/Index/changepassword')}" class="nav-link{if $current == 'changepassword'} bg-info text-white{else /} text-dark{/if}">{:lang('Change Password')}</a>
+    </nav>
+</div>
+{if condition="$isModerator == 1"}
+<div class="text-secondary pt-3 clearfix">
+    <h6 class="float-left">
+        <i class="fa fa-gavel"></i>
+        {:lang('I am the moderator')}
+    </h6>
+    <i class="fa fa-minus-square-o float-right"></i>
+</div>
+<div>
+    <nav class="nav flex-column">
+        <a href="{:Url('user/Index/forummainpost')}" class="nav-link{if $current == 'forummainpost'} bg-info text-white{else /} text-dark{/if}">{:lang('Forum main post')}</a>
+        <a href="{:Url('user/Index/followingupsection')}" class="nav-link{if $current == 'followingupsection'} bg-info text-white{else /} text-dark{/if}">{:lang('Following-up of the section')}</a>
+        <a href="{:Url('user/Index/toppost')}" class="nav-link{if $current == 'toppost'} bg-info text-white{else /} text-dark{/if}">{:lang('Top post')}</a>
+        <a href="{:Url('user/Index/recommendedpost')}" class="nav-link{if $current == 'recommendedpost'} bg-info text-white{else /} text-dark{/if}">{:lang('Recommended post')}</a>
+        <a href="{:Url('user/Index/finepost')}" class="nav-link{if $current == 'finepost'} bg-info text-white{else /} text-dark{/if}">{:lang('Fine post')}</a>
+    </nav>
+</div>
+{/if}
+<br>

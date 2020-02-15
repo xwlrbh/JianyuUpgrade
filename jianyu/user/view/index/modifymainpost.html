@@ -1,0 +1,80 @@
+{include file="index/header" /}
+<form>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>{:lang('Section selection')}&nbsp;<b><span class="text-info">*</span></b></label>
+                <div class="dropdown">
+                    <button class="btn btn-light dropdown-toggle" id="fenleibtn" type="button" data-toggle="dropdown">
+                        {:lang('Please choose which column to post to')}
+                    </button>
+                    {notempty name="fenlei"}
+                    <div class="dropdown-menu border-0 overflow-auto" id="fenleidrop" style="background-color: #d7eef1;z-index: 9010;max-height: 98vh">
+                        {volist name="fenlei" id="vo"}
+                        <a class="dropdown-item{if $vo.disabled == 1} disabled{/if}" href="#" data-val="{$vo.id}">{$vo.level}{$vo.sname}</a>
+                        {/volist}
+                    </div>
+                    {/notempty}
+                </div>
+                <input type="hidden" name="sid" id="fenleiid" value="{$tie.sid}">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>{:lang('Type selection')}&nbsp;<b><span class="text-info">*</span></b></label>
+                <div class="dropdown">
+                    <button class="btn btn-light dropdown-toggle" id="tieleixingbtn" type="button" data-toggle="dropdown">
+                        {:lang('Please choose the type')}
+                    </button>
+                    <div class="dropdown-menu border-0" id="tieleixingdrop" style="background-color: #d7eef1;z-index: 9010">
+                        {volist name="tieleixing" id="vo"}
+                        <a class="dropdown-item" href="#" data-val="{$vo.id}">{$vo.tpname}</a>
+                        {/volist}
+                    </div>
+                </div>
+                <input type="hidden" name="tietype" id="tieleixingid" value="{$tie.tietype}">
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>{:lang('Title')}&nbsp;<b><span class="text-info">*</span></b></label>
+        <input type="text" value="{$tie.biaoti}" name="biaoti" maxlength="100" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" placeholder="{:lang('Please enter ')}{:lang('Title')}">
+    </div>
+    <div class="form-group">
+        <label>{:lang('Details')}&nbsp;<b><span class="text-info">*</span></b></label>
+        <textarea class="form-control hidden" rows="3" id="zhengwen" name="zhengwen">{$tie.zhengwen}</textarea>
+        <input type="hidden" name="zhaiyao" id="zhaiyao" value="">
+        <small class="form-text text-muted">{:lang('Please enter the new post content above')}</small>
+    </div>
+    {if condition="$forum.fujian eq 1"}
+    <div class="form-group">
+        <label>{:lang('Annex')}</label>
+        <div>{if condition="$tie.annex eq 1"}<i class="fa fa-paperclip text-info"></i>&nbsp;{$tie.fujian}&nbsp;<a href="#!" class="text-muted" id="delfujian" data-container="body" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="{:lang('Delete')}" data-id="{$tie.id}"><i class="fa fa-trash"></i><i class="fa fa-refresh fa-spin ml-2 d-none"></i></a>{/if}</div>
+        <div class="custom-file">
+            <input type="file" class="custom-file-input" id="fujian" name="fujian">
+            <label class="custom-file-label" for="fujian" data-browse="{:lang('Browse')}">{:lang('Select a file')}</label>
+        </div>
+    </div>
+    {/if}
+    <div class="text-center mb-5">
+        <input type="hidden" name="tid" value="{$tie.id}">
+        <input type="hidden" name="verification" value="{$verification}">
+        <button type="button" id="formsubmit" class="btn btn-info{if condition="$forum.fujian eq 0"} submit{/if}">{:lang('Submit')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+    </div>
+</form>
+<div class="d-none" id="upload_handyeditor_url">{:Url('user/Index/uploadhandyeditor')}</div>
+<div class="d-none" id="sizeError">{:lang('Cannot upload images larger than 2M')}</div>
+<div class="d-none" id="typeError">{:lang('Can only upload images in gif, png, jpg, jpeg format')}</div>
+<div class="d-none" id="daitupian">{$forum.tupian}</div>
+<div class="d-none" id="dailianjie">{$forum.lianjie}</div>
+{if condition="$forum.fujian eq 1"}
+<div class="d-none" id="quedingshanchu">{:lang('Confirm to delete?')}</div>
+<div class="d-none" id="bukehuifu">{:lang('Are you sure you want to delete it? It cannot be recovered after deletion!')}</div>
+{/if}
+<script type="text/javascript" src="{$domain}public/common/HandyEditor/HandyEditor.min.js"></script>
+<script src="{$domain}public/common/js/jqueryupload.js"></script>
+<script src="{$domain}public/common/js/user/sendnewposts.js"></script>
+{if condition="$forum.fujian eq 1"}
+<script src="{$domain}public/common/js/user/modifymainpost.js"></script>
+{/if}
+{include file="index/footer" /}

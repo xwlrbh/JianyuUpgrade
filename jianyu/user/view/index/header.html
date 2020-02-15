@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="noindex,noarchive">
+    <title>{$title}</title>
+    <link rel="icon" href="{$domain}public/common/images/favicon.ico">
+    <link rel="stylesheet" href="{$domain}public/common/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{$domain}public/common/font-awesome/css/font-awesome.min.css">
+    <link href="{$domain}public/common/confirm/jquery-confirm.css" type="text/css" rel="stylesheet">
+    <script src="{$domain}public/common/js/jquery.min.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-info" id="jianyunav">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" id="jianyubtn">
+        <i class="fa fa-bars"></i>
+    </button>
+    <a class="navbar-brand m-auto" href="#">
+        <img src="{$logo}" height="25" alt="">
+        <span class="d-none d-sm-inline-block">{$title}</span>
+    </a>
+
+    <div class="collapse navbar-collapse">
+        <ul class="navbar-nav mr-auto ml-5">
+            <li class="nav-item">
+                <a class="nav-link" target="_blank" href="{:Url('index/Index/index')}"><i class="fa fa-home fa-lg"></i>{:lang('Home')}</a>
+            </li>
+        </ul>
+    </div>
+    <div class="btn-group">
+        <a class="nav-link text-light dropdown-toggle" href="#" data-toggle="dropdown">
+            <img src="{$touxiang}" height="20" class="rounded-circle">
+            {$user}
+        </a>
+        <div class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item" href="{:Url('index/Index/index')}"><i class="fa fa-home"></i>&nbsp;&nbsp;{:lang('Home')}</a>
+            {if $jianyumanagement == 1}
+            <a class="dropdown-item" href="{:Url('admin/Index/index')}"><i class="fa fa-tachometer"></i>&nbsp;&nbsp;{:lang('Management background')}</a>
+            {/if}
+            <a class="dropdown-item" href="{:Url('user/index/changepassword')}"><i class="fa fa-exchange"></i>&nbsp;&nbsp;{:lang('Change password')}</a>
+            <a class="dropdown-item" href="{:Url('login/Index/quit')}"><i class="fa fa-sign-out"></i>&nbsp;&nbsp;{:lang('Sign out')}</a>
+        </div>
+    </div>
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-6 col-sm-3 col-md-2 d-none d-lg-block p-0 bg-light shadow" id="sidebar">
+            <div class="sticky-top vh-100" style="padding-top: 55px;">
+                <div class="p-2 h-100 overflow-auto">
+                    {include file="index/sidebar" /}
+                </div>
+            </div>
+        </div>
+        <div class="col pt-3">
+            <div class="pt-5">
+                <h4 class="text-center my-3">{$menuname}</h4>
+                {if condition="$star == true"}
+                <h6 class="text-muted mb-3">{:lang('With')}&nbsp;<b><span class="text-info">*</span></b>&nbsp;{:lang('are required')}</h6>
+                {/if}

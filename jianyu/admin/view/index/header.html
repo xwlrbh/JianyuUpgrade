@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="noindex,noarchive">
+    <title>{$title}{:lang(' Backstage')}</title>
+    <link rel="icon" href="{$domain}public/common/images/favicon.ico">
+    <link rel="stylesheet" href="{$domain}public/common/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{$domain}public/common/font-awesome/css/font-awesome.min.css">
+    <link href="{$domain}public/common/confirm/jquery-confirm.css" type="text/css" rel="stylesheet">
+    <script src="{$domain}public/common/js/jquery.min.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark" id="jianyunav">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" id="jianyubtn">
+        <i class="fa fa-bars"></i>
+    </button>
+    <a class="navbar-brand m-auto" href="{:Url('admin/Index/index')}">
+        <img src="{$logo}" height="25" alt="">
+        <span class="d-none d-sm-inline-block">{$title}{:lang(' Backstage')}</span>
+    </a>
+
+    <div class="collapse navbar-collapse">
+        <ul class="navbar-nav mr-auto ml-5">
+            <li class="nav-item">
+                <a class="nav-link" target="_blank" href="{:Url('index/Index/index')}" data-toggle="tooltip" data-placement="bottom" title="{:lang('Home')}"><i class="fa fa-home fa-lg"></i></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{:Url('admin/Index/clearcache')}" data-toggle="tooltip" data-placement="bottom" title="{:lang('Clear cache')}"><i class="fa fa-trash-o fa-lg"></i></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{:Url('login/Index/quit')}" data-toggle="tooltip" data-placement="bottom" title="{:lang('Sign out')}"><i class="fa fa-sign-out fa-lg"></i></a>
+            </li>
+        </ul>
+    </div>
+    <div class="btn-group">
+        <a class="nav-link text-light dropdown-toggle" href="#" data-toggle="dropdown">
+            <img src="{$touxiang}" height="20" class="rounded-circle">
+            {$user}
+        </a>
+        <div class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item" href="{:Url('index/Index/index')}"><i class="fa fa-home"></i>&nbsp;&nbsp;{:lang('Home')}</a>
+            <a class="dropdown-item" href="{:Url('user/Index/index')}"><i class="fa fa-user-circle-o"></i>&nbsp;&nbsp;{:lang('User center')}</a>
+            <a class="dropdown-item" href="{:Url('user/index/changepassword')}"><i class="fa fa-exchange"></i>&nbsp;&nbsp;{:lang('Change password')}</a>
+            <a class="dropdown-item" href="{:Url('login/Index/quit')}"><i class="fa fa-sign-out"></i>&nbsp;&nbsp;{:lang('Sign out')}</a>
+        </div>
+    </div>
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-6 col-sm-3 col-md-2 d-none d-lg-block p-0 bg-light shadow" id="sidebar">
+            <div class="sticky-top vh-100" style="padding-top: 55px;">
+                <div class="p-2 h-100 overflow-auto">
+                    {include file="index/sidebar" /}
+                </div>
+            </div>
+        </div>
+        <div class="col pt-3">
+            <div class="pt-5">
+                <h4 class="text-center my-3">{$backstagetitle}</h4>
+                <h6 id="jianyuprompt" class="text-muted"></h6>
+                {if condition="$star == true"}
+                <h6 class="text-muted mb-3">{:lang('With')}&nbsp;<b><span class="text-danger">*</span></b>&nbsp;{:lang('are required')}</h6>
+                {/if}

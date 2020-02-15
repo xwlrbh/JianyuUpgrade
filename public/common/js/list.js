@@ -1,0 +1,1 @@
+/*** Created by A.J on 2019/9/17.*/$(document).ready(function(){$(".page-link").addClass("text-info");$(".page-item.disabled .page-link").removeClass("text-info");$(".page-item.active .page-link").removeClass("text-info").addClass("bg-info border-info");});

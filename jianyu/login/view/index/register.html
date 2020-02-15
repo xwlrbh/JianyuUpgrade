@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="noindex,noarchive">
+    <title>{:lang('Sign up')}</title>
+    <link rel="icon" href="{$domain}public/common/images/favicon.ico">
+    <link rel="stylesheet" href="{$domain}public/common/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{$domain}public/common/font-awesome/css/font-awesome.min.css">
+    <link href="{$domain}public/common/confirm/jquery-confirm.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row justify-content-center vh-100 vw-100 bg-light">
+        <div class="align-self-center{if condition="$shouji eq 0"} w-50{else /} w-75{/if}">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <img src="{if condition="$logo eq ''"}{$domain}public/common/images/jianyu_white.png{else /}{$logo}{/if}" height="20">
+                    {if condition="$title eq ''"}{:lang('Swordfish Technology Forum')}{else /}{$title}{/if} - {:lang('Sign up')}
+                </div>
+                <div class="card-body">
+                    <form method="post" action="">
+                        <div class="form-group">
+                            <label>{:lang('User name')}</label>
+                            <input type="text" class="form-control" name="user" placeholder="{:lang('User name')}" maxlength="50" autofocus>
+                            <small class="form-text text-muted">{:lang('Username can only consist of letters and numbers, underscores _ and dashes -')}</small>
+                        </div>
+                        <div class="form-group">
+                            <label>{:lang('Password')}</label>
+                            <input type="password" class="form-control" name="pwd" placeholder="{:lang('Password')}">
+                            <small class="form-text text-muted">{:lang('Password cannot be less than 8 characters')}</small>
+                        </div>
+                        <div class="form-group">
+                            <label>{:lang('Confirm password')}</label>
+                            <input type="password" class="form-control" name="repeat" placeholder="{:lang('Confirm password')}">
+                        </div>
+                        <div class="form-group">
+                            <label>{:lang('Email')}</label>
+                            <input type="email" class="form-control" name="email" placeholder="{:lang('Email')}">
+                        </div>
+                        <div class="text-center">
+                            <button type="button" id="submit" class="btn bg-success text-white">{:lang('Sign up')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+                        </div>
+                        <a href="{:Url('index/Index/index')}">{:lang('Home')}</a>
+                        <a href="{:Url('login/Index/index')}" class="float-right">{:lang('Log in')}</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="d-none" id="logurl">{:Url('login/Index/index')}</div>
+<div class="d-none" id="mailok">{:lang('The activation email has been sent, please log in to your email to activate your account')}</div>
+<div class="d-none" id="regok">{:lang('User registration is successful')}</div>
+<div class="d-none" id="chucuo">{:lang('Error')}</div>
+<div class="d-none" id="queding">{:lang('Ok')}</div>
+<script src="{$domain}public/common/js/jquery.min.js"></script>
+<script src="{$domain}public/common/confirm/jquery-confirm.js"></script>
+<script src="{$domain}public/common/js/register.js"></script>
+</body>
+</html>

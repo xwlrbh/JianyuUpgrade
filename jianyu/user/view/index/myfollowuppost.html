@@ -1,0 +1,63 @@
+{include file="index/header" /}
+<form>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th scope="col">{:lang('Post content')}</th>
+            <th scope="col">{:lang('Follow-up time')}</th>
+            <th scope="col">{:lang('Main post')}</th>
+            <th scope="col" class="text-center">{:lang('Review')}</th>
+            <th scope="col" class="text-center">{:lang('Praise')}</th>
+            <th scope="col" class="text-center">{:lang('Bad review')}</th>
+            <th scope="col" class="text-center">{:lang('Modify')}</th>
+            <th scope="col" class="text-center">{:lang('Delete')}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name="data" id="vo"}
+        <tr>
+            <td>{$vo.content}</td>
+            <td>{$vo.createtime}</td>
+            <td><a class="text-info" href="{:Url('index/Index/post',['find'=>$vo.tid])}" target="_blank">{$vo.biaoti}</a></td>
+            <td class="text-center">{$vo.status}</td>
+            <td class="text-center">{$vo.zan}</td>
+            <td class="text-center">{$vo.cai}</td>
+            <td class="text-center">
+                <a class="text-info xiugaigentie" href="#!"><i class="fa fa-edit"></i></a>
+                <input type="hidden" value="{$vo.id}">
+                <input type="hidden" value="{$vo.tid}">
+            </td>
+            <td class="text-center">
+                <a class="confirm text-info" href="#!"><i class="fa fa-trash-o"></i><i class="fa fa-refresh fa-spin ml-2 d-none"></i></a>
+                <input type="hidden" value="{$vo.id}">
+                <input type="hidden" value="{$vo.tid}">
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+</form>
+<nav>
+    <ul class="pagination justify-content-center mb-4">
+        {$pages}
+    </ul>
+</nav>
+<div class="modal fade bd-example-modal-xl" id="xiugaigentie" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" style="height: calc(100vh - 50px)">
+            <div class="modal-body p-0">
+                <textarea class="form-control d-none" rows="3" id="pinglun" name="pinglun"></textarea>
+                <div class="text-center my-1" id="huifubtn">
+                    <button type="button" id="xiugai" class="btn btn-light btn-sm">修改<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+                    <button type="button" class="btn btn-light btn-sm" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="d-none" id="quedingshanchu">{:lang('Confirm to delete?')}</div>
+<div class="d-none" id="bukehuifu">{:lang('Are you sure you want to delete it? It cannot be recovered after deletion!')}</div>
+<script type="text/javascript" src="{$domain}public/common/HandyEditor/HandyEditor.min.js"></script>
+<script src="{$domain}public/common/js/list.js"></script>
+<script src="{$domain}public/common/js/user/myfollowuppost.js"></script>
+{include file="index/footer" /}

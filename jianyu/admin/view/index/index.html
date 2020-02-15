@@ -1,0 +1,100 @@
+{include file="index/header" /}
+<div class="card text-center rounded-0">
+    <div class="card-header">
+        {:lang('Statistical data')}
+    </div>
+    <div class="card-body text-black-50">
+        <div class="row">
+            <div class="col-6 col-sm-4">
+                <div class="mb-3">
+                    <i class="fa fa-user-circle fa-4x"></i><br>{:lang('Total number of users')}<br>{$users}
+                </div>
+            </div>
+            <div class="col-6 col-sm-4">
+                <div class="mb-3">
+                    <i class="fa fa-file-text fa-4x"></i><br>{:lang('Total number of posts')}<br>{$zhutie}
+                </div>
+            </div>
+            <div class="col-6 col-sm-4">
+                <div class="mb-3">
+                    <i class="fa fa-comments-o fa-4x"></i><br>{:lang('Total number of replies')}<br>{$gentie}
+                </div>
+            </div>
+            <div class="col-6 col-sm-4">
+                <div class="mb-3">
+                    <i class="fa fa-user-o fa-4x"></i><br>{:lang('Register today')}<br>{$jintian.zhuce}
+                </div>
+            </div>
+            <div class="col-6 col-sm-4">
+                <div class="mb-3">
+                    <i class="fa fa-sticky-note-o fa-4x"></i><br>{:lang('Main post today')}<br>{$jintian.zhutie}
+                </div>
+            </div>
+            <div class="col-6 col-sm-4">
+                <div class="mb-3">
+                    <i class="fa fa-commenting-o fa-4x"></i><br>{:lang('Posts that follow today')}<br>{$jintian.gentie}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card rounded-0">
+    <div class="card-header text-center">
+        {:lang('System message')}
+    </div>
+    <div class="card-body text-black-50">
+        <div class="row p-2">
+            <div class="col-12 col-md-6">
+                {:lang('System name')}：{$xitong.name}
+            </div>
+            <div class="col-12 col-md-6">
+                {:lang('System version')}：{$xitong.version}
+            </div>
+            <div class="col-12 col-md-6">
+                {:lang('Utility description')}：{$xitong.description}
+            </div>
+            <div class="col-12 col-md-6">
+                {:lang('Official website')}：<a class="text-info text-decoration-none" href="http://{$xitong.official}" target="_blank">{$xitong.official}</a>
+            </div>
+            <div class="col-12 col-md-6">
+                {:lang('License')}：Catfish CMS License (<a class="text-info text-decoration-none" href="http://www.catfish-cms.com/licenses/ccl" target="_blank">www.catfish-cms.com/licenses/ccl</a>)
+            </div>
+            <div class="col-12 col-md-6">
+                {:lang('The latest version')}：{$xitong.new}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card text-center rounded-0">
+    <div class="card-header">
+        {:lang('Latest main post')}
+    </div>
+    <div class="card-body text-black-50">
+        {volist name="tie" id="vo"}
+        <div class="row p-2">
+            <a class="mr-2 text-info text-decoration-none" href="{$vo.href}" target="_blank">{$vo.biaoti}</a>
+            <div class="ml-md-auto">{$vo.fabushijian}</div>
+        </div>
+        {/volist}
+    </div>
+</div>
+<div class="card text-center rounded-0 mb-5 hasimg">
+    <div class="card-header">
+        {:lang('Latest follow-up posts')}
+    </div>
+    <div class="card-body text-black-50">
+        {volist name="lgentie" id="vo"}
+        <div class="p-2">
+            <div class="row">
+                {$vo.createtime}
+            </div>
+            <div class="row">
+                <div>
+                    {$vo.content}
+                </div>
+            </div>
+        </div>
+        {/volist}
+    </div>
+</div>
+{include file="index/footer" /}

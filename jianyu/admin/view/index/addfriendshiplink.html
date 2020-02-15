@@ -1,0 +1,45 @@
+{include file="index/header" /}
+<link href="{$domain}public/common/uploadify/uploadify.css" type="text/css" rel="stylesheet">
+<form>
+    <div class="form-group">
+        <label>{:lang('Friendship link name')}&nbsp;<b><span class="text-danger">*</span></b></label>
+        <input type="text" class="form-control" name="mingcheng" placeholder="{:lang('Friendship link name')}">
+    </div>
+    <div class="form-group">
+        <label>{:lang('Friendship link address')}&nbsp;<b><span class="text-danger">*</span></b></label>
+        <input type="text" class="form-control" name="dizhi" value="" placeholder="http://">
+        <small class="form-text text-muted">{:lang('Friendly link address should start with "http://" or "https://"')}</small>
+    </div>
+    <div class="form-group">
+        <label>{:lang('Open mode')}</label>
+        <select class="form-control" name="target">
+            <option value="_blank">{:lang('Opens as a new window')}</option>
+            <option value="_self">{:lang('The original window opens')}</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>{:lang('Friendship link description')}</label>
+        <textarea class="form-control" name="miaoshu" rows="3"></textarea>
+    </div>
+    <div class="form-group">
+        <label>{:lang('Whether the link is displayed on the home page')}</label>
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" name="shouye" id="homelink">
+            <label class="custom-control-label" for="homelink">{:lang('Home Link')}</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>{:lang('Link icon')}：</label>
+        <img src="{$domain}public/common/images/default-thumbnail.png" class="img-fluid" id="tubiaoImg" style="max-height: 50px;">
+        <input type="hidden" value="" name="tubiao" id="tubiao">
+        <div id="upload"></div>
+    </div>
+    <div class="text-center mb-5">
+        <input type="hidden" name="verification" value="{$verification}">
+        <button type="button" id="formsubmit" class="btn btn-info submit">{:lang('Submit')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+    </div>
+</form>
+<div class="d-none" id="buttonText">{:lang('Select Image')}</div>
+<script type="text/javascript" src="{$domain}public/common/uploadify/jquery.uploadify.js"></script>
+<script src="{$domain}public/common/js/addfriendshiplink.js"></script>
+{include file="index/footer" /}

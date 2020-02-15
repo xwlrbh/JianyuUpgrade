@@ -1,0 +1,54 @@
+{include file="index/header" /}
+<form>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th scope="col" class="text-center" style="width: 90px;">
+                <input type="hidden" name="paixu" value="paixu">
+                <input type="hidden" name="verification" value="{$verification}">
+                <button type="button" class="btn btn-info btn-sm submit"><i class="fa fa-sort-numeric-asc"></i>&nbsp;{:lang('Sort')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+            </th>
+            <th scope="col">{:lang('Friendship link name')}</th>
+            <th scope="col">{:lang('Friendship link address')}</th>
+            <th scope="col">{:lang('Link icon')}</th>
+            <th scope="col" class="text-center">{:lang('Home Link')}</th>
+            <th scope="col" class="text-center">{:lang('Whether to display')}</th>
+            <th scope="col" class="text-center">{:lang('Modify')}</th>
+            <th scope="col" class="text-center">{:lang('Delete')}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name="youlian" id="vo"}
+        <tr>
+            <td>
+                <input type="text" value="{$vo.listorder}" name="{$vo.id}" class="form-control form-control-sm" maxlength="8" style="width: 90px;">
+            </td>
+            <th scope="row">{$vo.mingcheng}</th>
+            <td class="text-break">{$vo.dizhi}</td>
+            <td>{notempty name="vo.tubiao"}<img src="{$vo.tubiao}" style="max-height: 50px">{/notempty}</td>
+            <td class="text-center">
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" id="shouye_{$vo.id}" class="custom-control-input"{if $vo.shouye == 1} checked{/if}><label class="custom-control-label" for="shouye_{$vo.id}"></label>
+                </div>
+            </td>
+            <td class="text-center">
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" id="status_{$vo.id}" class="custom-control-input"{if $vo.status == 1} checked{/if}><label class="custom-control-label" for="status_{$vo.id}"></label>
+                </div>
+            </td>
+            <td class="text-center">
+                <a class="text-info" href="{:Url('admin/Index/modifylink')}?c={$vo.id}"><i class="fa fa-edit"></i></a>
+            </td>
+            <td class="text-center">
+                <a class="confirm text-info" href="#!"><i class="fa fa-trash-o"></i><i class="fa fa-refresh fa-spin ml-2 d-none"></i></a>
+                <input type="hidden" value="{$vo.id}">
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+</form>
+<div class="d-none" id="quedingshanchu">{:lang('Confirm to delete?')}</div>
+<div class="d-none" id="bukehuifu">{:lang('Are you sure you want to delete it? It cannot be recovered after deletion!')}</div>
+<script src="{$domain}public/common/js/alllinks.js"></script>
+{include file="index/footer" /}

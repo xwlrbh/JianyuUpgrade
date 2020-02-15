@@ -1,0 +1,43 @@
+{include file="index/header" /}
+<form>
+    <div class="form-group">
+        <label>{:lang('SMTP server address')}&nbsp;<b><span class="text-danger">*</span></b></label>
+        <input type="text" class="form-control" name="host" value="{$jianyuItem.host}" placeholder="{:lang('SMTP server address')}">
+    </div>
+    <div class="form-group">
+        <label>{:lang('The port number')}&nbsp;<b><span class="text-danger">*</span></b></label>
+        <input type="text" class="form-control" name="port" value="{$jianyuItem.port}" placeholder="{:lang('The port number')}">
+    </div>
+    <div class="form-group">
+        <label>{:lang('Encryption')}&nbsp;<b><span class="text-danger">*</span></b></label>
+        <select class="form-control" name="secure">
+            <option value="tls"{if condition="$jianyuItem.secure eq 'tls'"} selected{/if}>tls</option>
+            <option value="ssl"{if condition="$jianyuItem.secure eq 'ssl'"} selected{/if}>ssl</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>{:lang('Mailbox user')}&nbsp;<b><span class="text-danger">*</span></b></label>
+        <input type="text" class="form-control" name="user" value="{$jianyuItem.user}" placeholder="{:lang('Mailbox user')}">
+    </div>
+    <div class="form-group">
+        <label>{:lang('Password')}&nbsp;<b><span class="text-danger">*</span></b></label>
+        <input type="password" class="form-control" name="password" value="{$jianyuItem.password}" placeholder="{:lang('Password')}">
+    </div>
+    <div class="form-group">
+        <label>{:lang('Whether to enable SMTP authentication')}</label>
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" name="auth" id="auth"{if condition="$jianyuItem.auth eq true"} checked{/if}>
+            <label class="custom-control-label" for="auth">{:lang('Enable SMTP authentication')}</label>
+        </div>
+    </div>
+    {if condition="$ceshi == 1"}
+    <button type="button" id="ceshi" class="btn btn-outline-info btn-sm">{:lang('Send a test email')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+    {/if}
+    <div class="text-center mb-5">
+        <input type="hidden" name="verification" value="{$verification}">
+        <button type="button" id="formsubmit" class="btn btn-info submit">{:lang('Submit')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+    </div>
+</form>
+<div class="d-none" id="mailsuccessfully">{:lang('Test mail sent successfully')}</div>
+<script src="{$domain}public/common/js/smtpsettings.js"></script>
+{include file="index/footer" /}

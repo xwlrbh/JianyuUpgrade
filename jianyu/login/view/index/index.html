@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="noindex,noarchive">
+    <title>{:lang('User login')}</title>
+    <link rel="icon" href="{$domain}public/common/images/favicon.ico">
+    <link rel="stylesheet" href="{$domain}public/common/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{$domain}public/common/font-awesome/css/font-awesome.min.css">
+    <link href="{$domain}public/common/confirm/jquery-confirm.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row justify-content-center vh-100 vw-100 bg-light">
+        <div class="align-self-center{if condition="$shouji eq 0"} w-50{else /} w-75{/if}">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <img src="{if condition="$logo eq ''"}{$domain}public/common/images/jianyu_white.png{else /}{$logo}{/if}" height="20">
+                    {if condition="$title eq ''"}{:lang('Swordfish Technology Forum')}{else /}{$title}{/if} - {:lang('User login')}
+                </div>
+                <div class="card-body">
+                    <form method="post" action="">
+                        <div class="form-group">
+                            <label>{:lang('User name')}</label>
+                            <input type="text" class="form-control" name="user" placeholder="{:lang('User name')}" autofocus>
+                        </div>
+                        <div class="form-group">
+                            <label>{:lang('Password')}</label>
+                            <input type="password" class="form-control" name="pwd" placeholder="{:lang('Password')}">
+                        </div>
+                        {eq name="captcha" value="1"}
+                        <div class="form-group">
+                            <label>{:lang('Captcha')}</label>
+                            <div><img class="img-fluid" style="cursor: pointer;" src="{:captcha_src()}" id="captcha" alt="captcha" />&nbsp;<a href="#!" id="resetcaptcha" class="text-info text-decoration-none">看不清</a></div>
+                            <input type="text" class="form-control" name="captcha" id="captchain" placeholder="{:lang('Captcha')}">
+                        </div>
+                        {/eq}
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="remember"> {:lang('Remember me')}
+                            </label>
+                        </div>
+                        <div class="text-center">
+                            <button type="button" id="submit" class="btn btn-info">{:lang('Log in')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+                        </div>
+                        <a href="{:Url('index/Index/index')}">{:lang('Home')}</a>
+                        <a href="{:Url('login/Index/register')}" class="float-right">{:lang('Sign up')}</a>
+                        <a href="{:Url('login/Index/repsd')}" class="float-right mr-2 text-muted">{:lang('Retrieve password')}</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="d-none" id="ljump">{:Url('login/Index/ljump')}</div>
+<div class="d-none" id="logok">{:lang('Login successful')}</div>
+<div class="d-none" id="chucuo">{:lang('Error')}</div>
+<div class="d-none" id="queding">{:lang('Ok')}</div>
+<div class="d-none" id="sendingmail">{:lang('Sending e-mail ...')}</div>
+<script src="{$domain}public/common/js/jquery.min.js"></script>
+<script src="{$domain}public/common/confirm/jquery-confirm.js"></script>
+<script src="{$domain}public/common/js/popper.min.js"></script>
+<script src="{$domain}public/common/js/login.js"></script>
+</body>
+</html>

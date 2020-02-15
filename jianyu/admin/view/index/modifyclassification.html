@@ -1,0 +1,83 @@
+{include file="index/header" /}
+<form>
+    <div class="form-group mt-4">
+        <label>{:lang('Section name')}&nbsp;<b><span class="text-danger">*</span></b></label>
+        <input type="text" name="sname" value="{$sort.sname}" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" placeholder="{:lang('Please enter ')}{:lang('Section name')}">
+    </div>
+    <div class="form-group mt-4">
+        <label>{:lang('Section alias')}</label>
+        <input type="text" name="bieming" value="{$sort.bieming}" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" placeholder="{:lang('Please enter ')}{:lang('Section alias')}">
+        <small class="form-text text-muted">{:lang('The section alias is used for menu display, and the menu will use the section alias first')}</small>
+    </div>
+    <div class="form-group mt-4">
+        <label>{:lang('Upper level section')}</label>
+        <div class="dropdown">
+            <button class="btn btn-light dropdown-toggle" id="parentbtn" type="button" data-toggle="dropdown">
+                {:lang('As a first-level section')}
+            </button>
+            {notempty name="fenlei"}
+            <div class="dropdown-menu border-0" id="parentdrop" style="background-color: #eef7f8">
+                <a class="dropdown-item" href="#" data-val="0">{:lang('As a first-level section')}</a>
+                {volist name="fenlei" id="vo"}
+                <a class="dropdown-item" href="#" data-val="{$vo.id}">{$vo.level}{$vo.sname}</a>
+                {/volist}
+            </div>
+            {/notempty}
+        </div>
+        <input type="hidden" id="parentid" name="parentid" value="{$sort.parentid}">
+        <small class="form-text text-muted">{:lang('Please select a superior section')}</small>
+    </div>
+    <div class="form-group mt-4">
+        <label>{:lang('Whether it is used for menu')}</label>
+        <div class="custom-control custom-checkbox">
+            <input name="ismenu" type="checkbox" class="custom-control-input" id="formenu"{if condition="$sort.ismenu eq 1"} checked{/if}>
+            <label class="custom-control-label" for="formenu">{:lang('Used for menu')}</label>
+        </div>
+        <small class="form-text text-muted">{:lang('Checked will be used as an item in the menu')}</small>
+    </div>
+    <div class="form-group mt-4">
+        <label>{:lang('Icon')}</label>
+        <input name="icon" type="text" value="" id="iconinput" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" placeholder="{:lang('Please enter ')}{:lang('Icon')}">
+        <div class="d-none" id="iconid">{$sort.icon}</div>
+        <small class="form-text text-muted">{:lang('The icon can be displayed on the menu item, please enter the HTML code of the icon')}</small>
+    </div>
+    <div class="form-group mt-4">
+        <label>{:lang('Whether it is used for modules')}</label>
+        <div class="custom-control custom-checkbox">
+            <input name="ismodule" type="checkbox" class="custom-control-input" id="formodules"{if condition="$sort.ismodule eq 1"} checked{/if}>
+            <label class="custom-control-label" for="formodules">{:lang('Used for modules')}</label>
+        </div>
+        <small class="form-text text-muted">{:lang('Checked to be used for module generation')}</small>
+    </div>
+    <div class="form-group mt-4">
+        <label>{:lang('Whether to include sub-blocks when used in a module')}</label>
+        <div class="custom-control custom-checkbox">
+            <input name="subclasses" type="checkbox" class="custom-control-input" id="subclasses"{if condition="$sort.subclasses eq 1"} checked{/if}>
+            <label class="custom-control-label" for="subclasses">{:lang('Include sub-blocks')}</label>
+        </div>
+        <small class="form-text text-muted">{:lang('Checked to be used for module generation')}</small>
+    </div>
+    <div class="form-group mt-4">
+        <label>{:lang('Is it set to virtual block?')}</label>
+        <div class="custom-control custom-checkbox">
+            <input name="virtual" type="checkbox" class="custom-control-input" id="virtualblock"{if condition="$sort.virtual eq 1"} checked{/if}>
+            <label class="custom-control-label" for="virtualblock">{:lang('Set to virtual block')}</label>
+        </div>
+        <small class="form-text text-muted">{:lang('Virtual section does not store posts')}</small>
+    </div>
+    <div class="form-group mt-4">
+        <label>{:lang('Keyword settings')}</label>
+        <input name="guanjianzi" type="text" value="{$sort.guanjianzi}" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" placeholder="{:lang('Please enter ')}{:lang('Keyword')}">
+        <small class="form-text text-muted">{:lang('Separate keywords with commas')}</small>
+    </div>
+    <div class="form-group mt-4">
+        <label>{:lang('Section description')}</label>
+        <textarea name="description" class="form-control" rows="3">{$sort.description}</textarea>
+    </div>
+    <div class="text-center mb-5">
+        <input type="hidden" name="verification" value="{$verification}">
+        <button type="button" id="formsubmit" class="btn btn-info submit">{:lang('Submit')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+    </div>
+</form>
+<script src="{$domain}public/common/js/modifyclassification.js"></script>
+{include file="index/footer" /}

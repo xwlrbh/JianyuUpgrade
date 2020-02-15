@@ -1,0 +1,38 @@
+{include file="index/header" /}
+<form class="form-inline">
+    <div class="form-group">
+        <small class="form-text text-muted">{:lang('You can directly modify the level description and the required growth value')}</small>
+    </div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">{:lang('Grade')}</th>
+            <th scope="col">{:lang('Level description')}</th>
+            <th scope="col">{:lang('Required growth value')}</th>
+        </tr>
+        </thead>
+        <tbody id="dengjitr">
+        {volist name="dengji" id="vo"}
+        <tr>
+            <th scope="row">{$vo.jibie}</th>
+            <td>
+                <div class="form-group">
+                    <input type="text" class="form-control-plaintext px-2 djmiaoshu" value="{$vo.djname}">
+                </div>
+            </td>
+            <td>
+                <div class="form-group">
+                    <input type="text" class="form-control-plaintext px-2 djzhi" value="{$vo.chengzhang}">
+                </div>
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+</form>
+<div class="mb-5">
+    <a class="btn btn-light" id="increaselevel" href="#!"><i class="fa fa-plus"></i>&nbsp;{:lang('Increase level')}</a>
+    <a class="btn btn-light ml-3" id="reducelevel" href="#!"><i class="fa fa-minus"></i>&nbsp;{:lang('Reduce one level')}</a>
+</div>
+<script src="{$domain}public/common/js/levelsetting.js"></script>
+{include file="index/footer" /}

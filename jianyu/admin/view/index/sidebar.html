@@ -1,0 +1,85 @@
+<div class="text-secondary pt-3 clearfix">
+    <h6 class="float-left">
+        <i class="fa fa-edit"></i>
+        {:lang('Post management')}
+    </h6>
+    <i class="fa fa-minus-square-o float-right"></i>
+</div>
+<div>
+    <nav class="nav flex-column">
+        <a href="{:Url('admin/Index/mainpost')}" class="nav-link{if $option == 'mainpost'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Main post')}</a>
+        <a href="{:Url('admin/Index/followpost')}" class="nav-link{if $option == 'followpost'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Follow post')}</a>
+        <a href="{:Url('admin/Index/homepagetop')}" class="nav-link{if $option == 'homepagetop'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Home page top')}</a>
+        <a href="{:Url('admin/Index/homerecommendation')}" class="nav-link{if $option == 'homerecommendation'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Home recommendation')}</a>
+        <a href="{:Url('admin/Index/finepost')}" class="nav-link{if $option == 'finepost'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Fine post')}</a>
+    </nav>
+</div>
+{if condition="$ugroup <= 3"}
+<div class="text-secondary pt-3 clearfix">
+    <h6 class="float-left">
+        <i class="fa fa-list-ol"></i>
+        {:lang('Section management')}
+    </h6>
+    <i class="fa fa-minus-square-o float-right"></i>
+</div>
+<div>
+    <nav class="nav flex-column">
+        <a href="{:Url('admin/Index/newclassification')}" class="nav-link{if $option == 'newclassification'} bg-secondary text-white{else /} text-dark{/if}">{:lang('New section')}</a>
+        <a href="{:Url('admin/Index/createdclassification')}" class="nav-link{if $option == 'createdclassification'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Existing section')}</a>
+        <a href="{:Url('admin/Index/transferclassification')}" class="nav-link{if $option == 'transferclassification'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Transfer section')}</a>
+    </nav>
+</div>
+{/if}
+<div class="text-secondary pt-3 clearfix">
+    <h6 class="float-left">
+        <i class="fa fa-user"></i>
+        {:lang('User management')}
+    </h6>
+    <i class="fa fa-minus-square-o float-right"></i>
+</div>
+<div>
+    <nav class="nav flex-column">
+        <a href="{:Url('admin/Index/generaluser')}" class="nav-link{if $option == 'generaluser'} bg-secondary text-white{else /} text-dark{/if}">{:lang('All users')}</a>
+        <a href="{:Url('admin/Index/moderator')}" class="nav-link{if $option == 'moderator'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Moderator')}</a>
+        {if condition="$ugroup <= 3"}
+        <a href="{:Url('admin/Index/administrator')}" class="nav-link{if $option == 'administrator'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Administrator')}</a>
+        {/if}
+    </nav>
+</div>
+{if condition="$ugroup <= 3"}
+<div class="text-secondary pt-3 clearfix">
+    <h6 class="float-left">
+        <i class="fa fa-cog"></i>
+        {:lang('Setting')}
+    </h6>
+    <i class="fa fa-minus-square-o float-right"></i>
+</div>
+<div>
+    <nav class="nav flex-column">
+        <a href="{:Url('admin/Index/websitesettings')}" class="nav-link{if $option == 'websitesettings'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Website settings')}</a>
+        <a href="{:Url('admin/Index/forumsettings')}" class="nav-link{if $option == 'forumsettings'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Forum settings')}</a>
+        <a href="{:Url('admin/Index/levelsetting')}" class="nav-link{if $option == 'levelsetting'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Level setting')}</a>
+        <a href="{:Url('admin/Index/growthsetting')}" class="nav-link{if $option == 'growthsetting'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Growth setting')}</a>
+        <a href="{:Url('admin/Index/smtpsettings')}" class="nav-link{if $option == 'smtpsettings'} bg-secondary text-white{else /} text-dark{/if}">{:lang('SMTP settings')}</a>
+        <a href="{:Url('admin/Index/themeswitching')}" class="nav-link{if $option == 'themeswitching'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Theme switching')}</a>
+    </nav>
+</div>
+{/if}
+<div class="text-secondary pt-3 clearfix">
+    <h6 class="float-left">
+        <i class="fa fa-wrench"></i>
+        {:lang('Other')}
+    </h6>
+    <i class="fa fa-minus-square-o float-right"></i>
+</div>
+<div>
+    <nav class="nav flex-column">
+        {if condition="$ugroup <= 3"}
+        <a href="{:Url('admin/Index/addfriendshiplink')}" class="nav-link{if $option == 'addfriendshiplink'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Add a friendship link')}</a>
+        <a href="{:Url('admin/Index/alllinks')}" class="nav-link{if $option == 'alllinks'} bg-secondary text-white{else /} text-dark{/if}">{:lang('All links')}</a>
+        {/if}
+        <a href="{:Url('admin/Index/clearcache')}" class="nav-link{if $option == 'clearcache'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Clear cache')}</a>
+        <a href="{:Url('login/Index/quit')}" class="nav-link{if $option == 'quit'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Sign out')}</a>
+    </nav>
+</div>
+<br>

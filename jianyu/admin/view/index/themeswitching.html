@@ -1,0 +1,25 @@
+{include file="index/header" /}
+<div class="container">
+    <div class="row mb-5">
+        {volist name="jianyuThemes" id="vo"}
+        <div class="col-sm-6 col-md-4 mt-3">
+            <div class="card">
+                <img src="{$vo.url}" class="card-img-top">
+                <div class="card-body text-center">
+                    <h5 class="card-title">{$vo.name}</h5>
+                    {if $vo.open == 1}
+                    <a href="#!" class="btn btn-light disabled">{:lang('Activated')}</a>
+                    {else /}
+                    <form>
+                        <input type="hidden" name="theme" value="{$vo.name}">
+                        <input type="hidden" name="verification" value="{$verification}">
+                        <button type="button" class="btn btn-info submit">{:lang('Enable')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+                    </form>
+                    {/if}
+                </div>
+            </div>
+        </div>
+        {/volist}
+    </div>
+</div>
+{include file="index/footer" /}

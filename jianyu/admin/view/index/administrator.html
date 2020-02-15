@@ -1,0 +1,52 @@
+{include file="index/header" /}
+<form>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th scope="col">{:lang('Username')}</th>
+            <th scope="col">{:lang('Nickname')}</th>
+            <th scope="col">{:lang('E-mail')}</th>
+            <th scope="col">{:lang('Cellphone number')}</th>
+            <th scope="col">{:lang('Signature')}</th>
+            <th scope="col" class="text-center">{:lang('Review')}</th>
+            <th scope="col" class="text-center">{:lang('User group')}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name="catfishcms" id="vo"}
+        <tr>
+            <td>{$vo.yonghu}</td>
+            <td>{$vo.nicheng}</td>
+            <td>{$vo.email}</td>
+            <td>{$vo.shouji}</td>
+            <td>{$vo.qianming}</td>
+            <td class="text-center">
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" id="status_{$vo.id}" class="custom-control-input"{if $vo.status == 1} checked{/if}><label class="custom-control-label" for="status_{$vo.id}"></label>
+                </div>
+            </td>
+            <td class="text-center">
+                <select class="form-control yonghuzu">
+                    <option value="20"{if condition="$vo.utype eq 20"} selected{/if}>{:lang('General user')}</option>
+                    {if condition="$dengji <= 3"}
+                    <option value="5"{if condition="$vo.utype eq 5"} selected{/if}>{:lang('Ordinary administrator')}</option>
+                    {/if}
+                    {if condition="$dengji eq 1"}
+                    <option value="3"{if condition="$vo.utype eq 3"} selected{/if}>{:lang('Senior administrator')}</option>
+                    {/if}
+                </select>
+                <input type="hidden" value="{$vo.id}">
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+</form>
+<nav>
+    <ul class="pagination justify-content-center my-4">
+        {$pages}
+    </ul>
+</nav>
+<script src="{$domain}public/common/js/list.js"></script>
+<script src="{$domain}public/common/js/administrator.js"></script>
+{include file="index/footer" /}

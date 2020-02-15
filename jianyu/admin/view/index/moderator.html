@@ -1,0 +1,80 @@
+{include file="index/header" /}
+<form>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th scope="col">{:lang('Username')}</th>
+            <th scope="col">{:lang('Nickname')}</th>
+            <th scope="col" class="text-center">{:lang('Section')}</th>
+            <th scope="col">{:lang('E-mail')}</th>
+            <th scope="col">{:lang('Cellphone number')}</th>
+            <th scope="col">{:lang('Signature')}</th>
+            <th scope="col" class="text-center">{:lang('Moderator group')}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name="catfishcms" id="vo"}
+        <tr>
+            <td>{$vo.yonghu}</td>
+            <td>{$vo.nicheng}</td>
+            <td class="text-center"><span>{$vo.bankuai}</span>&nbsp;<a class="text-info" href="#!"><i class="fa fa-sitemap popover_dissec" data-container="body" data-toggle="popover" data-placement="top" data-id="{$vo.id}" data-content="{:lang('Distribution section')}"></i></a></td>
+            <td>{$vo.email}</td>
+            <td>{$vo.shouji}</td>
+            <td>{$vo.qianming}</td>
+            <td class="text-center">
+                <select class="form-control banzhuzu">
+                    <option value="0"{if condition="$vo.mtype eq 0"} selected{/if}>{:lang('General user')}</option>
+                    <option value="5"{if condition="$vo.mtype eq 5"} selected{/if}>{:lang('Intern moderator')}</option>
+                    <option value="10"{if condition="$vo.mtype eq 10"} selected{/if}>{:lang('Secondary moderator')}</option>
+                    <option value="15"{if condition="$vo.mtype eq 15"} selected{/if}>{:lang('Moderator')}</option>
+                </select>
+                <input type="hidden" value="{$vo.id}">
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+</form>
+<nav>
+    <ul class="pagination justify-content-center my-4">
+        {$pages}
+    </ul>
+</nav>
+<div class="modal fade bd-example-modal-lg" id="fenpei" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{:lang('Distribution section')}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    {volist name="fenlei" id="vo"}
+                    <div class="custom-control custom-checkbox my-2">
+                        <input type="checkbox" class="custom-control-input" id="fenlei_{$vo.id}" data-id="{$vo.id}">
+                        {$vo.level}<label class="custom-control-label" for="fenlei_{$vo.id}">
+                            <span>{$vo.sname}</span>
+                            <select class="form-control form-control-sm mt-1 mb-2 d-none shezhibanzhu">
+                                <option value="15">{:lang('Moderator')}</option>
+                                <option value="10">{:lang('Secondary moderator')}</option>
+                                <option value="5">{:lang('Intern moderator')}</option>
+                            </select>
+                        </label>
+                    </div>
+                    {/volist}
+                </div>
+                <div class="text-center mt-4">
+                    <button type="button" id="fenpeiok" class="btn btn-info">{:lang('Ok')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="d-none" id="banzhu">{:lang('Moderator')}</div>
+<div class="d-none" id="fubanzhu">{:lang('Secondary moderator')}</div>
+<div class="d-none" id="sxbanzhu">{:lang('Intern moderator')}</div>
+<script src="{$domain}public/common/js/list.js"></script>
+<script src="{$domain}public/common/js/moderator.js"></script>
+{include file="index/footer" /}

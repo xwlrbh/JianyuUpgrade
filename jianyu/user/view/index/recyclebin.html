@@ -1,0 +1,45 @@
+{include file="index/header" /}
+<form>
+    <table class="table table-bordered table-hover text-black-50">
+        <thead>
+        <tr>
+            <th scope="col">{:lang('Title')}</th>
+            <th scope="col">{:lang('Release time')}</th>
+            <th scope="col">{:lang('Reading volume')}</th>
+            <th scope="col">{:lang('Follow up quantity')}</th>
+            <th scope="col">{:lang('Reduction')}</th>
+            <th scope="col">{:lang('Remove completely')}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name="data" id="vo"}
+        <tr>
+            <td>{$vo.biaoti}{if condition="$vo.annex eq 1"}&nbsp;<i class="fa fa-paperclip text-muted"></i>{/if}</td>
+            <td>{$vo.fabushijian}</td>
+            <td>{$vo.yuedu}</td>
+            <td>{$vo.pinglunshu}</td>
+            <td>
+                <a class="reduction text-info" href="#!"><i class="fa fa-history"></i>&nbsp;{:lang('Reduction')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></a>
+                <input type="hidden" value="{$vo.id}">
+            </td>
+            <td>
+                <a class="confirm text-info" href="#!"><i class="fa fa-trash-o"></i>&nbsp;{:lang('Remove completely')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></a>
+                <input type="hidden" value="{$vo.id}">
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+</form>
+<nav>
+    <ul class="pagination justify-content-center mb-4">
+        {$pages}
+    </ul>
+</nav>
+<div class="d-none" id="quedinghuanyuan">{:lang('Are you sure to restore?')}</div>
+<div class="d-none" id="huanyuantishi">{:lang('Make sure to restore, please press "Continue"')}</div>
+<div class="d-none" id="quedingshanchu">{:lang('Confirm to delete?')}</div>
+<div class="d-none" id="bukehuifu">{:lang('Are you sure you want to delete it? It cannot be recovered after deletion!')}</div>
+<script src="{$domain}public/common/js/list.js"></script>
+<script src="{$domain}public/common/js/user/recyclebin.js"></script>
+{include file="index/footer" /}

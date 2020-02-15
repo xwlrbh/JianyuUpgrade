@@ -1,0 +1,53 @@
+{include file="index/header" /}
+<form>
+    <div class="my-2">
+        <small class="form-text text-muted">{:lang('The post below the original block will be transferred to the new section')}</small>
+    </div>
+    <div class="row my-3">
+        <div class="col-sm">
+            <div class="form-group">
+                <label>{:lang('Transfer out section')}&nbsp;<b><span class="text-info">*</span></b></label>
+                <div class="dropdown">
+                    <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">
+                        {:lang('Please select the transfer section')}
+                    </button>
+                    {notempty name="fenlei"}
+                    <div class="dropdown-menu border-0 overflow-auto" style="background-color: #d7eef1;z-index: 9010;max-height: 98vh">
+                        {volist name="fenlei" id="vo"}
+                        <a class="dropdown-item" href="#" data-val="{$vo.id}">{$vo.level}{$vo.sname}</a>
+                        {/volist}
+                    </div>
+                    {/notempty}
+                </div>
+                <input type="hidden" name="osid" value="0">
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="form-group">
+                <label>{:lang('Transfer to the section')}&nbsp;<b><span class="text-info">*</span></b></label>
+                <div class="dropdown">
+                    <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">
+                        {:lang('Please choose to go to the section')}
+                    </button>
+                    {notempty name="fenlei"}
+                    <div class="dropdown-menu border-0 overflow-auto" style="background-color: #d7eef1;z-index: 9010;max-height: 98vh">
+                        {volist name="fenlei" id="vo"}
+                        <a class="dropdown-item" href="#" data-val="{$vo.id}">{$vo.level}{$vo.sname}</a>
+                        {/volist}
+                    </div>
+                    {/notempty}
+                </div>
+                <input type="hidden" name="nsid" value="0">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm">
+            <div class="text-center my-5">
+                <input type="hidden" name="verification" value="{$verification}">
+                <button type="button" id="formsubmit" class="btn btn-info submit">{:lang('Submit')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+            </div>
+        </div>
+    </div>
+</form>
+{include file="index/footer" /}

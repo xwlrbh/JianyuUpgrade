@@ -1,0 +1,54 @@
+{include file="index/header" /}
+<form>
+<table class="table table-bordered table-hover">
+    <thead>
+    <tr>
+        <th scope="col" class="text-center" style="width: 90px;">
+            <input type="hidden" name="paixu" value="paixu">
+            <input type="hidden" name="verification" value="{$verification}">
+            <button type="button" class="btn btn-info btn-sm submit"><i class="fa fa-sort-numeric-asc"></i>&nbsp;{:lang('Sort')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+        </th>
+        <th scope="col">ID</th>
+        <th scope="col">{:lang('Section name')}</th>
+        <th scope="col">{:lang('Section alias')}</th>
+        <th scope="col" class="text-center">{:lang('Used for menu')}</th>
+        <th scope="col" class="text-center">{:lang('Used for modules')}</th>
+        <th scope="col" class="text-center">{:lang('Modify')}</th>
+        <th scope="col" class="text-center">{:lang('Delete')}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {volist name="fenlei" id="vo"}
+    <tr>
+        <td>
+            <input type="text" value="{$vo.listorder}" name="{$vo.id}" class="form-control form-control-sm" maxlength="8" style="width: 90px;">
+        </td>
+        <th scope="row">{$vo.id}</th>
+        <td>{$vo.level}{if condition="$vo.level neq ''"}└&nbsp;{/if}{$vo.sname}</td>
+        <td>{$vo.bieming}</td>
+        <td class="text-center">
+            <div class="custom-control custom-switch">
+                <input type="checkbox" id="ismenu_{$vo.id}" class="custom-control-input"{if $vo.ismenu == 1} checked{/if}><label class="custom-control-label" for="ismenu_{$vo.id}"></label>
+            </div>
+        </td>
+        <td class="text-center">
+            <div class="custom-control custom-switch">
+                <input type="checkbox" id="ismodule_{$vo.id}" class="custom-control-input"{if $vo.ismodule == 1} checked{/if}><label class="custom-control-label" for="ismodule_{$vo.id}"></label>
+            </div>
+        </td>
+        <td class="text-center">
+            <a class="text-info" href="{:Url('admin/Index/modifyclassification')}?c={$vo.id}"><i class="fa fa-edit"></i></a>
+        </td>
+        <td class="text-center">
+            <a class="confirm text-info" href="#!"><i class="fa fa-trash-o"></i><i class="fa fa-refresh fa-spin ml-2 d-none"></i></a>
+            <input type="hidden" value="{$vo.id}">
+        </td>
+    </tr>
+    {/volist}
+    </tbody>
+</table>
+</form>
+<div class="d-none" id="quedingshanchu">{:lang('Confirm to delete?')}</div>
+<div class="d-none" id="bukehuifu">{:lang('Are you sure you want to delete it? It cannot be recovered after deletion!')}</div>
+<script src="{$domain}public/common/js/createdclassification.js"></script>
+{include file="index/footer" /}
