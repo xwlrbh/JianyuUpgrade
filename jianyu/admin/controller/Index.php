@@ -1300,6 +1300,147 @@ class Index extends CatfishCMS
         Catfish::allot('link', $link);
         return $this->show(Catfish::lang('Modify the friendship link'), 3, 'modifylink', '', true);
     }
+    public function dbbackup()
+    {
+        $this->checkUser();
+        if(Catfish::isPost(3)){
+            ini_set('max_execution_time', 0);
+            ini_set('memory_limit', -1);
+            $dbnm = Catfish::getConfig('database.database');
+            $dbPrefix = Catfish::getConfig('database.prefix');
+            $prefixlen = strlen($dbPrefix);
+            $bkstr = '';
+            $sql = "SHOW TABLES FROM {$dbnm} LIKE '{$dbPrefix}%'";
+            $renm = Catfish::dbExecute($sql);
+            foreach($renm as $nmval){
+                reset($nmval);
+                $tbnm = current($nmval);
+                $onlynm = substr($tbnm, $prefixlen);
+                $sql = 'SHOW COLUMNS FROM `'.$tbnm.'`';
+                $re = Catfish::dbExecute($sql);
+                $field = '';
+                foreach($re as $val){
+                    if(empty($field)){
+                        $field = '`'.$val['Field'].'`';
+                    }
+                    else{
+                        $field .= ', `'.$val['Field'].'`';
+                    }
+                }
+                $tmp = '';
+                $all = Catfish::db($onlynm)->select();
+                if(is_array($all) && count($all) > 0){
+                    $i = 0;
+                    foreach((array)$all as $rec){
+                        $str = '';
+                        foreach($rec as $key => $srec){
+                            if(empty($str)){
+                                $str = $this->strint($srec);
+                            }
+                            else{
+                                $str .= ', '.$this->strint($srec);
+                            }
+                        }
+                        if(empty($tmp)){
+                            $tmp .= '('.$str.')';
+                        }
+                        else{
+                            $tmp .= ',('.$str.')';
+                        }
+                        $i ++ ;
+                        if($i > 50){
+                            $this->semiinsert($tbnm, $field, $tmp, $bkstr);
+                            $tmp = '';
+                            $i = 0;
+                        }
+                    }
+                    if(!empty($tmp)){
+                        $this->semiinsert($tbnm, $field, $tmp, $bkstr);
+                    }
+                }
+            }
+            $bkstr = '-- 剑鱼论坛数据库备份' . PHP_EOL . '-- 生成日期：' . date('Y-m-d H: i: s') . PHP_EOL . '-- Table prefix: ' . $dbPrefix . PHP_EOL . $bkstr;
+            $bkpath = date('Ymd');
+            $bkname = date('Y-m-d_H-i-s');
+            $bk = ROOT_PATH . 'data' . DS . 'dbbackup' . DS . $bkpath;
+            if(!is_dir($bk)){
+                mkdir($bk, 0777, true);
+            }
+            $sqlf = $bkname.'.jyb';
+            file_put_contents($bk.DS.$sqlf, gzcompress($bkstr));
+            $dbrec = Catfish::get('dbbackup');
+            $recpath = $bkpath . '/' . $sqlf;
+            if(empty($dbrec)){
+                $dbrec = $recpath;
+            }
+            else{
+                if(strpos($dbrec,$recpath) === false){
+                    $dbrec .= ','.$recpath;
+                }
+            }
+            Catfish::set('dbbackup', $dbrec);
+            echo 'ok';
+            exit();
+        }
+        Catfish::allot('dbbackup',$this->showdbbackup());
+        return $this->show(Catfish::lang('Database backup'), 3, 'dbbackup');
+    }
+    public function deldbbackup()
+    {
+        if(Catfish::isPost(3)){
+            $fn = Catfish::getPost('fn');
+            $dbrec = ',' . Catfish::get('dbbackup');
+            $dbrec = str_replace(',' . $fn, '', $dbrec);
+            $dbrec = empty($dbrec) ? '' : substr($dbrec, 1);
+            Catfish::set('dbbackup', $dbrec);
+            $this->deletefile('data/dbbackup/' . $fn);
+            echo 'ok';
+            exit();
+        }
+        else{
+            echo Catfish::lang('Your operation is illegal');
+            exit();
+        }
+    }
+    public function redbbackup()
+    {
+        if(Catfish::isPost(3)){
+            ini_set('max_execution_time', 0);
+            ini_set('memory_limit', -1);
+            $file = ROOT_PATH . 'data' . DS . 'dbbackup' . DS . str_replace('/', DS, Catfish::getPost('fn'));
+            echo $this->restoredb($file);
+            exit();
+        }
+        else{
+            echo Catfish::lang('Your operation is illegal');
+            exit();
+        }
+    }
+    public function uploadrestore()
+    {
+        $this->checkUser();
+        $prompt = '';
+        if(Catfish::isPost(3)){
+            ini_set('max_execution_time', 0);
+            ini_set('memory_limit', -1);
+            $file = request()->file('file');
+            if($file->checkExt('jyb') === true){
+                $rem = $this->restoredb($file->getPathname());
+                if($rem == 'ok'){
+                    $prompt = Catfish::lang('The database has been restored');
+                }
+                else{
+                    $prompt = $rem;
+                }
+            }
+            else{
+                $prompt = Catfish::lang('Please select the correct backup file');
+            }
+        }
+        Catfish::allot('dbbackup',$this->showdbbackup());
+        Catfish::allot('dbprompt',$prompt);
+        return $this->show(Catfish::lang('Database backup'), 3, 'dbbackup', '', false, 'dbbackup');
+    }
     public function remind()
     {
         if(Catfish::isPost(5)){

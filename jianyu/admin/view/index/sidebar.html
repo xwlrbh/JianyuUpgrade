@@ -77,6 +77,7 @@
         {if condition="$ugroup <= 3"}
         <a href="{:Url('admin/Index/addfriendshiplink')}" class="nav-link{if $option == 'addfriendshiplink'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Add a friendship link')}</a>
         <a href="{:Url('admin/Index/alllinks')}" class="nav-link{if $option == 'alllinks'} bg-secondary text-white{else /} text-dark{/if}">{:lang('All links')}</a>
+        <a href="{:Url('admin/Index/dbbackup')}" class="nav-link{if $option == 'dbbackup'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Database backup')}</a>
         {/if}
         <a href="{:Url('admin/Index/clearcache')}" class="nav-link{if $option == 'clearcache'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Clear cache')}</a>
         <a href="{:Url('login/Index/quit')}" class="nav-link{if $option == 'quit'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Sign out')}</a>

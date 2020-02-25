@@ -234,4 +234,110 @@ class CatfishCMS
         ];
         return $this->validatePost($rule, $msg, $data);
     }
+    protected function strint($si)
+    {
+        if($si === null){
+            return 'NULL';
+        }
+        elseif(is_int($si)){
+            return intval($si);
+        }
+        else{
+            return '\''.str_replace('\'','\'\'',$si).'\'';
+        }
+    }
+    protected function semiinsert($table, $field, &$value, &$bkstr)
+    {
+        $restr = 'INSERT INTO `'.$table.'` ('.$field.') VALUES'.$value.';'.PHP_EOL;
+        $bkstr .= '--CATFISH\'CMS->JianYuLunTan'.PHP_EOL.$restr;
+    }
+    protected function showdbbackup()
+    {
+        $dbrec = Catfish::get('dbbackup');
+        if(!empty($dbrec)){
+            $dbrecarr = explode(',', $dbrec);
+            $dbrecarr = array_reverse($dbrecarr);
+        }
+        else{
+            $dbrecarr = [];
+        }
+        foreach($dbrecarr as $key => $val){
+            $bnm = basename($val);
+            $onlbnm = basename($val, '.jyb');
+            $onlbnmarr = explode('_', $onlbnm);
+            $onlbnmarr[1] = str_replace('-', ': ', $onlbnmarr[1]);
+            $bdate = implode(' ', $onlbnmarr);
+            $dbrecarr[$key] = [
+                'path' => $val,
+                'name' => 'JianYuLunTan'.str_replace(['-', '_'], '', $bnm),
+                'date' => $bdate,
+                'down' => Catfish::domain() . 'data/dbbackup/' . $val
+            ];
+        }
+        return $dbrecarr;
+    }
+    protected function restoredb($file)
+    {
+        if(is_file($file)){
+            $dbrec = Catfish::get('dbbackup');
+            $dbnm = Catfish::getConfig('database.database');
+            $dbPrefix = Catfish::getConfig('database.prefix');
+            $sql = "SHOW TABLES FROM {$dbnm} LIKE '{$dbPrefix}%'";
+            $renm = Catfish::dbExecute($sql);
+            foreach($renm as $nmval){
+                reset($nmval);
+                $tbnm = current($nmval);
+                $sql = 'TRUNCATE TABLE `'.$tbnm.'`';
+                Catfish::dbExecute($sql);
+            }
+            $bkf = gzuncompress(file_get_contents($file));
+            $bkarr = explode('--CATFISH\'CMS->JianYuLunTan',$bkf);
+            $zstr = '';
+            $fstin = stripos($bkarr[0], 'INSERT INTO');
+            if($fstin === false){
+                $zstr = array_shift($bkarr);
+            }
+            else{
+                $zstr = substr($bkarr[0], 0, $fstin);
+                $bkarr[0] = trim(substr($bkarr[0], $fstin));
+            }
+            $zarr = explode(PHP_EOL, $zstr);
+            $prefix = '';
+            foreach($zarr as $key => $val){
+                $ppos = stripos($val, 'Table prefix:');
+                if($ppos !== false){
+                    $ppos = $ppos + strlen('Table prefix:');
+                    $prefix = trim(substr($val, $ppos));
+                    break;
+                }
+            }
+            foreach($bkarr as $q){
+                $q = trim($q);
+                if(!empty($prefix)){
+                    $inlen = strlen('INSERT INTO `') + strlen($prefix);
+                    $q = 'INSERT INTO `' . $dbPrefix . substr($q, $inlen);
+                }
+                Catfish::dbExecute($q);
+            }
+            Catfish::set('dbbackup', $dbrec);
+            return 'ok';
+        }
+        else{
+            return Catfish::lang('Backup file has expired');
+        }
+    }
+    protected function deletefile($delfile)
+    {
+        if(Catfish::isDataPath($delfile)){
+            if(@unlink(ROOT_PATH . str_replace('/', DS, $delfile))){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+        else{
+            return false;
+        }
+    }
 }

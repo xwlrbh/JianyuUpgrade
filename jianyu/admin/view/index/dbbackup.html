@@ -1,0 +1,78 @@
+{include file="index/header" /}
+{notempty name="dbprompt"}
+<div class="text-center text-danger">{$dbprompt}</div>
+{/notempty}
+<div class="row">
+    <div class="col-sm">
+        <form class="form-inline">
+            <input type="hidden" name="verification" value="{$verification}">
+            <button type="button" class="btn btn-outline-info btn-sm mb-2 submit">{:lang('Create a new backup')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+        </form>
+    </div>
+    <div class="col-sm">
+        <div class="clearfix">
+            <button class="btn btn-light btn-sm float-sm-right" type="button" data-toggle="collapse" data-target="#multiCollapseExample2">{:lang('Upload a local backup file and restore')}</button>
+        </div>
+        <div class="row my-2">
+            <div class="col">
+                <div class="collapse multi-collapse" id="multiCollapseExample2">
+                    <form method="post" id="upreform" enctype="multipart/form-data" action="{:Url('admin/Index/uploadrestore')}">
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="file" name="file">
+                        <label class="custom-file-label col-form-label-sm" for="file" data-browse="{:lang('Browse')}">{:lang('Select a file')}</label>
+                    </div>
+                    <input type="hidden" name="verification" value="{$verification}">
+                    <button type="button" id="submitupreform" class="btn btn-info btn-sm my-2">{:lang('Upload and restore')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<table class="table table-bordered table-hover">
+    <thead>
+    <tr>
+        <th scope="col">{:lang('Backup file name')}</th>
+        <th scope="col" class="text-center">{:lang('Backup date')}</th>
+        <th scope="col" class="text-center">{:lang('Delete backup')}</th>
+        <th scope="col" class="text-center">{:lang('Restore database')}</th>
+        <th scope="col" class="text-center">{:lang('Download to local')}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {volist name="dbbackup" id="vo"}
+    <tr>
+        <td class="text-break">{$vo.name}</td>
+        <td class="text-center">{$vo.date}</td>
+        <td class="text-center">
+            <a class="delconfirm text-info" href="#!"><i class="fa fa-trash-o"></i><i class="fa fa-refresh fa-spin ml-2 d-none"></i></a>
+            <input type="hidden" value="{$vo.path}">
+        </td>
+        <td class="text-center">
+            <a class="reconfirm text-info" href="#!"><i class="fa fa-reply-all"></i><i class="fa fa-refresh fa-spin ml-2 d-none"></i></a>
+            <input type="hidden" value="{$vo.path}">
+        </td>
+        <td class="text-center">
+            <a class="text-info" href="{$vo.down}" download="{$vo.name}"><i class="fa fa-download"></i></a>
+        </td>
+    </tr>
+    {/volist}
+    </tbody>
+</table>
+<div class="modal fade bd-example-modal-sm" id="dbbackupModal" tabindex="-1">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content p-3">
+            <div>
+                <i class="fa fa-refresh fa-spin text-info mr-2"></i> {:lang('Restoring the database, please do not do anything during the restore, please wait...')}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="d-none" id="quedingshanchu">{:lang('Confirm to delete?')}</div>
+<div class="d-none" id="bukehuifu">{:lang('Are you sure you want to delete it? It cannot be recovered after deletion!')}<br><small>{:lang('After deleting the backup file, the file will disappear')}</small></div>
+<div class="d-none" id="quedinghuanyuan">{:lang('Are you sure you want to restore the database?')}</div>
+<div class="d-none" id="huanyuanshuoming">{:lang('After restoring the database, the new data will be lost. Please make sure that the latest backup is restored.')}</div>
+<div class="d-none" id="redbbackupok">{:lang('The database has been successfully restored')}</div>
+<div class="d-none" id="notselected">{:lang('Backup file not selected')}</div>
+<script src="{$domain}public/common/js/dbbackup.js"></script>
+{include file="index/footer" /}
