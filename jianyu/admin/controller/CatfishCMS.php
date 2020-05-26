@@ -4,7 +4,7 @@
  * Producer: catfish(鲶鱼) cms [ http://www.catfish-cms.com ]
  * Author: A.J <804644245@qq.com>
  * License: Catfish CMS License ( http://www.catfish-cms.com/licenses/ccl )
- * Copyright: http://www.jianyuluntan.com All rights reserved.
+ * Copyright: http://jianyuluntan.com All rights reserved.
  */
 namespace app\admin\controller;
 use catfishcms\Catfish;
@@ -60,8 +60,8 @@ class CatfishCMS
                 Catfish::allot(Catfish::bd('emhpY2hp'), $crt);
             }
             elseif($val['name'] == 'domain'){
-                Catfish::allot($val['name'], $val['value']);
-                $dom = $val['value'];
+                $dom = Catfish::domainAmend($val['value']);
+                Catfish::allot($val['name'], $dom);
                 $root = $val['value'];
                 $dm = Catfish::url('/');
                 if(strpos($dm,'/index.php') !== false)
@@ -262,14 +262,13 @@ class CatfishCMS
             $dbrecarr = [];
         }
         foreach($dbrecarr as $key => $val){
-            $bnm = basename($val);
             $onlbnm = basename($val, '.jyb');
             $onlbnmarr = explode('_', $onlbnm);
             $onlbnmarr[1] = str_replace('-', ': ', $onlbnmarr[1]);
-            $bdate = implode(' ', $onlbnmarr);
+            $bdate = $onlbnmarr[0] . ' ' . $onlbnmarr[1];
             $dbrecarr[$key] = [
                 'path' => $val,
-                'name' => 'JianYuLunTan'.str_replace(['-', '_'], '', $bnm),
+                'name' => 'JianYuLunTan'.str_replace(['-', '_', ':', ' '], '', $bdate . '.jyb'),
                 'date' => $bdate,
                 'down' => Catfish::domain() . 'data/dbbackup/' . $val
             ];
@@ -338,6 +337,52 @@ class CatfishCMS
         }
         else{
             return false;
+        }
+    }
+    protected function bound($in, $lower, $upper = null)
+    {
+        if($in < $lower){
+            $in = $lower;
+        }
+        if($upper != null && $in > $upper){
+            $in = $upper;
+        }
+        return $in;
+    }
+    protected function recurseCopy($src,$dst){
+        $dir=opendir($src);
+        @mkdir($dst);
+        while(false!==($file=readdir($dir))){
+            if(($file!='.' )&&($file!='..')){
+                if(is_dir($src.'/'.$file)){
+                    $this->recurseCopy($src.'/'.$file,$dst.'/'.$file);
+                }
+                else{
+                    copy($src.'/'.$file,$dst.'/'.$file);
+                }
+            }
+        }
+        closedir($dir);
+    }
+    protected function delFolder($folder)
+    {
+        if(is_dir($folder)){
+            $fd = scandir($folder);
+            foreach($fd as $val){
+                if($val != '.' && $val != '..'){
+                    $tmp = $folder.DS.$val;
+                    if(is_dir($tmp)){
+                        $this->delFolder($tmp);
+                        @rmdir($tmp);
+                    }
+                    else{
+                        @unlink($tmp);
+                    }
+                }
+            }
+        }
+        else{
+            @unlink($folder);
         }
     }
 }

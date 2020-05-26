@@ -5,8 +5,8 @@
         <tr>
             <th scope="col">{:lang('Post content')}</th>
             <th scope="col">{:lang('Follow-up time')}</th>
-            <th scope="col">{:lang('Username')}</th>
             <th scope="col">{:lang('Nickname')}</th>
+            <th scope="col" class="text-center">{:lang('Main post')}</th>
             <th scope="col" class="text-center">{:lang('Review')}</th>
             {if condition="$mtype >= 10"}
             <th scope="col" class="text-center">{:lang('Delete')}</th>
@@ -18,8 +18,8 @@
         <tr>
             <td>{$vo.content}</td>
             <td>{$vo.createtime}</td>
-            <td>{$vo.yonghu}</td>
             <td>{$vo.nicheng}</td>
+            <td class="text-center"><a class="text-info" href="{:Url('index/Index/post',['find'=>$vo.tid])}" target="_blank"><i class="fa fa-eye"></i></a></td>
             <td class="text-center">
                 <div class="custom-control custom-switch">
                     <input type="checkbox" id="status_{$vo.id}" class="custom-control-input"{if $vo.status == 1} checked{/if}><label class="custom-control-label" for="status_{$vo.id}"></label>

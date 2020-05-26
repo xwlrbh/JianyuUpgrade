@@ -32,8 +32,8 @@
                         {eq name="captcha" value="1"}
                         <div class="form-group">
                             <label>{:lang('Captcha')}</label>
-                            <div><img class="img-fluid" style="cursor: pointer;" src="{:captcha_src()}" id="captcha" alt="captcha" />&nbsp;<a href="#!" id="resetcaptcha" class="text-info text-decoration-none">看不清</a></div>
-                            <input type="text" class="form-control" name="captcha" id="captchain" placeholder="{:lang('Captcha')}">
+                            <div><img class="img-fluid" style="cursor: pointer;" src="{:captcha_src()}" id="captcha" alt="captcha" />&nbsp;<a href="#!" id="resetcaptcha" class="text-info text-decoration-none">{:lang('Can not see clearly')}</a></div>
+                            <input type="text" class="form-control" name="captcha" id="captchain" placeholder="{:lang('Captcha')}" autocomplete="off">
                         </div>
                         {/eq}
                         <div class="checkbox">

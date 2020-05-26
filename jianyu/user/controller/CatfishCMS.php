@@ -4,7 +4,7 @@
  * Producer: catfish(鲶鱼) cms [ http://www.catfish-cms.com ]
  * Author: A.J <804644245@qq.com>
  * License: Catfish CMS License ( http://www.catfish-cms.com/licenses/ccl )
- * Copyright: http://www.jianyuluntan.com All rights reserved.
+ * Copyright: http://jianyuluntan.com All rights reserved.
  */
 namespace app\user\controller;
 use catfishcms\Catfish;
@@ -65,8 +65,8 @@ class CatfishCMS
                 unset($data_options[$key]);
             }
             elseif($val['name'] == 'domain'){
-                Catfish::allot($val['name'], $val['value']);
-                $root = $val['value'];
+                $root = Catfish::domainAmend($val['value']);
+                Catfish::allot($val['name'], $root);
                 $dm = Catfish::url('/');
                 if(strpos($dm,'/index.php') !== false)
                 {
@@ -133,7 +133,7 @@ class CatfishCMS
         }
         Catfish::allot('tieleixing', $tie_type);
     }
-    protected function sendnewpostsPost()
+    protected function sendnewpostsPost($needvcode = 0)
     {
         $rule = [
             'biaoti' => 'require',
@@ -147,6 +147,10 @@ class CatfishCMS
             'biaoti' => Catfish::getPost('biaoti'),
             'zhengwen' => Catfish::getPost('zhengwen')
         ];
+        if($needvcode == 1){
+            $rule['captcha|'.Catfish::lang('Captcha')] = 'require|captcha';
+            $data['captcha'] = Catfish::getPost('captcha');
+        }
         return $this->validatePost($rule, $msg, $data);
     }
     protected function newtongjitb()
@@ -221,14 +225,19 @@ class CatfishCMS
         ];
         return $this->validatePost($rule, $msg, $data);
     }
-    protected function myforum()
+    protected function myforum($forum = null)
     {
-        $forum = Catfish::getForum();
+        if($forum == null){
+            $forum = Catfish::getForum();
+        }
         $utype = Catfish::getSession('user_type');
         $mtype = Catfish::getSession('mtype');
         $dengji = Catfish::getSession('dengji');
         $myforum['mingan'] = $forum['mingan'];
-        $myforum['geshi'] = $forum['geshi'];
+        $tmp_geshi = str_replace(' ', '', strtolower($forum['geshi']));
+        $tmp_geshi = str_replace(',php,', ',', $tmp_geshi);
+        $tmp_geshi = str_replace([',php', 'php,'], '', $tmp_geshi);
+        $myforum['geshi'] = $tmp_geshi;
         switch($forum['fujian']){
             case 0:
                 $myforum['fujian'] = ($forum['fujiandj'] <= $dengji || $utype < 20 || $mtype > 0) ? 1 : 0;

@@ -4,10 +4,10 @@
  * Producer: catfish(鲶鱼) cms [ http://www.catfish-cms.com ]
  * Author: A.J <804644245@qq.com>
  * License: Catfish CMS License ( http://www.catfish-cms.com/licenses/ccl )
- * Copyright: http://www.jianyuluntan.com All rights reserved.
+ * Copyright: http://jianyuluntan.com All rights reserved.
  */
 return [
-    'version' => '1.5.0',
+    'version' => '1.7.0',
     'name' => '剑鱼论坛',
     'description' => 'Catfish(鲶鱼) CMS官方发布的轻论坛程序',
     'official' => 'jianyuluntan.com'

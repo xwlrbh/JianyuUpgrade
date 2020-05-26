@@ -4,7 +4,7 @@
  * Producer: catfish(鲶鱼) cms [ http://www.catfish-cms.com ]
  * Author: A.J <804644245@qq.com>
  * License: Catfish CMS License ( http://www.catfish-cms.com/licenses/ccl )
- * Copyright: http://www.jianyuluntan.com All rights reserved.
+ * Copyright: http://jianyuluntan.com All rights reserved.
  */
 namespace app\admin\controller;
 use catfishcms\Catfish;
@@ -54,11 +54,30 @@ class Index extends CatfishCMS
     public function mainpost()
     {
         $this->checkUser();
+        $guanjianzi = Catfish::getGet('guanjianzi');
+        if($guanjianzi === false){
+            $guanjianzi = '';
+        }
+        $yonghuming = Catfish::getGet('yonghuming');
+        if($yonghuming === false){
+            $yonghuming = '';
+        }
+        $query = [];
         $catfish = Catfish::view('tie','id,fabushijian,biaoti,review,yuedu,fstop,fsrecommended,jingpin,tietype,annex')
-            ->view('users','nicheng,touxiang','users.id=tie.uid')
-            ->where('tie.status','=',1)
+            ->view('users','yonghu,nicheng,touxiang','users.id=tie.uid');
+        if($guanjianzi != ''){
+            $catfish = $catfish->where('tie.biaoti','like','%'.$guanjianzi.'%');
+            $query['guanjianzi'] = $guanjianzi;
+        }
+        if($yonghuming != ''){
+            $catfish = $catfish->where('users.yonghu','=',$yonghuming);
+            $query['yonghuming'] = $yonghuming;
+        }
+         $catfish = $catfish->where('tie.status','=',1)
             ->order('tie.id desc')
-            ->paginate(20);
+            ->paginate(20,false,[
+                'query' => $query
+            ]);
         Catfish::allot('pages', $catfish->render());
         $catfish = $catfish->items();
         $typeidnm = $this->gettypeidname();
@@ -229,10 +248,30 @@ class Index extends CatfishCMS
     public function followpost()
     {
         $this->checkUser();
+        $guanjianzi = Catfish::getGet('guanjianzi');
+        if($guanjianzi === false){
+            $guanjianzi = '';
+        }
+        $yonghuming = Catfish::getGet('yonghuming');
+        if($yonghuming === false){
+            $yonghuming = '';
+        }
+        $query = [];
         $catfish = Catfish::view('tie_comments','id,uid,createtime,status,content')
-            ->view('users','yonghu,nicheng','users.id=tie_comments.uid')
-            ->order('tie_comments.xiugai desc')
-            ->paginate(20);
+            ->view('tie_comm_ontact','tid','tie_comm_ontact.cid=tie_comments.id', 'LEFT')
+            ->view('users','yonghu,nicheng','users.id=tie_comments.uid', 'LEFT');
+        if($guanjianzi != ''){
+            $catfish = $catfish->where('tie_comments.content','like','%'.$guanjianzi.'%');
+            $query['guanjianzi'] = $guanjianzi;
+        }
+        if($yonghuming != ''){
+            $catfish = $catfish->where('users.yonghu','=',$yonghuming);
+            $query['yonghuming'] = $yonghuming;
+        }
+        $catfish = $catfish->order('tie_comments.xiugai desc')
+            ->paginate(20,false,[
+                'query' => $query
+            ]);
         Catfish::allot('pages', $catfish->render());
         $catfish = $catfish->items();
         Catfish::allot('catfishcms', $catfish);
@@ -281,7 +320,7 @@ class Index extends CatfishCMS
     {
         if(Catfish::isPost(5)){
             $cid = intval(Catfish::getPost('id'));
-            $mtie = Catfish::db('tie_comm_ontact')->where('cid',$cid)->field('tid')->find();
+            $mtie = Catfish::db('tie_comm_ontact')->where('cid',$cid)->field('tid,uid')->find();
             $tid = $mtie['tid'];
             $getsort = Catfish::db('tie_comments')->where('id', $cid)->field('sid,createtime')->find();
             Catfish::dbStartTrans();
@@ -311,6 +350,11 @@ class Index extends CatfishCMS
                     ->where('riqi', date("Y-m-d", strtotime($getsort['createtime'])))
                     ->update([
                         'gentie' => Catfish::dbRaw('gentie-1')
+                    ]);
+                Catfish::db('users')
+                    ->where('id', $mtie['uid'])
+                    ->update([
+                        'pinglun' => Catfish::dbRaw('pinglun-1')
                     ]);
                 Catfish::db('gentie_zan')
                     ->where('cid', $cid)
@@ -366,6 +410,7 @@ class Index extends CatfishCMS
                 if($re == 1){
                     Catfish::clearCache('fenlei_id_name');
                     Catfish::clearCache('sortcache');
+                    Catfish::removeCache('sort_id_sname_virtual_parentid');
                     echo 'ok';
                 }
                 else{
@@ -481,6 +526,7 @@ class Index extends CatfishCMS
                 if($re == 1){
                     Catfish::clearCache('fenlei_id_name');
                     Catfish::clearCache('sortcache');
+                    Catfish::removeCache('sort_id_sname_virtual_parentid');
                     echo 'ok';
                 }
                 else{
@@ -516,7 +562,7 @@ class Index extends CatfishCMS
                     echo Catfish::lang('The transferred section cannot be the same as the transferred section');
                     exit();
                 }
-				$osidtj = Catfish::db('msort')->where('id', $data['osid'])->field('zhutie,gentie,tjoriginal,tjreprint')->find();
+                $osidtj = Catfish::db('msort')->where('id', $data['osid'])->field('zhutie,gentie,tjoriginal,tjreprint')->find();
                 Catfish::dbStartTrans();
                 try{
                     Catfish::db('tie')
@@ -547,7 +593,7 @@ class Index extends CatfishCMS
                             'tjoriginal' => Catfish::dbRaw('tjoriginal-'.$osidtj['tjoriginal']),
                             'tjreprint' => Catfish::dbRaw('tjreprint-'.$osidtj['tjreprint'])
                         ]);
-					Catfish::dbCommit();
+                    Catfish::dbCommit();
                 } catch (\Exception $e) {
                     Catfish::dbRollback();
                     echo Catfish::lang('The operation failed, please try again later');
@@ -565,12 +611,23 @@ class Index extends CatfishCMS
     {
         $this->checkUser();
         $utp = intval(Catfish::getSession('user_type'));
+        $yonghuming = Catfish::getGet('yonghuming');
+        if($yonghuming === false){
+            $yonghuming = '';
+        }
+        $query = [];
         $catfish = Catfish::db('users')
             ->where('id', '>', 1)
-            ->where('utype', '>', $utp)
-            ->field('id,yonghu,nicheng,email,shouji,touxiang,qianming,status,utype,mtype')
+            ->where('utype', '>', $utp);
+        if($yonghuming != ''){
+            $catfish = $catfish->where('yonghu','=',$yonghuming);
+            $query['yonghuming'] = $yonghuming;
+        }
+        $catfish = $catfish->field('id,yonghu,nicheng,email,shouji,touxiang,qianming,status,utype,mtype')
             ->order('id desc')
-            ->paginate(20);
+            ->paginate(20,false,[
+                'query' => $query
+            ]);
         Catfish::allot('pages', $catfish->render());
         $catfish = $catfish->items();
         Catfish::allot('catfishcms', $catfish);
@@ -946,7 +1003,7 @@ class Index extends CatfishCMS
             if($val['option_name'] == 'statistics'){
                 $jianyuItem[$val['option_name']] = unserialize($val['option_value']);
             }
-			elseif($val['option_name'] == 'record'){
+            elseif($val['option_name'] == 'record'){
                 $jianyuItem[$val['option_name']] = str_replace('"', '\'', $val['option_value']);
             }
             else{
@@ -973,6 +1030,10 @@ class Index extends CatfishCMS
                     'tupiandj' => Catfish::getPost('tupiandj'),
                     'lianjie' => Catfish::getPost('lianjie'),
                     'lianjiedj' => Catfish::getPost('lianjiedj'),
+                    'yanzhengzt' => $this->bound(intval(Catfish::getPost('yanzhengzt')), 0),
+                    'yanzhenggt' => $this->bound(intval(Catfish::getPost('yanzhenggt')), 0),
+                    'shichangzt' => Catfish::getPost('shichangzt'),
+                    'shichanggt' => Catfish::getPost('shichanggt'),
                     'geshi' => $geshi,
                     'mingan' => Catfish::getPost('mingan')
                 ]);
@@ -980,7 +1041,7 @@ class Index extends CatfishCMS
             echo 'ok';
             exit();
         }
-        $forum = Catfish::db('forum')->where('id',1)->field('fujian,fujiandj,fujiandwn,tiezi,tupian,tupiandj,lianjie,lianjiedj,geshi,mingan')->find();
+        $forum = Catfish::db('forum')->where('id',1)->field('fujian,fujiandj,fujiandwn,tiezi,tupian,tupiandj,lianjie,lianjiedj,yanzhengzt,yanzhenggt,shichangzt,shichanggt,geshi,mingan')->find();
         Catfish::allot('forum', $forum);
         $dengji = Catfish::db('dengji')->field('id,jibie,djname')->order('jibie asc')->select();
         foreach($dengji as $key => $val){
@@ -1361,7 +1422,7 @@ class Index extends CatfishCMS
             }
             $bkstr = '-- 剑鱼论坛数据库备份' . PHP_EOL . '-- 生成日期：' . date('Y-m-d H: i: s') . PHP_EOL . '-- Table prefix: ' . $dbPrefix . PHP_EOL . $bkstr;
             $bkpath = date('Ymd');
-            $bkname = date('Y-m-d_H-i-s');
+            $bkname = date('Y-m-d_H-i-s') . '_' . md5(Catfish::getRandom() . ' ' . time() . ' ' . rand());
             $bk = ROOT_PATH . 'data' . DS . 'dbbackup' . DS . $bkpath;
             if(!is_dir($bk)){
                 mkdir($bk, 0777, true);
@@ -1389,12 +1450,17 @@ class Index extends CatfishCMS
     {
         if(Catfish::isPost(3)){
             $fn = Catfish::getPost('fn');
-            $dbrec = ',' . Catfish::get('dbbackup');
-            $dbrec = str_replace(',' . $fn, '', $dbrec);
-            $dbrec = empty($dbrec) ? '' : substr($dbrec, 1);
-            Catfish::set('dbbackup', $dbrec);
-            $this->deletefile('data/dbbackup/' . $fn);
-            echo 'ok';
+            if(strpos($fn, '..') === false){
+                $dbrec = ',' . Catfish::get('dbbackup');
+                $dbrec = str_replace(',' . $fn, '', $dbrec);
+                $dbrec = empty($dbrec) ? '' : substr($dbrec, 1);
+                Catfish::set('dbbackup', $dbrec);
+                $this->deletefile('data/dbbackup/' . $fn);
+                echo 'ok';
+            }
+            else{
+                echo Catfish::lang('Error');
+            }
             exit();
         }
         else{
@@ -1581,5 +1647,197 @@ class Index extends CatfishCMS
             echo Catfish::lang('Your operation is illegal');
             exit();
         }
+    }
+    public function systemupgrade()
+    {
+        $this->checkUser();
+        $conf = Catfish::getConfig('jianyu');
+        $version = $conf['version'];
+        $lastv = $this->bbnp();
+        Catfish::set('systemupgrade_currentversion', $version);
+        if(version_compare($version, $lastv) >= 0){
+            $needupgrade = 0;
+        }
+        else{
+            $needupgrade = 1;
+        }
+        $sjbdz = Catfish::sjbdz();
+        $au = isset($sjbdz['au']) ? $sjbdz['au'] : 0;
+        $directly = 0;
+        $directlystr = '';
+        $address = [];
+        if(isset($sjbdz['address'])){
+            if(isset($sjbdz['address']['directly']) && !empty($sjbdz['address']['directly'])){
+                $directlystr = $sjbdz['address']['directly'];
+            }
+            Catfish::set('systemupgrade_directly', $directlystr);
+            if(isset($sjbdz['address']['manually']) && !empty($sjbdz['address']['manually'])){
+                $tmp_addr = explode(',', $sjbdz['address']['manually']);
+                foreach($tmp_addr as $val){
+                    array_push($address, $val);
+                }
+            }
+            if(isset($sjbdz['address']['official']) && !empty($sjbdz['address']['official'])){
+                $tmp_addr = explode(',', $sjbdz['address']['official']);
+                foreach($tmp_addr as $val){
+                    array_push($address, $val);
+                }
+            }
+        }
+        if(!empty($directlystr) && $au == 1){
+            $directly = 1;
+        }
+        Catfish::allot('needupgrade', $needupgrade);
+        Catfish::allot('directly', $directly);
+        Catfish::allot('address', $address);
+        return $this->show(Catfish::lang('System Upgrade'), 1, 'systemupgrade');
+    }
+    public function upgradepackage()
+    {
+        if(Catfish::isPost(1)){
+            ini_set('max_execution_time', 0);
+            ini_set('memory_limit', -1);
+            $file = request()->file('file');
+            $validate = [
+                'ext' => 'zip'
+            ];
+            $info = $file->validate($validate)->move(ROOT_PATH . 'data' . DS . 'package', false);
+            if($info){
+                Catfish::set('upgradepackagefilename', $info->getSaveName());
+                echo 'ok';
+            }else{
+                echo $file->getError();
+            }
+            exit();
+        }
+        else{
+            echo Catfish::lang('Your operation is illegal');
+            exit();
+        }
+    }
+    public function upgrading()
+    {
+        if(Catfish::isPost(1)){
+            ini_set('max_execution_time', 0);
+            ini_set('memory_limit', -1);
+            $tempdir = ROOT_PATH . 'data' . DS . 'temp';
+            $auto = Catfish::getPost('auto');
+            if($auto == 1){
+                $tempfolder = $tempdir . DS . 'autoupgrade';
+            }
+            else{
+                $tempfolder = $tempdir . DS . 'upgrade';
+            }
+            if(!is_dir($tempfolder)){
+                mkdir($tempfolder, 0777, true);
+            }
+            $upgradingfile = ROOT_PATH . 'data' . DS . 'package' . DS . Catfish::get('upgradepackagefilename');
+            if(is_file($upgradingfile)){
+                if(function_exists('disk_free_space')){
+                    $needspace = filesize($upgradingfile) * 5;
+                    if($needspace > disk_free_space($tempfolder)){
+                        echo Catfish::lang('Not enough space');
+                        exit();
+                    }
+                }
+                Catfish::clearCache();
+                try{
+                    $zip = new \ZipArchive();
+                    if($zip->open($upgradingfile) === true){
+                        $zip->extractTo($tempfolder);
+                        $zip->close();
+                        $this->upgradFile($tempfolder);
+                        @unlink($upgradingfile);
+                        $this->delFolder($tempfolder);
+                        $this->upgradedb();
+                        Catfish::curl(Catfish::domain());
+                        echo 'ok';
+                    }
+                    else{
+                        echo Catfish::lang('Upgrade package is not available');
+                    }
+                }
+                catch(\Exception $e){
+                    echo Catfish::lang('Upgrade unsuccessful');
+                }
+            }
+            else{
+                echo Catfish::lang('Upgrade package not found');
+            }
+            exit();
+        }
+        else{
+            echo Catfish::lang('Your operation is illegal');
+            exit();
+        }
+    }
+    private function upgradedb()
+    {
+        $upgradedbfile = ROOT_PATH . 'jianyu' . DS . 'install' . DS . 'upgrade';
+        $sqlfiles = glob($upgradedbfile . DS . '*.sql');
+        if(count($sqlfiles) > 0){
+            $currentversion = Catfish::get('systemupgrade_currentversion');
+            foreach($sqlfiles as $file){
+                $ver = basename($file, '.sql');
+                if(version_compare($ver, $currentversion) > 0){
+                    $sql = Catfish::fgc($file);
+                    $sql = str_replace([" `catfish_", " `jianyu_"], " `" . Catfish::prefix(), $sql);
+                    $sql = str_replace("\r", "\n", $sql);
+                    $sqlarr = explode(";\n", $sql);
+                    foreach ($sqlarr as $item) {
+                        $item = trim($item);
+                        if(empty($item)) continue;
+                        try{
+                            Catfish::dbExecute($item);
+                        }
+                        catch(\Exception $e){
+                            continue;
+                        }
+                    }
+                }
+                @unlink($file);
+            }
+        }
+    }
+    public function remotepackage()
+    {
+        if(Catfish::isPost(1)){
+            ini_set('max_execution_time', 0);
+            ini_set('memory_limit', -1);
+            $directly = Catfish::get('systemupgrade_directly');
+            $directlyarr = explode(',', $directly);
+            if(count($directlyarr) > 1){
+                $key = rand(0, count($directlyarr) - 1);
+                $directly = $directlyarr[$key];
+            }
+            $path = ROOT_PATH . 'data' . DS . 'package';
+            if(!is_dir($path)){
+                mkdir($path, 0777, true);
+            }
+            $file = $path . DS . 'jianyu.zip';
+            Catfish::set('upgradepackagefilename', 'jianyu.zip');
+            Catfish::getFile($directly, $file);
+            echo 'ok';
+            exit();
+        }
+        else{
+            echo Catfish::lang('Your operation is illegal');
+            exit();
+        }
+    }
+    private function upgradFile($folder)
+    {
+        $cfolder = 1;
+        while($cfolder == 1){
+            $farr = glob($folder . DS . '*', GLOB_ONLYDIR);
+            $cfolder = count($farr);
+            if($cfolder == 1){
+                $folder = $farr[0];
+            }
+            else{
+                break;
+            }
+        }
+        $this->recurseCopy($folder, ROOT_PATH);
     }
 }

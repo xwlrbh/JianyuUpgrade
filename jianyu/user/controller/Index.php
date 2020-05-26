@@ -4,7 +4,7 @@
  * Producer: catfish(鲶鱼) cms [ http://www.catfish-cms.com ]
  * Author: A.J <804644245@qq.com>
  * License: Catfish CMS License ( http://www.catfish-cms.com/licenses/ccl )
- * Copyright: http://www.jianyuluntan.com All rights reserved.
+ * Copyright: http://jianyuluntan.com All rights reserved.
  */
 namespace app\user\controller;
 use catfishcms\Catfish;
@@ -13,7 +13,13 @@ class Index extends CatfishCMS
     public function index()
     {
         $this->checkUser();
-        $forum = $this->myforum();
+        $resmz = Catfish::getForum();
+        $forum = $this->myforum($resmz);
+        $reur = Catfish::db('users')->where('id',Catfish::getSession('user_id'))->field('createtime,fatie')->find();
+        $needvcode = 0;
+        if($resmz['yanzhengzt'] > $reur['fatie']){
+            $needvcode = 1;
+        }
         if(Catfish::isPost(20)){
             $sid = Catfish::getPost('sid');
             if($sid == 0){
@@ -25,19 +31,25 @@ class Index extends CatfishCMS
                 echo Catfish::lang('Type must be selected');
                 exit();
             }
-            $data = $this->sendnewpostsPost();
+            $data = $this->sendnewpostsPost($needvcode);
             if(!is_array($data)){
                 echo $data;
                 exit();
             }
             else{
+                if($reur['fatie'] == 0 && Catfish::shixian($reur['createtime'], $resmz['shichangzt']) == false){
+                    echo Catfish::lang('Newly registered users are temporarily unable to post');
+                    exit();
+                }
                 $zhengwen = Catfish::getPost('zhengwen', false);
                 if($forum['lianjie'] == 0){
                     $zhengwen = Catfish::removea($zhengwen);
                 }
-                if(!$this->checkIllegal($zhengwen, $forum['mingan']) || !$this->checkIllegal($data['biaoti'], $forum['mingan'])){
-                    echo Catfish::lang('Contains prohibited content, please modify and try again');
-                    exit();
+                if(Catfish::getSession('user_type') != 1){
+                    if(!$this->checkIllegal($zhengwen, $forum['mingan']) || !$this->checkIllegal($data['biaoti'], $forum['mingan'])){
+                        echo Catfish::lang('Contains prohibited content, please modify and try again');
+                        exit();
+                    }
                 }
                 $fujian = '';
                 $annex = 0;
@@ -85,6 +97,7 @@ class Index extends CatfishCMS
                     Catfish::db('users')
                         ->where('id', Catfish::getSession('user_id'))
                         ->update([
+                            'lastfatie' => $now,
                             'fatie' => Catfish::dbRaw('fatie+1'),
                             'chengzhang' => Catfish::dbRaw('chengzhang+'.$chengzhang['post'])
                         ]);
@@ -123,10 +136,15 @@ class Index extends CatfishCMS
             }
         }
         $this->getTieType();
-        $fenlei = Catfish::getSort('msort', 'id,sname,virtual,parentid');
+        $fenlei = Catfish::getCache('sort_id_sname_virtual_parentid');
+        if($fenlei === false){
+            $fenlei = Catfish::getSort('msort', 'id,sname,virtual,parentid');
+            Catfish::setCache('sort_id_sname_virtual_parentid',$fenlei,3600);
+        }
         $this->adddisabled($fenlei);
         Catfish::allot('fenlei', $fenlei);
         Catfish::allot('forum', $forum);
+        Catfish::allot('needvcode', $needvcode);
         return $this->show(Catfish::lang('Send new posts'), 'sendnewposts', true);
     }
     public function mymainpost()
@@ -201,9 +219,11 @@ class Index extends CatfishCMS
                 if($forum['lianjie'] == 0){
                     $zhengwen = Catfish::removea($zhengwen);
                 }
-                if(!$this->checkIllegal($zhengwen, $forum['mingan']) || !$this->checkIllegal($data['biaoti'], $forum['mingan'])){
-                    echo Catfish::lang('Contains prohibited content, please modify and try again');
-                    exit();
+                if(Catfish::getSession('user_type') != 1){
+                    if(!$this->checkIllegal($zhengwen, $forum['mingan']) || !$this->checkIllegal($data['biaoti'], $forum['mingan'])){
+                        echo Catfish::lang('Contains prohibited content, please modify and try again');
+                        exit();
+                    }
                 }
                 $ofujian = '';
                 if($tie['annex'] == 1){
@@ -334,14 +354,18 @@ class Index extends CatfishCMS
             return $this->show(Catfish::lang('Modify the main post'), 'mymainpost', false, 'illegal');
         }
         $tienr = Catfish::db('tienr')->where('tid',$tid)->field('zhengwen,fujian')->find();
-		$tienr['zhengwen'] = str_replace('&','&amp;',$tienr['zhengwen']);
+        $tienr['zhengwen'] = str_replace('&','&amp;',$tienr['zhengwen']);
         if(!empty($tienr['fujian'])){
             $tmparr = explode('/', $tienr['fujian']);
             $tienr['fujian'] = end($tmparr);
         }
         Catfish::allot('tie', array_merge($tie, $tienr));
         $this->getTieType();
-        $fenlei = Catfish::getSort('msort', 'id,sname,virtual,parentid');
+        $fenlei = Catfish::getCache('sort_id_sname_virtual_parentid');
+        if($fenlei === false){
+            $fenlei = Catfish::getSort('msort', 'id,sname,virtual,parentid');
+            Catfish::setCache('sort_id_sname_virtual_parentid',$fenlei,3600);
+        }
         $this->adddisabled($fenlei);
         Catfish::allot('fenlei', $fenlei);
         Catfish::allot('forum', $forum);
@@ -674,12 +698,13 @@ class Index extends CatfishCMS
             $filename = 'u_'.$uid.'.png';
             $file = request()->file('file');
             $file->move(ROOT_PATH . 'data' . DS . 'avatar' . DS . $path, $filename);
+            $tx = $path . '/' . $filename;
             Catfish::db('users')
                 ->where('id', $uid)
                 ->update([
-                    'touxiang' => $path . '/' . $filename
+                    'touxiang' => $tx
                 ]);
-			Catfish::setSession('touxiang',Catfish::domain() . 'data/avatar/' . $path . '/' . $filename);
+            Catfish::setSession('touxiang',Catfish::domain() . 'data/avatar/' . $tx);
             echo 'ok';
             exit();
         }
@@ -812,12 +837,23 @@ class Index extends CatfishCMS
         }
         $section = Catfish::db('msort')->where('id','in',$sidstr)->field('id,sname')->select();
         Catfish::allot('section', $section);
+        $guanjianzi = Catfish::getGet('guanjianzi');
+        if($guanjianzi === false){
+            $guanjianzi = '';
+        }
+        $query = [];
         $catfish = Catfish::view('tie','id,sid,fabushijian,biaoti,review,yuedu,istop,recommended,jingpin,tietype,annex')
             ->view('users','nicheng,touxiang','users.id=tie.uid')
-            ->where('tie.sid','in',$sidstr)
-            ->where('tie.status','=',1)
+            ->where('tie.sid','in',$sidstr);
+        if($guanjianzi != ''){
+            $catfish = $catfish->where('tie.biaoti','like','%'.$guanjianzi.'%');
+            $query['guanjianzi'] = $guanjianzi;
+        }
+        $catfish = $catfish->where('tie.status','=',1)
             ->order('tie.id desc')
-            ->paginate(20);
+            ->paginate(20,false,[
+                'query' => $query
+            ]);
         Catfish::allot('pages', $catfish->render());
         $catfish = $catfish->items();
         $typeidnm = $this->gettypeidname();
@@ -1025,7 +1061,8 @@ class Index extends CatfishCMS
         $section = Catfish::db('msort')->where('id','in',$sidstr)->field('id,sname')->select();
         Catfish::allot('section', $section);
         $catfish = Catfish::view('tie_comments','id,uid,sid,createtime,status,content')
-            ->view('users','yonghu,nicheng','users.id=tie_comments.uid')
+            ->view('tie_comm_ontact','tid','tie_comm_ontact.cid=tie_comments.id', 'LEFT')
+            ->view('users','nicheng','users.id=tie_comments.uid', 'LEFT')
             ->where('tie_comments.sid','in',$sidstr)
             ->order('tie_comments.xiugai desc')
             ->paginate(20);
@@ -1094,7 +1131,7 @@ class Index extends CatfishCMS
         if(Catfish::isPost(20)){
             $id = intval(Catfish::getPost('id'));
             $uid = Catfish::getSession('user_id');
-            $tmp = Catfish::db('tie_comments')->where('id',$id)->field('sid,createtime')->find();
+            $tmp = Catfish::db('tie_comments')->where('id',$id)->field('uid,sid,createtime')->find();
             $fumt = Catfish::db('mod_sec_ontact')->where('sid',$tmp['sid'])->where('uid',$uid)->field('mtype')->find();
             if(empty($fumt) || $fumt['mtype'] < 10){
                 echo Catfish::lang('Your operation is illegal');
@@ -1134,6 +1171,11 @@ class Index extends CatfishCMS
                     ->where('riqi', date("Y-m-d", strtotime($tmp['createtime'])))
                     ->update([
                         'gentie' => Catfish::dbRaw('gentie-1')
+                    ]);
+                Catfish::db('users')
+                    ->where('id', $tmp['uid'])
+                    ->update([
+                        'pinglun' => Catfish::dbRaw('pinglun-1')
                     ]);
                 Catfish::db('gentie_zan')
                     ->where('cid', $id)

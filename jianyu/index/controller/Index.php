@@ -4,7 +4,7 @@
  * Producer: catfish(鲶鱼) cms [ http://www.catfish-cms.com ]
  * Author: A.J <804644245@qq.com>
  * License: Catfish CMS License ( http://www.catfish-cms.com/licenses/ccl )
- * Copyright: http://www.jianyuluntan.com All rights reserved.
+ * Copyright: http://jianyuluntan.com All rights reserved.
  */
 namespace app\index\controller;
 use catfishcms\Catfish;
@@ -74,12 +74,27 @@ class Index extends CatfishCMS
         if(Catfish::isLogin()){
             $gentie = Catfish::getPost('gtnr',false);
             $gentie = trim($gentie);
-            if(empty($gentie)){
+            $gtxt = strip_tags($gentie);
+            if(empty($gtxt)){
                 $re['result'] = 'error';
                 $re['message'] = Catfish::lang('The content of the post cannot be empty');
                 return json($re);
             }
+            elseif($this->needvcode() == 1 && !captcha_check(Catfish::getPost('captcha'))){
+                $re['result'] = 'error';
+                $re['message'] = Catfish::lang('Verification code error');
+                return json($re);
+            }
             else{
+                $reur = Catfish::db('users')->where('id',Catfish::getSession('user_id'))->field('createtime,pinglun')->find();
+                if($reur['pinglun'] == 0){
+                    $resmz = Catfish::getForum();
+                    if(Catfish::shixian($reur['createtime'], $resmz['shichanggt']) == false){
+                        $re['result'] = 'error';
+                        $re['message'] = Catfish::lang('Newly registered users are temporarily unable to follow up');
+                        return json($re);
+                    }
+                }
                 $forum = $this->myforumpost();
                 if($forum['lianjie'] == 0){
                     $gentie = Catfish::removea($gentie);
@@ -123,6 +138,7 @@ class Index extends CatfishCMS
                     Catfish::db('users')
                         ->where('id', $uid)
                         ->update([
+                            'lastgentie' => $now,
                             'pinglun' => Catfish::dbRaw('pinglun+1'),
                             'chengzhang' => Catfish::dbRaw('chengzhang+'.$chengzhang['followup'])
                         ]);
@@ -149,6 +165,9 @@ class Index extends CatfishCMS
                 Catfish::tongji('gentie');
                 Catfish::clearCache('postgentie_'.$tid);
                 Catfish::removeCache('fujianxiazai_'.$tid.'_'.$uid);
+                if(Catfish::getCache('needvcode_'.$uid) == 1){
+                    Catfish::removeCache('needvcode_'.$uid);
+                }
                 return json($re);
             }
         }
@@ -163,12 +182,27 @@ class Index extends CatfishCMS
         if(Catfish::isLogin()){
             $gentie = Catfish::getPost('gtnr',false);
             $gentie = trim($gentie);
-            if(empty($gentie)){
+            $gtxt = strip_tags($gentie);
+            if(empty($gtxt)){
                 $re['result'] = 'error';
                 $re['message'] = Catfish::lang('The content of the post cannot be empty');
                 return json($re);
             }
+            elseif($this->needvcode() == 1 && !captcha_check(Catfish::getPost('captcha'))){
+                $re['result'] = 'error';
+                $re['message'] = Catfish::lang('Verification code error');
+                return json($re);
+            }
             else{
+                $reur = Catfish::db('users')->where('id',Catfish::getSession('user_id'))->field('createtime,pinglun')->find();
+                if($reur['pinglun'] == 0){
+                    $resmz = Catfish::getForum();
+                    if(Catfish::shixian($reur['createtime'], $resmz['shichanggt']) == false){
+                        $re['result'] = 'error';
+                        $re['message'] = Catfish::lang('Newly registered users are temporarily unable to follow up');
+                        return json($re);
+                    }
+                }
                 $forum = $this->myforumpost();
                 if($forum['lianjie'] == 0){
                     $gentie = Catfish::removea($gentie);
@@ -257,6 +291,9 @@ class Index extends CatfishCMS
                 Catfish::tongji('gentie');
                 Catfish::clearCache('postgentie_'.$tid);
                 Catfish::removeCache('fujianxiazai_'.$tid.'_'.$uid);
+                if(Catfish::getCache('needvcode_'.$uid) == 1){
+                    Catfish::removeCache('needvcode_'.$uid);
+                }
                 return json($re);
             }
         }
@@ -543,7 +580,8 @@ class Index extends CatfishCMS
         if(Catfish::isLogin()){
             $gentie = Catfish::getPost('gtnr',false);
             $gentie = trim($gentie);
-            if(empty($gentie)){
+            $gtxt = strip_tags($gentie);
+            if(empty($gtxt)){
                 $re['result'] = 'error';
                 $re['message'] = Catfish::lang('The content of the post cannot be empty');
                 return json($re);

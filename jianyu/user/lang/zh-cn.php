@@ -4,7 +4,7 @@
  * Producer: catfish(鲶鱼) cms [ http://www.catfish-cms.com ]
  * Author: A.J <804644245@qq.com>
  * License: Catfish CMS License ( http://www.catfish-cms.com/licenses/ccl )
- * Copyright: http://www.jianyuluntan.com All rights reserved.
+ * Copyright: http://jianyuluntan.com All rights reserved.
  */
 return [
     'Swordfish Forum' => '剑鱼论坛',
@@ -35,11 +35,6 @@ return [
     'Please choose the type' => '请选择类型',
     'Original' => '原创',
     'Reprint' => '转载',
-    'Topic' => '话题',
-    'Help' => '求助',
-    'Reward' => '悬赏',
-    'Skill' => '技能',
-    'Activity' => '活动',
     'Please enter ' => '请输入',
     'Please select which section to publish to' => '请选择发布到哪个版块',
     'Post title must be filled in' => '帖子标题必须填写',
@@ -129,4 +124,9 @@ return [
     'Recommended post' => '推荐帖',
     'Fine post' => '加精帖',
     'Username' => '用户名',
+    'Newly registered users are temporarily unable to post' => '新注册的用户暂时不能发帖',
+    'Captcha' => '验证码',
+    'Can not see clearly' => '看不清',
+    'Keyword' => '关键字',
+    'Search' => '搜索',
 ];

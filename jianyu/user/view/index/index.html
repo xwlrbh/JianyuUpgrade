@@ -55,6 +55,13 @@
         </div>
     </div>
     {/if}
+    {if condition="$needvcode eq 1"}
+    <div class="form-group">
+        <label>{:lang('Captcha')}&nbsp;<b><span class="text-info">*</span></b></label>
+        <div><img class="img-fluid" style="cursor: pointer;" src="{:captcha_src()}" id="captcha" alt="captcha" />&nbsp;<a href="#!" id="resetcaptcha" class="text-info text-decoration-none">{:lang('Can not see clearly')}</a></div>
+        <input type="text" class="form-control" name="captcha" id="captchain" placeholder="{:lang('Captcha')}">
+    </div>
+    {/if}
     <div class="text-center mb-5">
         <input type="hidden" name="verification" value="{$verification}">
         <button type="button" id="formsubmit" class="btn btn-info{if condition="$forum.fujian eq 0"} submit{/if}">{:lang('Submit')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>

@@ -4,7 +4,7 @@
  * Producer: catfish(鲶鱼) cms [ http://www.catfish-cms.com ]
  * Author: A.J <804644245@qq.com>
  * License: Catfish CMS License ( http://www.catfish-cms.com/licenses/ccl )
- * Copyright: http://www.jianyuluntan.com All rights reserved.
+ * Copyright: http://jianyuluntan.com All rights reserved.
  */
 return [
     'Home' => '首页',
@@ -15,11 +15,6 @@ return [
     ' years ago' => '年前',
     'Original' => '原创',
     'Reprint' => '转载',
-    'Topic' => '话题',
-    'Help' => '求助',
-    'Reward' => '悬赏',
-    'Skill' => '技能',
-    'Activity' => '活动',
     'Born' => '出生',
     'Young child' => '幼儿',
     'Kindergarten' => '幼儿园',
@@ -48,4 +43,6 @@ return [
     'Log in to view posts' => '登录以后才能浏览帖子',
     'You can download attachments after logging in' => '登录后可以下载附件',
     'After replying, you can download attachments' => '回复后可以下载附件',
+    'Newly registered users are temporarily unable to follow up' => '新注册的用户暂时不能跟帖',
+    'Verification code error' => '验证码错误'
 ];

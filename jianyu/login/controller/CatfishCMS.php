@@ -4,7 +4,7 @@
  * Producer: catfish(鲶鱼) cms [ http://www.catfish-cms.com ]
  * Author: A.J <804644245@qq.com>
  * License: Catfish CMS License ( http://www.catfish-cms.com/licenses/ccl )
- * Copyright: http://www.jianyuluntan.com All rights reserved.
+ * Copyright: http://jianyuluntan.com All rights reserved.
  */
 namespace app\login\controller;
 use catfishcms\Catfish;
@@ -208,7 +208,7 @@ class CatfishCMS
         }
         return $jibie;
     }
-	protected function mobile()
+    protected function mobile()
     {
         $isMobile = 0;
         if(Catfish::isMobile()){

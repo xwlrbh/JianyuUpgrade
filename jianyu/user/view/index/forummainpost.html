@@ -1,10 +1,26 @@
 {include file="index/header" /}
+<form method="get">
+    <div class="form-row align-items-center">
+        <div class="col-auto">
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text bg-light">{:lang('Keyword')}</div>
+                </div>
+                <input type="text" name="guanjianzi" class="form-control">
+            </div>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-light mb-2">{:lang('Search')}</button>
+        </div>
+    </div>
+</form>
 <form>
     <table class="table table-bordered table-hover">
         <thead>
         <tr>
             <th scope="col">{:lang('Title')}</th>
             <th scope="col" class="text-center">{:lang('Type')}</th>
+            <th scope="col" class="text-center">{:lang('Nickname')}</th>
             <th scope="col" class="text-center">{:lang('Release time')}</th>
             <th scope="col" class="text-center">{:lang('Reading volume')}</th>
             <th scope="col" class="text-center">{:lang('Review')}</th>
@@ -23,6 +39,7 @@
         <tr>
             <td><a class="text-info" href="{:Url('index/Index/post',['find'=>$vo.id])}" target="_blank">{$vo.biaoti}</a>{if condition="$vo.annex eq 1"}&nbsp;<i class="fa fa-paperclip text-info"></i>{/if}</td>
             <td class="text-center">{$vo.tietype}</td>
+            <td>{$vo.nicheng}</td>
             <td class="text-center">{$vo.fabushijian}</td>
             <td class="text-center">{$vo.yuedu}</td>
             <td class="text-center">

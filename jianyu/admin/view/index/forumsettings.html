@@ -79,6 +79,58 @@
         <small class="form-text text-muted">{:lang('This level setting is only valid when allowing normal users to send links')}</small>
     </div>
     <div class="form-group">
+        <label>{:lang('New users need to verify the code before sending the first few posts')}</label>
+        <input type="number" class="form-control" name="yanzhengzt" value="{$forum.yanzhengzt}">
+    </div>
+    <div class="form-group">
+        <label>{:lang('New users need to verify the code before sending the first few reply posts')}</label>
+        <input type="number" class="form-control" name="yanzhenggt" value="{$forum.yanzhenggt}">
+    </div>
+    <div class="form-group">
+        <label>{:lang('How long does it take for users to post after they register?')}</label>
+        <select class="form-control" name="shichangzt">
+            <option value="Immediately"{if condition="$forum.shichangzt eq 'Immediately'"} selected{/if}>{:lang('Immediately')}</option>
+            <option value="10 minutes"{if condition="$forum.shichangzt eq '10 minutes'"} selected{/if}>{:lang('10 minutes')}</option>
+            <option value="20 minutes"{if condition="$forum.shichangzt eq '20 minutes'"} selected{/if}>{:lang('20 minutes')}</option>
+            <option value="40 minutes"{if condition="$forum.shichangzt eq '40 minutes'"} selected{/if}>{:lang('40 minutes')}</option>
+            <option value="1 hour"{if condition="$forum.shichangzt eq '1 hour'"} selected{/if}>{:lang('1 hour')}</option>
+            <option value="2 hours"{if condition="$forum.shichangzt eq '2 hours'"} selected{/if}>{:lang('2 hours')}</option>
+            <option value="3 hours"{if condition="$forum.shichangzt eq '3 hours'"} selected{/if}>{:lang('3 hours')}</option>
+            <option value="5 hours"{if condition="$forum.shichangzt eq '5 hours'"} selected{/if}>{:lang('5 hours')}</option>
+            <option value="10 hours"{if condition="$forum.shichangzt eq '10 hours'"} selected{/if}>{:lang('10 hours')}</option>
+            <option value="20 hours"{if condition="$forum.shichangzt eq '20 hours'"} selected{/if}>{:lang('20 hours')}</option>
+            <option value="1 day"{if condition="$forum.shichangzt eq '1 day'"} selected{/if}>{:lang('1 day')}</option>
+            <option value="2 days"{if condition="$forum.shichangzt eq '2 days'"} selected{/if}>{:lang('2 days')}</option>
+            <option value="3 days"{if condition="$forum.shichangzt eq '3 days'"} selected{/if}>{:lang('3 days')}</option>
+            <option value="4 days"{if condition="$forum.shichangzt eq '4 days'"} selected{/if}>{:lang('4 days')}</option>
+            <option value="5 days"{if condition="$forum.shichangzt eq '5 days'"} selected{/if}>{:lang('5 days')}</option>
+            <option value="6 days"{if condition="$forum.shichangzt eq '6 days'"} selected{/if}>{:lang('6 days')}</option>
+            <option value="7 days"{if condition="$forum.shichangzt eq '7 days'"} selected{/if}>{:lang('7 days')}</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>{:lang('How long does it take for users to reply to posts after they register?')}</label>
+        <select class="form-control" name="shichanggt">
+            <option value="Immediately"{if condition="$forum.shichangzt eq 'Immediately'"} selected{/if}>{:lang('Immediately')}</option>
+            <option value="10 minutes"{if condition="$forum.shichangzt eq '10 minutes'"} selected{/if}>{:lang('10 minutes')}</option>
+            <option value="20 minutes"{if condition="$forum.shichangzt eq '20 minutes'"} selected{/if}>{:lang('20 minutes')}</option>
+            <option value="40 minutes"{if condition="$forum.shichangzt eq '40 minutes'"} selected{/if}>{:lang('40 minutes')}</option>
+            <option value="1 hour"{if condition="$forum.shichangzt eq '1 hour'"} selected{/if}>{:lang('1 hour')}</option>
+            <option value="2 hours"{if condition="$forum.shichangzt eq '2 hours'"} selected{/if}>{:lang('2 hours')}</option>
+            <option value="3 hours"{if condition="$forum.shichangzt eq '3 hours'"} selected{/if}>{:lang('3 hours')}</option>
+            <option value="5 hours"{if condition="$forum.shichangzt eq '5 hours'"} selected{/if}>{:lang('5 hours')}</option>
+            <option value="10 hours"{if condition="$forum.shichangzt eq '10 hours'"} selected{/if}>{:lang('10 hours')}</option>
+            <option value="20 hours"{if condition="$forum.shichangzt eq '20 hours'"} selected{/if}>{:lang('20 hours')}</option>
+            <option value="1 day"{if condition="$forum.shichangzt eq '1 day'"} selected{/if}>{:lang('1 day')}</option>
+            <option value="2 days"{if condition="$forum.shichangzt eq '2 days'"} selected{/if}>{:lang('2 days')}</option>
+            <option value="3 days"{if condition="$forum.shichangzt eq '3 days'"} selected{/if}>{:lang('3 days')}</option>
+            <option value="4 days"{if condition="$forum.shichangzt eq '4 days'"} selected{/if}>{:lang('4 days')}</option>
+            <option value="5 days"{if condition="$forum.shichangzt eq '5 days'"} selected{/if}>{:lang('5 days')}</option>
+            <option value="6 days"{if condition="$forum.shichangzt eq '6 days'"} selected{/if}>{:lang('6 days')}</option>
+            <option value="7 days"{if condition="$forum.shichangzt eq '7 days'"} selected{/if}>{:lang('7 days')}</option>
+        </select>
+    </div>
+    <div class="form-group">
         <label>{:lang('Allow extensions to upload attachments')}</label>
         <textarea class="form-control" rows="5" name="geshi">{$forum.geshi}</textarea>
         <small class="form-text text-muted">{:lang('The extensions are separated by commas')}</small>

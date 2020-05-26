@@ -4,7 +4,7 @@
  * Producer: catfish(鲶鱼) cms [ http://www.catfish-cms.com ]
  * Author: A.J <804644245@qq.com>
  * License: Catfish CMS License ( http://www.catfish-cms.com/licenses/ccl )
- * Copyright: http://www.jianyuluntan.com All rights reserved.
+ * Copyright: http://jianyuluntan.com All rights reserved.
  */
 return [
     'User name' => '用户名',
@@ -53,4 +53,5 @@ return [
     'Mailbox error' => '邮箱错误',
     'This is your new password, please change your password immediately after login.' => '这是您的新密码，请登录后立即修改密码。',
     'The new password has been sent to your email, please log in to your email to view' => '新密码已经发送到您的邮箱，请登录您的邮箱查看',
+    'Can not see clearly' => '看不清'
 ];

@@ -1,4 +1,27 @@
 {include file="index/header" /}
+<form method="get">
+    <div class="form-row align-items-center">
+        <div class="col-auto">
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text bg-light">{:lang('Keyword')}</div>
+                </div>
+                <input type="text" name="guanjianzi" class="form-control">
+            </div>
+        </div>
+        <div class="col-auto">
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text bg-light">{:lang('Username')}</div>
+                </div>
+                <input type="text" name="yonghuming" class="form-control">
+            </div>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-light mb-2">{:lang('Search')}</button>
+        </div>
+    </div>
+</form>
 <form>
     <table class="table table-bordered table-hover">
         <thead>
@@ -7,6 +30,7 @@
             <th scope="col">{:lang('Follow-up time')}</th>
             <th scope="col">{:lang('Username')}</th>
             <th scope="col">{:lang('Nickname')}</th>
+            <th scope="col" class="text-center">{:lang('Main post')}</th>
             <th scope="col" class="text-center">{:lang('Review')}</th>
             <th scope="col" class="text-center">{:lang('Delete')}</th>
         </tr>
@@ -18,6 +42,7 @@
             <td>{$vo.createtime}</td>
             <td>{$vo.yonghu}</td>
             <td>{$vo.nicheng}</td>
+            <td class="text-center"><a class="text-info" href="{:Url('index/Index/post',['find'=>$vo.tid])}" target="_blank"><i class="fa fa-eye"></i></a></td>
             <td class="text-center">
                 <div class="custom-control custom-switch">
                     <input type="checkbox" id="status_{$vo.id}" class="custom-control-input"{if $vo.status == 1} checked{/if}><label class="custom-control-label" for="status_{$vo.id}"></label>

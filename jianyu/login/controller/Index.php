@@ -4,7 +4,7 @@
  * Producer: catfish(鲶鱼) cms [ http://www.catfish-cms.com ]
  * Author: A.J <804644245@qq.com>
  * License: Catfish CMS License ( http://www.catfish-cms.com/licenses/ccl )
- * Copyright: http://www.jianyuluntan.com All rights reserved.
+ * Copyright: http://jianyuluntan.com All rights reserved.
  */
 namespace app\login\controller;
 use catfishcms\Catfish;
@@ -59,7 +59,7 @@ class Index extends CatfishCMS
                 exit();
             }
         }
-		Catfish::allot('shouji', $this->mobile());
+        Catfish::allot('shouji', $this->mobile());
         $view = Catfish::output();
         return $view;
     }
@@ -166,7 +166,7 @@ class Index extends CatfishCMS
                 exit();
             }
         }
-		Catfish::allot('shouji', $this->mobile());
+        Catfish::allot('shouji', $this->mobile());
         $view = Catfish::output();
         return $view;
     }
@@ -234,18 +234,18 @@ class Index extends CatfishCMS
             if(!empty($user))
             {
                 foreach($user as $key => $val){
-                    if($val['yonghu'] == $data['user']){
+                    if(strtolower($val['yonghu']) == strtolower($data['user'])){
                         echo Catfish::lang('User name has been registered');
                         exit();
                     }
-                    if($val['email'] == $data['email']){
+                    if(strtolower($val['email']) == strtolower($data['email'])){
                         echo Catfish::lang('Email has been used');
                         exit();
                     }
                 }
             }
             $create_date = Catfish::now();
-            $rmd = md5($create_date);
+            $rmd = md5($create_date . '_' . rand());
             $status = 1;
             $regvery = Catfish::get('regvery');
             if($regvery == 1){
@@ -282,7 +282,7 @@ class Index extends CatfishCMS
             }
             exit();
         }
-		Catfish::allot('shouji', $this->mobile());
+        Catfish::allot('shouji', $this->mobile());
         $view = Catfish::output();
         return $view;
     }

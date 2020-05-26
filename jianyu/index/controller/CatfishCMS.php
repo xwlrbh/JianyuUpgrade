@@ -4,7 +4,7 @@
  * Producer: catfish(鲶鱼) cms [ http://www.catfish-cms.com ]
  * Author: A.J <804644245@qq.com>
  * License: Catfish CMS License ( http://www.catfish-cms.com/licenses/ccl )
- * Copyright: http://www.jianyuluntan.com All rights reserved.
+ * Copyright: http://jianyuluntan.com All rights reserved.
  */
 namespace app\index\controller;
 use catfishcms\Catfish;
@@ -24,6 +24,7 @@ class CatfishCMS
             exit();
         }
         Catfish::begin();
+        Catfish::setAllowLangList(['zh-cn']);
         if($loadoptions){
             $this->options();
             if(is_file(ROOT_PATH.'public/theme/'.$this->template.'/lang/'.Catfish::detectLang().'.php')){
@@ -74,9 +75,9 @@ class CatfishCMS
                 Catfish::allot('copyright', str_replace(['date', '5YmR6bG86K665Z2b', '54mI5p2D5omA5pyJ'], [date("Y"), $title, Catfish::bd('54mI5p2D5omA5pyJ')], unserialize($val['value'])));
             }
             elseif($val['name'] == 'domain'){
-                $this->domain = $val['value'];
-                Catfish::allot($val['name'], $val['value']);
-                $root = $val['value'];
+                $this->domain = Catfish::domainAmend($val['value']);
+                Catfish::allot($val['name'], $this->domain);
+                $root = $this->domain;
                 $dm = Catfish::url('/');
                 if(strpos($dm,'/index.php') !== false)
                 {
@@ -592,6 +593,7 @@ class CatfishCMS
             ];
         }
         Catfish::allot('daohang', $daohang);
+        Catfish::allot('needvcode', $this->needvcode());
         if(isset($post['path'])){
             $pfl = end($post['path']);
             return $pfl['id'];
@@ -1344,5 +1346,25 @@ class CatfishCMS
             Catfish::tagCache('modules')->set('module_'.$order,$modules,$this->time);
         }
         return $modules;
+    }
+    protected function needvcode()
+    {
+        $needvcode = 0;
+        if(Catfish::isLogin()){
+            $uid = Catfish::getSession('user_id');
+            $needvcode = Catfish::getCache('needvcode_'.$uid);
+            if($needvcode === false){
+                $resmz = Catfish::getForum();
+                $reur = Catfish::db('users')->where('id',$uid)->field('pinglun')->find();
+                if($resmz['yanzhenggt'] > $reur['pinglun']){
+                    $needvcode = 1;
+                }
+                else{
+                    $needvcode = 0;
+                }
+                Catfish::setCache('needvcode_'.$uid, $needvcode, $this->time);
+            }
+        }
+        return $needvcode;
     }
 }

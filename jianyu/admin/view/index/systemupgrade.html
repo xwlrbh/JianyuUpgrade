@@ -1,0 +1,55 @@
+{include file="index/header" /}
+<div class="container-fluid">
+    {if condition="$needupgrade == 1"}
+    <div class="row">
+        <div class="col">{:lang('The current version is the latest version and no upgrade is required')}</div>
+    </div>
+    {else /}
+    {if condition="$directly == 1"}
+    <div class="row">
+        <div class="col"><i class="fa fa-refresh fa-spin mr-2 text-info"></i><span id="directlyspan">{:lang('Downloading upgrade package, please wait ...')}</span></div>
+    </div>
+    <div class="row d-none" id="shibai">
+        <div class="col my-4 text-muted">{:lang('If the upgrade fails, you can also use the following methods to upgrade')}</div>
+    </div>
+    {/if}
+    <div id="shougong"{if condition="$directly == 1"} class="d-none"{/if}>
+        <div class="row">
+            <div class="col">1. {:lang('Please choose one of the links below, download the upgrade package, and upload')}</div>
+        </div>
+        {volist name="address" id="vo"}
+        <div class="row">
+            <div class="col my-2">
+                <a href="{$vo}" target="_blank">{$vo}</a>
+            </div>
+        </div>
+        {/volist}
+        <div class="row">
+            <div class="col mt-3">2. {:lang('After downloading, click the following button to upload the upgrade package')}</div>
+        </div>
+        <div class="row">
+            <div class="col my-3">
+                <input type="file" id="file" name="file" class="d-none">
+                <button type="button" id="uploadfile" class="btn btn-outline-info btn-sm mb-2">{:lang('Upload upgrade package and upgrade system')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+            </div>
+        </div>
+    </div>
+    {/if}
+</div>
+<div class="modal bd-example-modal-sm" id="dbbackupModal" tabindex="-1">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content p-3">
+            <div>
+                <i class="fa fa-refresh fa-spin text-info mr-2"></i> <span id="tishixinxi">{:lang('Uploading upgrade package, please wait ...')}</span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="d-none" id="tishixinxi1">{:lang('Uploading upgrade package, please wait ...')}</div>
+<div class="d-none" id="tishixinxi2">{:lang('Please wait while upgrading the system ...')}</div>
+<div class="d-none" id="upgradeok">{:lang('System upgrade completed')}</div>
+<div class="d-none" id="unsuccessful">{:lang('Upgrade unsuccessful')}</div>
+<div class="d-none" id="directly">{$directly}</div>
+<script src="{$domain}public/common/js/jqueryupload.js"></script>
+<script src="{$domain}public/common/js/systemupgrade.js"></script>
+{include file="index/footer" /}
