@@ -175,7 +175,7 @@ class Index extends CatfishCMS
         if(Catfish::hasSession('resend')){
             $user = Catfish::getSession('resend');
             $data = Catfish::db('users')->where('yonghu',$user)->field('id,email,randomcode')->find();
-            $url = Catfish::domain().ltrim(Catfish::url('index/Index/active'), '/').'?u='.$data['id'].'&v=e&c='.md5($user.$data['randomcode']);
+            $url = Catfish::url('index/Index/active').'?u='.$data['id'].'&v=e&c='.md5($user.$data['randomcode']);
             Catfish::sendmail($data['email'], $user, Catfish::lang('Account activation'), Catfish::lang('This is an account activation email, please click on the link below to activate your account.'). '<br><br><a href="'.$url.'">'.$url.'</a>');
             Catfish::deleteSession('resend');
             Catfish::success(Catfish::lang('Activation email has been sent'));
@@ -261,7 +261,7 @@ class Index extends CatfishCMS
                 'status' => $status
             ]);
             if($regvery == 1){
-                $url = Catfish::domain().ltrim(Catfish::url('index/Index/active'), '/').'?u='.$reid.'&v=e&c='.md5($data['user'].$rmd);
+                $url = Catfish::url('index/Index/active').'?u='.$reid.'&v=e&c='.md5($data['user'].$rmd);
                 Catfish::sendmail($data['email'], $data['user'], Catfish::lang('Account activation'), Catfish::lang('This is an account activation email, please click on the link below to activate your account.'). '<br><br><a href="'.$url.'">'.$url.'</a>');
             }
             Catfish::db('users_tongji')->insert([
