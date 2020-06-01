@@ -149,6 +149,7 @@ class CatfishCMS
         $urlarr = Catfish::getCache('urlarr_'.$order);
         if($urlarr === false){
             $urlarr = [
+                'default' => empty($order) ? '?order=default' : '?'.$order.'&order=default',
                 'reply' => empty($order) ? '?order=reply' : '?'.$order.'&order=reply',
                 'release' => empty($order) ? '?order=release' : '?'.$order.'&order=release',
                 'latest' => empty($order) ? '?order=latest' : '?'.$order.'&order=latest',
@@ -282,8 +283,11 @@ class CatfishCMS
         if($order == 'release'){
             $orderstr = '';
         }
-        else{
+        elseif($order == 'reply'){
             $orderstr = 'tie.commentime desc,';
+        }
+        else{
+            $orderstr = 'tie.ordertime desc,';
         }
         $cachename = 'shouye_'.$order.'_'.$page;
         $shouye = Catfish::getCache($cachename);
@@ -367,8 +371,11 @@ class CatfishCMS
         if($order == 'release'){
             $orderstr = '';
         }
-        else{
+        elseif($order == 'reply'){
             $orderstr = 'tie.commentime desc,';
+        }
+        else{
+            $orderstr = 'tie.ordertime desc,';
         }
         $cachename = 'column_'.$order.'_'.$find.'_'.$page;
         $column = Catfish::getCache($cachename);
@@ -1144,8 +1151,11 @@ class CatfishCMS
         if($order == 'release'){
             $orderstr = '';
         }
-        else{
+        elseif($order == 'reply'){
             $orderstr = 'tie.commentime desc,';
+        }
+        else{
+            $orderstr = 'tie.ordertime desc,';
         }
         $find = htmlspecialchars($find, ENT_QUOTES);
         $cachename = 'search_'.$order.'_'.$find.'_'.$page;
@@ -1183,8 +1193,11 @@ class CatfishCMS
         if($order == 'release'){
             $orderstr = '';
         }
-        else{
+        elseif($order == 'reply'){
             $orderstr = 'tie.commentime desc,';
+        }
+        else{
+            $orderstr = 'tie.ordertime desc,';
         }
         $cachename = 'type_'.$order.'_'.$find.'_'.$page;
         $column = Catfish::getCache($cachename);
@@ -1264,8 +1277,11 @@ class CatfishCMS
         if($order == 'release'){
             $orderstr = '';
         }
-        else{
+        elseif($order == 'reply'){
             $orderstr = 'tie.commentime desc,';
+        }
+        else{
+            $orderstr = 'tie.ordertime desc,';
         }
         $modules = Catfish::getCache('module_'.$order);
         if($modules === false){

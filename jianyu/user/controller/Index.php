@@ -85,6 +85,7 @@ class Index extends CatfishCMS
                         'fabushijian' => $now,
                         'biaoti' => $data['biaoti'],
                         'zhaiyao' => Catfish::getPost('zhaiyao'),
+                        'ordertime' => $now,
                         'tietype' => $tietype,
                         'annex' => $annex
                     ]);

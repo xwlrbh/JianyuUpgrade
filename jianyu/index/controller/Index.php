@@ -132,6 +132,7 @@ class Index extends CatfishCMS
                         ->where('id', $tid)
                         ->update([
                             'commentime' => $now,
+                            'ordertime' => $now,
                             'luid' => $uid,
                             'pinglunshu' => Catfish::dbRaw('pinglunshu+1')
                         ]);
@@ -248,6 +249,7 @@ class Index extends CatfishCMS
                         ->where('id', $tid)
                         ->update([
                             'commentime' => $now,
+                            'ordertime' => $now,
                             'luid' => $uid,
                             'pinglunshu' => Catfish::dbRaw('pinglunshu+1')
                         ]);
