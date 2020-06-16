@@ -60,7 +60,10 @@
                 {:lang('License')}：Catfish CMS License (<a class="text-info text-decoration-none" href="http://www.catfish-cms.com/licenses/ccl" target="_blank">www.catfish-cms.com/licenses/ccl</a>)
             </div>
             <div class="col-12 col-md-6">
-                {:lang('The latest version')}：{$xitong.new}
+                {:lang('The latest version')}：
+                <div id="getlatest" class="spinner-border spinner-border-sm text-info" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div><span id="latest"></span>
             </div>
         </div>
     </div>
@@ -97,4 +100,5 @@
         {/volist}
     </div>
 </div>
+<script src="{$domain}public/common/js/index.js"></script>
 {include file="index/footer" /}

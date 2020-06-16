@@ -234,6 +234,7 @@ class CatfishCMS
         $mtype = Catfish::getSession('mtype');
         $dengji = Catfish::getSession('dengji');
         $myforum['mingan'] = $forum['mingan'];
+        $myforum['preaudit'] = $forum['preaudit'];
         $tmp_geshi = str_replace(' ', '', strtolower($forum['geshi']));
         $tmp_geshi = str_replace(',php,', ',', $tmp_geshi);
         $tmp_geshi = str_replace([',php', 'php,'], '', $tmp_geshi);

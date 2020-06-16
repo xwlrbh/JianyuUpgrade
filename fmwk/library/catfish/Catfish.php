@@ -327,7 +327,12 @@ class Catfish
         $nickname = self::getCache('nickname_' . self::getSession('user_id'));
         if($nickname === false){
             $nickname = self::db('users')->where('id',self::getSession('user_id'))->field('nicheng')->find();
-            $nickname = $nickname['nicheng'];
+            if(isset($nickname['nicheng'])){
+                $nickname = $nickname['nicheng'];
+            }
+            else{
+                $nickname = '';
+            }
             self::setCache('nickname_' . self::getSession('user_id'), $nickname, 600);
         }
         return $nickname;
@@ -929,7 +934,7 @@ class Catfish
     {
         $forum = self::getCache('forumsettings');
         if($forum === false){
-            $forum = self::db('forum')->where('id',1)->field('fujian,fujiandj,fujiandwn,tiezi,tupian,tupiandj,lianjie,lianjiedj,yanzhengzt,yanzhenggt,shichangzt,shichanggt,geshi,mingan')->find();
+            $forum = self::db('forum')->where('id',1)->field('fujian,fujiandj,fujiandwn,tiezi,tupian,tupiandj,lianjie,lianjiedj,yanzhengzt,yanzhenggt,shichangzt,shichanggt,geshi,mingan,preaudit,fpreaudit')->find();
             self::setCache('forumsettings',$forum,86400);
         }
         return $forum;

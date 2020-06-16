@@ -76,6 +76,10 @@ class Index extends CatfishCMS
                 $this->newtongjitb();
                 $now = Catfish::now();
                 $chengzhang = Catfish::getGrowing();
+                $review = 1;
+                if($forum['preaudit'] == 1){
+                    $review = 0;
+                }
                 Catfish::dbStartTrans();
                 try{
                     $reid = Catfish::db('tie')->insertGetId([
@@ -85,6 +89,7 @@ class Index extends CatfishCMS
                         'fabushijian' => $now,
                         'biaoti' => $data['biaoti'],
                         'zhaiyao' => Catfish::getPost('zhaiyao'),
+                        'review' => $review,
                         'ordertime' => $now,
                         'tietype' => $tietype,
                         'annex' => $annex
@@ -276,12 +281,17 @@ class Index extends CatfishCMS
                 $tietop = Catfish::db('tie_top')->where('tid', $tid)->field('id,sid')->find();
                 $tietuijian = Catfish::db('tie_tuijian')->where('tid', $tid)->field('id,sid')->find();
                 if(!empty($nttname) && !empty($ottname)){
+                    $review = 1;
+                    if($forum['preaudit'] == 1){
+                        $review = 0;
+                    }
                     Catfish::dbStartTrans();
                     try{
                         Catfish::db('tie')->where('id', $tid)->update([
                             'sid' => $sid,
                             'biaoti' => $data['biaoti'],
                             'zhaiyao' => Catfish::getPost('zhaiyao'),
+                            'review' => $review,
                             'tietype' => $tietype,
                             'annex' => $annex
                         ]);
@@ -1037,6 +1047,9 @@ class Index extends CatfishCMS
                 }
                 Catfish::clearCache('column_zhiding_tuijian');
                 Catfish::clearCache('column');
+                if($opt == 'review'){
+                    Catfish::removeCache('post_' . $id);
+                }
                 echo 'ok';
             }
             else{
@@ -1288,5 +1301,13 @@ class Index extends CatfishCMS
         Catfish::allot('catfishcms', $catfish);
         Catfish::allot('mtype', Catfish::getSession('mtype'));
         return $this->show(Catfish::lang('Fine post'), 'finepost');
+    }
+    public function getmainpost()
+    {
+        if(Catfish::isPost(20)){
+            $post = Catfish::db('tienr')->where('tid', Catfish::getPost('id'))->field('zhengwen')->find();
+            return $post['zhengwen'];
+        }
+        return '';
     }
 }

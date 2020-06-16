@@ -129,4 +129,6 @@ return [
     'Can not see clearly' => '看不清',
     'Keyword' => '关键字',
     'Search' => '搜索',
+    'View post' => '查看帖子',
+    'Close' => '关闭',
 ];

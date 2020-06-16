@@ -322,4 +322,10 @@ return [
     'Not enough space' => '空间不足',
     'If the upgrade fails, you can also use the following methods to upgrade' => '如果升级失败，您还可以使用下面的方式升级',
     'Upgrade unsuccessful' => '升级失败',
+    'Whether posting requires pre-review' => '发帖是否需要前置审核',
+    'Does follow-up post require pre-review' => '跟帖是否需要前置审核',
+    'No pre-audit required' => '不需要前置审核',
+    'Pre-review required' => '需要前置审核',
+    'View post' => '查看帖子',
+    'Close' => '关闭',
 ];

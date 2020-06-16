@@ -45,11 +45,17 @@ class Index extends CatfishCMS
         $lgentie = Catfish::db('tie_comments')->field('createtime,content')->order('id desc')->limit(30)->select();
         Catfish::allot('lgentie', $lgentie);
         $conf = Catfish::getConfig('jianyu');
-        $conf['new'] = $this->bbnp();
         Catfish::allot('xitong', $conf);
         Catfish::allot('users', Catfish::get('users'));
         Catfish::allot('jianyuver', Catfish::getConfig('jianyu.version'));
         return $this->show(Catfish::lang('Welcome'));
+    }
+    public function latestv()
+    {
+        if(Catfish::isPost(5)){
+            return $this->bbnp();
+        }
+        return '';
     }
     public function mainpost()
     {
@@ -135,6 +141,9 @@ class Index extends CatfishCMS
                 }
                 Catfish::clearCache('shouye_zhiding_tuijian');
                 Catfish::clearCache('shouye');
+                if($opt == 'review'){
+                    Catfish::removeCache('post_' . $id);
+                }
                 echo 'ok';
             }
             else{
@@ -1035,13 +1044,15 @@ class Index extends CatfishCMS
                     'shichangzt' => Catfish::getPost('shichangzt'),
                     'shichanggt' => Catfish::getPost('shichanggt'),
                     'geshi' => $geshi,
-                    'mingan' => Catfish::getPost('mingan')
+                    'mingan' => Catfish::getPost('mingan'),
+                    'preaudit' => Catfish::getPost('preaudit'),
+                    'fpreaudit' => Catfish::getPost('fpreaudit')
                 ]);
             Catfish::removeCache('forumsettings');
             echo 'ok';
             exit();
         }
-        $forum = Catfish::db('forum')->where('id',1)->field('fujian,fujiandj,fujiandwn,tiezi,tupian,tupiandj,lianjie,lianjiedj,yanzhengzt,yanzhenggt,shichangzt,shichanggt,geshi,mingan')->find();
+        $forum = Catfish::db('forum')->where('id',1)->field('fujian,fujiandj,fujiandwn,tiezi,tupian,tupiandj,lianjie,lianjiedj,yanzhengzt,yanzhenggt,shichangzt,shichanggt,geshi,mingan,preaudit,fpreaudit')->find();
         Catfish::allot('forum', $forum);
         $dengji = Catfish::db('dengji')->field('id,jibie,djname')->order('jibie asc')->select();
         foreach($dengji as $key => $val){
@@ -1839,5 +1850,13 @@ class Index extends CatfishCMS
             }
         }
         $this->recurseCopy($folder, ROOT_PATH);
+    }
+    public function getmainpost()
+    {
+        if(Catfish::isPost(5)){
+            $post = Catfish::db('tienr')->where('tid', Catfish::getPost('id'))->field('zhengwen')->find();
+            return $post['zhengwen'];
+        }
+        return '';
     }
 }

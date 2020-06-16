@@ -114,6 +114,10 @@ class Index extends CatfishCMS
                     return json($re);
                 }
                 $chengzhang = Catfish::getGrowing();
+                $review = 1;
+                if($forum['fpreaudit'] == 1){
+                    $review = 0;
+                }
                 Catfish::dbStartTrans();
                 try{
                     $cid = Catfish::db('tie_comments')->insertGetId([
@@ -121,12 +125,14 @@ class Index extends CatfishCMS
                         'sid' => $tiefl['sid'],
                         'createtime' => $now,
                         'xiugai' => $now,
+                        'status' => $review,
                         'content' => $gentie
                     ]);
                     Catfish::db('tie_comm_ontact')->insert([
                         'tid' => $tid,
                         'cid' => $cid,
-                        'uid' => $uid
+                        'uid' => $uid,
+                        'status' => $review
                     ]);
                     Catfish::db('tie')
                         ->where('id', $tid)
@@ -230,6 +236,10 @@ class Index extends CatfishCMS
                     return json($re);
                 }
                 $chengzhang = Catfish::getGrowing();
+                $review = 1;
+                if($forum['fpreaudit'] == 1){
+                    $review = 0;
+                }
                 Catfish::dbStartTrans();
                 try{
                     $subcid = Catfish::db('tie_comments')->insertGetId([
@@ -238,12 +248,14 @@ class Index extends CatfishCMS
                         'createtime' => $now,
                         'xiugai' => $now,
                         'parentid' => $cid,
+                        'status' => $review,
                         'content' => $gentie
                     ]);
                     Catfish::db('tie_comm_ontact')->insert([
                         'tid' => $tid,
                         'cid' => $subcid,
-                        'uid' => $uid
+                        'uid' => $uid,
+                        'status' => $review
                     ]);
                     Catfish::db('tie')
                         ->where('id', $tid)

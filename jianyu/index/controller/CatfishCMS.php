@@ -457,6 +457,13 @@ class CatfishCMS
             }
             Catfish::tagCache('post')->set($cachename,$post,$this->time);
         }
+        if(!empty($post)){
+            $modify = '';
+            if(Catfish::hasSession('user_id') && Catfish::getSession('user_id') == $post['uid']){
+                $modify = Catfish::url('user/Index/modifymainpost') . '?c=' . $post['id'];
+            }
+            $post['xiugai'] = $modify;
+        }
         $page = Catfish::getGet('page');
         if($page == false){
             $page = 0;
@@ -989,6 +996,7 @@ class CatfishCMS
         $mtype = Catfish::getSession('mtype');
         $dengji = Catfish::getSession('dengji');
         $myforum['mingan'] = $forum['mingan'];
+        $myforum['fpreaudit'] = $forum['fpreaudit'];
         switch($forum['tupian']){
             case 0:
                 $myforum['tupian'] = ($forum['tupiandj'] <= $dengji || $utype < 20 || $mtype > 0) ? 1 : 0;

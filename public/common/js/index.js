@@ -1,0 +1,1 @@
+/*** Created by A.J on 2020/5/29.*/$(document).ready(function(){$.post("latestv", {verification:$("#verification").text()},function(data){$("#latest").text(data);$("#getlatest").addClass("d-none");});});
