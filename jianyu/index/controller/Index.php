@@ -86,7 +86,7 @@ class Index extends CatfishCMS
                 return json($re);
             }
             else{
-                $reur = Catfish::db('users')->where('id',Catfish::getSession('user_id'))->field('createtime,pinglun')->find();
+                $reur = Catfish::db('users')->where('id',Catfish::getSession('user_id'))->field('nicheng,createtime,pinglun')->find();
                 if($reur['pinglun'] == 0){
                     $resmz = Catfish::getForum();
                     if(Catfish::shixian($reur['createtime'], $resmz['shichanggt']) == false){
@@ -107,7 +107,7 @@ class Index extends CatfishCMS
                 $now = Catfish::now();
                 $tid = intval(Catfish::getPost('pid'));
                 $uid = Catfish::getSession('user_id');
-                $tiefl = Catfish::db('tie')->where('id', $tid)->field('sid')->find();
+                $tiefl = Catfish::db('tie')->where('id', $tid)->field('sid,pinglun')->find();
                 if(empty($tiefl)){
                     $re['result'] = 'error';
                     $re['message'] = Catfish::lang('Follow-up has been closed');
@@ -117,6 +117,20 @@ class Index extends CatfishCMS
                 $review = 1;
                 if($forum['fpreaudit'] == 1){
                     $review = 0;
+                }
+                if($review == 1){
+                    if(empty($tiefl['pinglun'])){
+                        $pinglun = [];
+                    }
+                    else{
+                        $pinglun = unserialize($tiefl['pinglun']);
+                        if(count($pinglun) > 2){
+                            $pinglun = array_slice($pinglun, 0, 2);
+                        }
+                    }
+                }
+                else{
+                    $pinglun = $tiefl['pinglun'];
                 }
                 Catfish::dbStartTrans();
                 try{
@@ -134,13 +148,24 @@ class Index extends CatfishCMS
                         'uid' => $uid,
                         'status' => $review
                     ]);
+                    if($review == 1){
+                        $plarr = [
+                            'id' => $cid,
+                            'nicheng' => subtext($reur['nicheng'], 8),
+                            'shijian' => $now,
+                            'neirong' => subtext(trim(strip_tags($gentie)), 57)
+                        ];
+                        array_unshift($pinglun, $plarr);
+                        $pinglun = serialize($pinglun);
+                    }
                     Catfish::db('tie')
                         ->where('id', $tid)
                         ->update([
                             'commentime' => $now,
                             'ordertime' => $now,
                             'luid' => $uid,
-                            'pinglunshu' => Catfish::dbRaw('pinglunshu+1')
+                            'pinglunshu' => Catfish::dbRaw('pinglunshu+1'),
+                            'pinglun' => $pinglun
                         ]);
                     Catfish::db('users')
                         ->where('id', $uid)
@@ -201,7 +226,7 @@ class Index extends CatfishCMS
                 return json($re);
             }
             else{
-                $reur = Catfish::db('users')->where('id',Catfish::getSession('user_id'))->field('createtime,pinglun')->find();
+                $reur = Catfish::db('users')->where('id',Catfish::getSession('user_id'))->field('nicheng,createtime,pinglun')->find();
                 if($reur['pinglun'] == 0){
                     $resmz = Catfish::getForum();
                     if(Catfish::shixian($reur['createtime'], $resmz['shichanggt']) == false){
@@ -229,7 +254,7 @@ class Index extends CatfishCMS
                     $re['message'] = Catfish::lang('The operation failed, please try again later');
                     return json($re);
                 }
-                $tiefl = Catfish::db('tie')->where('id', $tid)->field('sid')->find();
+                $tiefl = Catfish::db('tie')->where('id', $tid)->field('sid,pinglun')->find();
                 if(empty($tiefl)){
                     $re['result'] = 'error';
                     $re['message'] = Catfish::lang('Follow-up has been closed');
@@ -239,6 +264,20 @@ class Index extends CatfishCMS
                 $review = 1;
                 if($forum['fpreaudit'] == 1){
                     $review = 0;
+                }
+                if($review == 1){
+                    if(empty($tiefl['pinglun'])){
+                        $pinglun = [];
+                    }
+                    else{
+                        $pinglun = unserialize($tiefl['pinglun']);
+                        if(count($pinglun) > 2){
+                            $pinglun = array_slice($pinglun, 0, 2);
+                        }
+                    }
+                }
+                else{
+                    $pinglun = $tiefl['pinglun'];
                 }
                 Catfish::dbStartTrans();
                 try{
@@ -257,13 +296,24 @@ class Index extends CatfishCMS
                         'uid' => $uid,
                         'status' => $review
                     ]);
+                    if($review == 1){
+                        $plarr = [
+                            'id' => $subcid,
+                            'nicheng' => subtext($reur['nicheng'], 8),
+                            'shijian' => $now,
+                            'neirong' => subtext(trim(strip_tags($gentie)), 57)
+                        ];
+                        array_unshift($pinglun, $plarr);
+                        $pinglun = serialize($pinglun);
+                    }
                     Catfish::db('tie')
                         ->where('id', $tid)
                         ->update([
                             'commentime' => $now,
                             'ordertime' => $now,
                             'luid' => $uid,
-                            'pinglunshu' => Catfish::dbRaw('pinglunshu+1')
+                            'pinglunshu' => Catfish::dbRaw('pinglunshu+1'),
+                            'pinglun' => $pinglun
                         ]);
                     Catfish::db('users')
                         ->where('id', $uid)
@@ -616,6 +666,32 @@ class Index extends CatfishCMS
                     'xiugai' => $now,
                     'content' => $gentie
                 ]);
+                $tiepl = Catfish::db('tie')->where('id', $tid)->field('pinglun')->find();
+                if(!empty($tiepl['pinglun'])){
+                    $pinglun = unserialize($tiepl['pinglun']);
+                    $resmz = Catfish::getForum();
+                    if($resmz['fpreaudit'] == 0){
+                        foreach($pinglun as $key => $val){
+                            if($val['id'] == $cid){
+                                $pinglun[$key]['shijian'] = $now;
+                                $pinglun[$key]['neirong'] = subtext(trim(strip_tags($gentie)), 57);
+                                break;
+                            }
+                        }
+                    }
+                    else{
+                        foreach($pinglun as $key => $val){
+                            if($val['id'] == $cid){
+                                unset($pinglun[$key]);
+                                break;
+                            }
+                        }
+                    }
+                    $pinglun = serialize($pinglun);
+                    Catfish::db('tie')->where('id', $tid)->update([
+                        'pinglun' => $pinglun
+                    ]);
+                }
                 $re['result'] = 'ok';
                 $re['message'] = '';
                 Catfish::removeCache('postgentie_'.$tid.'_'.$subcname);
@@ -680,6 +756,20 @@ class Index extends CatfishCMS
                     Catfish::dbRollback();
                     echo Catfish::lang('The operation failed, please try again later');
                     exit();
+                }
+                $tiepl = Catfish::db('tie')->where('id', $tid)->field('pinglun')->find();
+                if(!empty($tiepl['pinglun'])){
+                    $pinglun = unserialize($tiepl['pinglun']);
+                    foreach($pinglun as $key => $val){
+                        if($val['id'] == $cid){
+                            unset($pinglun[$key]);
+                            break;
+                        }
+                    }
+                    $pinglun = serialize($pinglun);
+                    Catfish::db('tie')->where('id', $tid)->update([
+                        'pinglun' => $pinglun
+                    ]);
                 }
                 $post = Catfish::getCache('postgentie_'.$tid.'_'.$subcname);
                 if($post != false){

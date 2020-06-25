@@ -45,7 +45,7 @@
             <td class="text-center"><a class="text-info" href="{:Url('index/Index/post',['find'=>$vo.tid])}" target="_blank"><i class="fa fa-eye"></i></a></td>
             <td class="text-center">
                 <div class="custom-control custom-switch">
-                    <input type="checkbox" id="status_{$vo.id}" class="custom-control-input"{if $vo.status == 1} checked{/if}><label class="custom-control-label" for="status_{$vo.id}"></label>
+                    <input type="checkbox" id="status_{$vo.id}" data-tid="{$vo.tid}" data-nicheng="{$vo.nicheng}" data-content="{$vo.content}" data-createtime="{$vo.createtime}" class="custom-control-input"{if $vo.status == 1} checked{/if}><label class="custom-control-label" for="status_{$vo.id}"></label>
                 </div>
             </td>
             <td class="text-center">

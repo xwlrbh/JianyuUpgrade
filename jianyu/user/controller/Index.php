@@ -80,6 +80,7 @@ class Index extends CatfishCMS
                 if($forum['preaudit'] == 1){
                     $review = 0;
                 }
+                $tus = $this->extractPics($zhengwen);
                 Catfish::dbStartTrans();
                 try{
                     $reid = Catfish::db('tie')->insertGetId([
@@ -92,7 +93,8 @@ class Index extends CatfishCMS
                         'review' => $review,
                         'ordertime' => $now,
                         'tietype' => $tietype,
-                        'annex' => $annex
+                        'annex' => $annex,
+                        'tu' => $tus
                     ]);
                     Catfish::db('tienr')->insert([
                         'tid' => $reid,
@@ -285,6 +287,7 @@ class Index extends CatfishCMS
                     if($forum['preaudit'] == 1){
                         $review = 0;
                     }
+                    $tus = $this->extractPics($zhengwen);
                     Catfish::dbStartTrans();
                     try{
                         Catfish::db('tie')->where('id', $tid)->update([
@@ -293,7 +296,8 @@ class Index extends CatfishCMS
                             'zhaiyao' => Catfish::getPost('zhaiyao'),
                             'review' => $review,
                             'tietype' => $tietype,
-                            'annex' => $annex
+                            'annex' => $annex,
+                            'tu' => $tus
                         ]);
                         Catfish::db('tienr')->where('tid', $tid)->update([
                             'zhengwen' => $zhengwen,
@@ -1093,6 +1097,10 @@ class Index extends CatfishCMS
     {
         if(Catfish::isPost(20)){
             $id = intval(Catfish::getPost('id'));
+            $tid = intval(Catfish::getPost('tid'));
+            $nicheng = Catfish::getPost('nicheng');
+            $content = Catfish::getPost('content');
+            $createtime = Catfish::getPost('createtime');
             $uid = Catfish::getSession('user_id');
             $tmp = Catfish::db('tie_comments')->where('id',$id)->field('sid')->find();
             $fumt = Catfish::db('mod_sec_ontact')->where('sid',$tmp['sid'])->where('uid',$uid)->field('mtype')->find();
@@ -1125,6 +1133,46 @@ class Index extends CatfishCMS
                     Catfish::dbRollback();
                     echo Catfish::lang('The operation failed, please try again later');
                     exit();
+                }
+                $tiepl = Catfish::db('tie')->where('id', $tid)->field('pinglun')->find();
+                if(!empty($tiepl['pinglun'])){
+                    $pinglun = unserialize($tiepl['pinglun']);
+                    if($chk == 1){
+                        if(count($pinglun) > 2){
+                            $pinglun = array_slice($pinglun, 0, 2);
+                        }
+                        $plarr = [
+                            'id' => $id,
+                            'nicheng' => subtext($nicheng, 8),
+                            'shijian' => $createtime,
+                            'neirong' => subtext(trim(strip_tags($content)), 57)
+                        ];
+                        array_unshift($pinglun, $plarr);
+                    }
+                    else{
+                        foreach($pinglun as $key => $val){
+                            if($val['id'] == $id){
+                                unset($pinglun[$key]);
+                                break;
+                            }
+                        }
+                    }
+                    $pinglun = serialize($pinglun);
+                    Catfish::db('tie')->where('id', $tid)->update([
+                        'pinglun' => $pinglun
+                    ]);
+                }
+                elseif($chk == 1){
+                    $pinglun[] = [
+                        'id' => $id,
+                        'nicheng' => subtext($nicheng, 8),
+                        'shijian' => $createtime,
+                        'neirong' => subtext(trim(strip_tags($content)), 57)
+                    ];
+                    $pinglun = serialize($pinglun);
+                    Catfish::db('tie')->where('id', $tid)->update([
+                        'pinglun' => $pinglun
+                    ]);
                 }
                 $rep = Catfish::db('tie_comm_ontact')->where('cid', $id)->field('tid')->find();
                 Catfish::clearCache('postgentie_'.$rep['tid']);

@@ -358,4 +358,23 @@ class CatfishCMS
         }
         return $leixing;
     }
+    protected function extractPics($string, $len = 600)
+    {
+        $tu = '';
+        preg_match_all('/<img [\s\S]+?>/i', $string, $matches);
+        if(is_array($matches[0]) && count($matches[0]) > 0){
+            foreach($matches[0] as $key => $val){
+                preg_match('/src="(\S+?)"/i', $val, $submatches);
+                if(isset($submatches[1])){
+                    if(strlen($tu) + strlen($submatches[1]) < $len - 1){
+                        $tu .= empty($tu) ? $submatches[1] : ',' . $submatches[1];
+                    }
+                    else{
+                        break;
+                    }
+                }
+            }
+        }
+        return $tu;
+    }
 }
