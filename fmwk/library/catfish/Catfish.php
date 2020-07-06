@@ -1128,4 +1128,12 @@ class Catfish
         }
         return $random;
     }
+    public static function hasGet($name)
+    {
+        return Request::instance()->has($name, 'get');
+    }
+    public static function hasPost($name)
+    {
+        return Request::instance()->has($name, 'post');
+    }
 }

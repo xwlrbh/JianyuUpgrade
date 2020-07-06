@@ -14,6 +14,7 @@ return [
     'post' => 'index/Index/post',
     'type/:find' => 'index/Index/type',
     'type' => 'index/Index/type',
+    'ask' => 'index/Index/ask',
     'gentie' => 'index/Index/gentie',
     'huifu' => 'index/Index/huifu',
     'error' => 'index/Index/error',

@@ -23,21 +23,36 @@ class Index extends CatfishCMS
         ]);
         Catfish::allot('biaoti','');
         $this->shouye();
-        $htmls = $this->show();
+        if(Catfish::hasGet('pulldown')){
+            $htmls = $this->showpart();
+        }
+        else{
+            $htmls = $this->show();
+        }
         return $htmls;
     }
     public function column($find = 0)
     {
         $this->readydisplay();
         $this->getcolumn(intval($find));
-        $htmls = $this->show('column',$find,'');
+        if(Catfish::hasGet('pulldown')){
+            $htmls = $this->showpart('column');
+        }
+        else{
+            $htmls = $this->show('column',$find,'');
+        }
         return $htmls;
     }
     public function post($find = 0)
     {
         $this->readydisplay();
         $sort = $this->getpost(intval($find));
-        $htmls = $this->show('post',$sort,'');
+        if(Catfish::hasGet('pulldown')){
+            $htmls = $this->showpart('post');
+        }
+        else{
+            $htmls = $this->show('post',$sort,'');
+        }
         return $htmls;
     }
     public function search($find = '')
@@ -59,14 +74,24 @@ class Index extends CatfishCMS
         ]);
         Catfish::allot('biaoti',$find);
         $this->getsearch($find);
-        $htmls = $this->show('column');
+        if(Catfish::hasGet('pulldown')){
+            $htmls = $this->showpart('column');
+        }
+        else{
+            $htmls = $this->show('column');
+        }
         return $htmls;
     }
     public function type($find = '')
     {
         $this->readydisplay();
         $this->gettype(intval($find));
-        $htmls = $this->show('column');
+        if(Catfish::hasGet('pulldown')){
+            $htmls = $this->showpart('column');
+        }
+        else{
+            $htmls = $this->show('column');
+        }
         return $htmls;
     }
     public function gentie()
