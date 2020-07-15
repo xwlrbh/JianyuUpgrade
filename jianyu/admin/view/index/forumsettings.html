@@ -79,6 +79,27 @@
         <small class="form-text text-muted">{:lang('This level setting is only valid when allowing normal users to send links')}</small>
     </div>
     <div class="form-group">
+        <label>{:lang('Integral')}</label>
+        <select class="form-control" name="jifen">
+            <option value="0"{if condition="$forum.jifen eq 0"} selected{/if}>{:lang('Allow ordinary users to set integral value')}</option>
+            <option value="5"{if condition="$forum.jifen eq 5"} selected{/if}>{:lang('Allow internship moderators and above to set integral value')}</option>
+            <option value="10"{if condition="$forum.jifen eq 10"} selected{/if}>{:lang('Allow sub-moderators and above to set integral value')}</option>
+            <option value="15"{if condition="$forum.jifen eq 15"} selected{/if}>{:lang('Allow moderators and above to set integral value')}</option>
+            <option value="20"{if condition="$forum.jifen eq 20"} selected{/if}>{:lang('Allow ordinary administrators and above to set integral value')}</option>
+            <option value="25"{if condition="$forum.jifen eq 25"} selected{/if}>{:lang('Allow advanced administrators and above to set integral value')}</option>
+            <option value="30"{if condition="$forum.jifen eq 30"} selected{/if}>{:lang('Only allow founders to set integral value')}</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>{:lang('Minimum user level allowed to set integral value')}</label>
+        <select class="form-control" name="jifendj">
+            {volist name="dengji" id="vo"}
+            <option value="{$vo.jibie}"{if condition="$forum.jifendj eq $vo.jibie"} selected{/if}>{$vo.djname}</option>
+            {/volist}
+        </select>
+        <small class="form-text text-muted">{:lang('This level setting is only valid when allowing ordinary users to set integral value')}</small>
+    </div>
+    <div class="form-group">
         <label>{:lang('New users need to verify the code before sending the first few posts')}</label>
         <input type="number" class="form-control" name="yanzhengzt" value="{$forum.yanzhengzt}">
     </div>
@@ -151,7 +172,7 @@
     </div>
     <div class="form-group">
         <label>{:lang('Sensitive word')}</label>
-        <textarea class="form-control" rows="8" name="mingan">{$forum.mingan}</textarea>
+        <textarea class="form-control" rows="12" name="mingan">{$forum.mingan}</textarea>
         <small class="form-text text-muted">{:lang('Posting content with the above words will not allow posting, sensitive words separated by line breaks')}</small>
     </div>
     <div class="text-center mb-5">

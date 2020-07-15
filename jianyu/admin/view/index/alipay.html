@@ -1,0 +1,78 @@
+{include file="index/header" /}
+<form>
+    <div class="form-group mt-4">
+        <label>{:lang('AppId')}&nbsp;<b><span class="text-danger">*</span></b></label>
+        <input type="text" name="appid" value="{$alipay.appid}" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" placeholder="{:lang('Please enter ')}{:lang('AppId')}">
+    </div>
+    <div class="form-group mt-4">
+        <label>{:lang('Merchant UID')}&nbsp;<b><span class="text-danger">*</span></b></label>
+        <input type="text" name="merchantuid" value="{$alipay.merchantuid}" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" placeholder="{:lang('Please enter ')}{:lang('Merchant UID')}">
+    </div>
+    <div class="form-group mt-4">
+        <label>{:lang('Application private key')}&nbsp;<b><span class="text-danger">*</span></b></label>
+        <textarea name="privatekey" class="form-control" rows="12">{$alipay.privatekey}</textarea>
+    </div>
+    <div class="form-group">
+        <label for="signaturemethod">{:lang('Signature method')}</label>
+        <select class="form-control" id="signaturemethod" name="signaturemethod">
+            <option value="certificate"{if condition="$alipay.signaturemethod eq 'certificate'"} selected{/if}>{:lang('Public key certificate')}</option>
+            <option value="publickey"{if condition="$alipay.signaturemethod eq 'publickey'"} selected{/if}>{:lang('Public key')}</option>
+        </select>
+        <small class="form-text text-muted">{:lang('The signature method must be the same as the Alipay background setting')}</small>
+    </div>
+    <div id="certificate">
+        <div class="form-group mt-4">
+            <label>{:lang('Application Public Key Certificate')}</label>
+            <div id="applicationpublickeydiv"></div>
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="applicationpublickey" name="applicationpublickey">
+                <label class="custom-file-label" for="applicationpublickey" data-browse="{:lang('Browse')}">{:lang('Choose a certificate file')}</label>
+            </div>
+        </div>
+        <div class="form-group mt-4">
+            <label>{:lang('Alipay public key certificate')}</label>
+            <div id="alipaypublickeydiv"></div>
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="alipaypublickey" name="alipaypublickey">
+                <label class="custom-file-label" for="alipaypublickey" data-browse="{:lang('Browse')}">{:lang('Choose a certificate file')}</label>
+            </div>
+        </div>
+        <div class="form-group mt-4">
+            <label>{:lang('Alipay root certificate')}</label>
+            <div id="alipayrootdiv"></div>
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="alipayroot" name="alipayroot">
+                <label class="custom-file-label" for="alipayroot" data-browse="{:lang('Browse')}">{:lang('Choose a certificate file')}</label>
+            </div>
+        </div>
+    </div>
+    <div id="publickey" class="d-none">
+        <div class="form-group mt-4">
+            <label>{:lang('Alipay public key')}</label>
+            <textarea name="alipaypublic" class="form-control" rows="8">{$alipay.publickey}</textarea>
+        </div>
+    </div>
+    <div class="text-center mb-5">
+        <input type="hidden" name="applicationpublickeyname" id="applicationpublickeyname" value="{$alipay.apppublickeyname}">
+        <input type="hidden" name="applicationpublickeypath" id="applicationpublickeypath" value="{$alipay.apppublickeypath}">
+        <input type="hidden" name="alipaypublickeyname" id="alipaypublickeyname" value="{$alipay.alipaypublickeyname}">
+        <input type="hidden" name="alipaypublickeypath" id="alipaypublickeypath" value="{$alipay.alipaypublickeypath}">
+        <input type="hidden" name="alipayrootname" id="alipayrootname" value="{$alipay.alipayrootname}">
+        <input type="hidden" name="alipayrootpath" id="alipayrootpath" value="{$alipay.alipayrootpath}">
+        <input type="hidden" name="verification" value="{$verification}">
+        <button type="button" id="formsubmit" class="btn btn-info submit">{:lang('Submit')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+    </div>
+</form>
+<div id="zhengshutu" class="d-none"><img src="{$domain}public/common/images/zhengshu.png"></div>
+<div class="modal bd-example-modal-sm" id="certificateModal" tabindex="-1">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content p-3">
+            <div>
+                <i class="fa fa-refresh fa-spin text-info mr-2"></i> <span id="tishixinxi">{:lang('Uploading certificate, please wait...')}</span>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{$domain}public/common/js/jqueryupload.js"></script>
+<script src="{$domain}public/common/js/alipay.js"></script>
+{include file="index/footer" /}

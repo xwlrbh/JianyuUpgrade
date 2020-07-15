@@ -41,6 +41,18 @@ class Index extends CatfishCMS
                     echo Catfish::lang('Newly registered users are temporarily unable to post');
                     exit();
                 }
+                $jifenleixing = 0;
+                if(Catfish::hasPost('jifenleixing')){
+                    $jifenleixing = intval(Catfish::getPost('jifenleixing'));
+                }
+                $jifen = 0;
+                if(Catfish::hasPost('jifen')){
+                    $jifen = intval(Catfish::getPost('jifen'));
+                }
+                if($jifen < 0){
+                    echo Catfish::lang('Points cannot be negative');
+                    exit();
+                }
                 $zhengwen = Catfish::getPost('zhengwen', false);
                 if($forum['lianjie'] == 0){
                     $zhengwen = Catfish::removea($zhengwen);
@@ -81,6 +93,7 @@ class Index extends CatfishCMS
                     $review = 0;
                 }
                 $tus = $this->extractPics($zhengwen);
+                $uid = Catfish::getSession('user_id');
                 Catfish::dbStartTrans();
                 try{
                     $reid = Catfish::db('tie')->insertGetId([
@@ -94,7 +107,9 @@ class Index extends CatfishCMS
                         'ordertime' => $now,
                         'tietype' => $tietype,
                         'annex' => $annex,
-                        'tu' => $tus
+                        'tu' => $tus,
+                        'jifenleixing' => $jifenleixing,
+                        'jifen' => $jifen
                     ]);
                     Catfish::db('tienr')->insert([
                         'tid' => $reid,
@@ -103,12 +118,21 @@ class Index extends CatfishCMS
                         'fjsize' => $size
                     ]);
                     Catfish::db('users')
-                        ->where('id', Catfish::getSession('user_id'))
+                        ->where('id', $uid)
                         ->update([
                             'lastfatie' => $now,
                             'fatie' => Catfish::dbRaw('fatie+1'),
-                            'chengzhang' => Catfish::dbRaw('chengzhang+'.$chengzhang['post'])
+                            'jifen' => Catfish::dbRaw('jifen+'.$chengzhang['jifen']['post']),
+                            'chengzhang' => Catfish::dbRaw('chengzhang+'.$chengzhang['chengzhang']['post'])
                         ]);
+                    if($chengzhang['jifen']['post'] != 0){
+                        Catfish::db('points_book')->insert([
+                            'uid' => $uid,
+                            'zengjian' => $chengzhang['jifen']['post'],
+                            'booktime' => $now,
+                            'miaoshu' => Catfish::lang('Post')
+                        ]);
+                    }
                     Catfish::db('users_tongji')
                         ->where('uid', Catfish::getSession('user_id'))
                         ->update([
@@ -223,6 +247,18 @@ class Index extends CatfishCMS
                 exit();
             }
             else{
+                $jifenleixing = 0;
+                if(Catfish::hasPost('jifenleixing')){
+                    $jifenleixing = intval(Catfish::getPost('jifenleixing'));
+                }
+                $jifen = 0;
+                if(Catfish::hasPost('jifen')){
+                    $jifen = intval(Catfish::getPost('jifen'));
+                }
+                if($jifen < 0){
+                    echo Catfish::lang('Points cannot be negative');
+                    exit();
+                }
                 $zhengwen = Catfish::getPost('zhengwen', false);
                 if($forum['lianjie'] == 0){
                     $zhengwen = Catfish::removea($zhengwen);
@@ -297,7 +333,9 @@ class Index extends CatfishCMS
                             'review' => $review,
                             'tietype' => $tietype,
                             'annex' => $annex,
-                            'tu' => $tus
+                            'tu' => $tus,
+                            'jifenleixing' => $jifenleixing,
+                            'jifen' => $jifen
                         ]);
                         Catfish::db('tienr')->where('tid', $tid)->update([
                             'zhengwen' => $zhengwen,
@@ -363,7 +401,7 @@ class Index extends CatfishCMS
                 exit();
             }
         }
-        $tie = Catfish::db('tie')->where('id',$tid)->where('status',1)->field('id,uid,sid,biaoti,tietype,annex')->find();
+        $tie = Catfish::db('tie')->where('id',$tid)->where('status',1)->field('id,uid,sid,biaoti,tietype,annex,jifenleixing,jifen')->find();
         if($tie['uid'] != Catfish::getSession('user_id')){
             Catfish::allot('illegal', Catfish::lang('Your operation is illegal'));
             return $this->show(Catfish::lang('Modify the main post'), 'mymainpost', false, 'illegal');
@@ -1357,5 +1395,54 @@ class Index extends CatfishCMS
             return $post['zhengwen'];
         }
         return '';
+    }
+    public function myscores()
+    {
+        $this->checkUser();
+        $jifen = Catfish::db('users')->where('id', Catfish::getSession('user_id'))->field('jifen')->find();
+        Catfish::allot('jifen', $jifen['jifen']);
+        return $this->show(Catfish::lang('My scores'), 'myscores');
+    }
+    public function earnpoints()
+    {
+        $this->checkUser();
+        $mj = [
+            'login' => Catfish::lang('Log in'),
+            'post' => Catfish::lang('Send a post'),
+            'followup' => Catfish::lang('Follow the post'),
+            'reply' => Catfish::lang('Reply to the post'),
+            'access' => Catfish::lang('Visit the main post'),
+            'like' => Catfish::lang('Give it a like'),
+            'stepon' => Catfish::lang('Step on it'),
+            'flike' => Catfish::lang('Like the follow-up post'),
+            'fstepon' => Catfish::lang('Step on the following post'),
+            'collection' => Catfish::lang('Collection'),
+        ];
+        $growth = Catfish::db('chengzhang')->field('czname,jifen')->select();
+        foreach($growth as $key => $val){
+            $growth[$key]['czname'] = $mj[$val['czname']];
+        }
+        Catfish::allot('growth', $growth);
+        $jifen = Catfish::get('jifenduihuan');
+        if($jifen == false){
+            $jifen = 0;
+        }
+        Catfish::allot('jifenduihuan', $jifen);
+        Catfish::allot('openpay', Catfish::get('openpay'));
+        return $this->show(Catfish::lang('How to earn points'), 'earnpoints');
+    }
+    public function pointsbill()
+    {
+        $this->checkUser();
+        $data = Catfish::db('points_book')->where('uid', Catfish::getSession('user_id'))->field('id,zengjian,booktime,miaoshu')->order('id desc')->paginate(20);
+        Catfish::allot('pages', $data->render());
+        $datarr = $data->items();
+        foreach($datarr as $key => $val){
+            if($val['zengjian'] > 0){
+                $datarr[$key]['zengjian'] = '+' . $val['zengjian'];
+            }
+        }
+        Catfish::allot('data', $datarr);
+        return $this->show(Catfish::lang('Points bill'), 'pointsbill');
     }
 }

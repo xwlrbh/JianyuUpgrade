@@ -45,6 +45,67 @@ class Index extends CatfishCMS
     }
     public function post($find = 0)
     {
+        if(Catfish::hasPost('act')){
+            $act = Catfish::getPost('act');
+            if($act == 'paypoints'){
+                $tid = intval(Catfish::getPost('pid'));
+                $uid = Catfish::getSession('user_id');
+                $tie = Catfish::db('tie')->where('id', $tid)->field('uid,jifen')->limit(1)->find();
+                $user = Catfish::db('users')->where('id', $uid)->field('jifen')->limit(1)->find();
+                $paid = Catfish::db('tie_jifen')->where('uid', $uid)->where('tid', $tid)->field('id')->limit(1)->find();
+                if(!empty($paid)){
+                    echo Catfish::lang('You have already paid points');
+                    exit();
+                }
+                if($tie['jifen'] > $user['jifen']){
+                    echo Catfish::lang('You don\'t have enough points') . '(' . Catfish::lang('Points balance') . ': ' . $user['jifen'] . ')';
+                    exit();
+                }
+                else{
+                    $now = Catfish::now();
+                    $tie['jifen'] = intval($tie['jifen']);
+                    Catfish::dbStartTrans();
+                    try{
+                        Catfish::db('users')
+                            ->where('id', $uid)
+                            ->update([
+                                'jifen' => Catfish::dbRaw('jifen-' . $tie['jifen'])
+                            ]);
+                        Catfish::db('users')
+                            ->where('id', $tie['uid'])
+                            ->update([
+                                'jifen' => Catfish::dbRaw('jifen+' . $tie['jifen'])
+                            ]);
+                        if($tie['jifen'] != 0){
+                            Catfish::db('points_book')->insert([
+                                'uid' => $uid,
+                                'zengjian' => - $tie['jifen'],
+                                'booktime' => $now,
+                                'miaoshu' => Catfish::lang('See posts to pay points')
+                            ]);
+                            Catfish::db('points_book')->insert([
+                                'uid' => $tie['uid'],
+                                'zengjian' => $tie['jifen'],
+                                'booktime' => $now,
+                                'miaoshu' => Catfish::lang('Posts received points')
+                            ]);
+                        }
+                        Catfish::db('tie_jifen')->insert([
+                            'tid' => $tid,
+                            'uid' => $uid
+                        ]);
+                        Catfish::dbCommit();
+                        echo 'ok';
+                        exit();
+                    } catch (\Exception $e) {
+                        Catfish::dbRollback();
+                        echo Catfish::lang('The operation failed, please try again later');
+                        exit();
+                    }
+                }
+            }
+            exit();
+        }
         $this->readydisplay();
         $sort = $this->getpost(intval($find));
         if(Catfish::hasGet('pulldown')){
@@ -197,8 +258,17 @@ class Index extends CatfishCMS
                         ->update([
                             'lastgentie' => $now,
                             'pinglun' => Catfish::dbRaw('pinglun+1'),
-                            'chengzhang' => Catfish::dbRaw('chengzhang+'.$chengzhang['followup'])
+                            'jifen' => Catfish::dbRaw('jifen+'.$chengzhang['jifen']['followup']),
+                            'chengzhang' => Catfish::dbRaw('chengzhang+'.$chengzhang['chengzhang']['followup'])
                         ]);
+                    if($chengzhang['jifen']['followup'] != 0){
+                        Catfish::db('points_book')->insert([
+                            'uid' => $uid,
+                            'zengjian' => $chengzhang['jifen']['followup'],
+                            'booktime' => $now,
+                            'miaoshu' => Catfish::lang('Follow posts')
+                        ]);
+                    }
                     Catfish::db('msort')
                         ->where('id', $tiefl['sid'])
                         ->update([
@@ -344,8 +414,17 @@ class Index extends CatfishCMS
                         ->where('id', $uid)
                         ->update([
                             'pinglun' => Catfish::dbRaw('pinglun+1'),
-                            'chengzhang' => Catfish::dbRaw('chengzhang+'.$chengzhang['reply'])
+                            'jifen' => Catfish::dbRaw('jifen+'.$chengzhang['jifen']['reply']),
+                            'chengzhang' => Catfish::dbRaw('chengzhang+'.$chengzhang['chengzhang']['reply'])
                         ]);
+                    if($chengzhang['jifen']['reply'] != 0){
+                        Catfish::db('points_book')->insert([
+                            'uid' => $uid,
+                            'zengjian' => $chengzhang['jifen']['reply'],
+                            'booktime' => $now,
+                            'miaoshu' => Catfish::lang('Reply to follow posts')
+                        ]);
+                    }
                     Catfish::db('msort')
                         ->where('id', $tiefl['sid'])
                         ->update([
@@ -413,7 +492,8 @@ class Index extends CatfishCMS
                         ]);
                     Catfish::db('tie_zan')->insert([
                         'tid' => $tid,
-                        'uid' => $uid
+                        'uid' => $uid,
+                        'accesstime' => Catfish::now()
                     ]);
                     Catfish::dbCommit();
                 } catch (\Exception $e) {
@@ -425,8 +505,17 @@ class Index extends CatfishCMS
                 Catfish::db('users')
                     ->where('id', $uid)
                     ->update([
-                        'chengzhang' => Catfish::dbRaw('chengzhang+'.$chengzhang['like'])
+                        'jifen' => Catfish::dbRaw('jifen+'.$chengzhang['jifen']['like']),
+                        'chengzhang' => Catfish::dbRaw('chengzhang+'.$chengzhang['chengzhang']['like'])
                     ]);
+                if($chengzhang['jifen']['like'] != 0){
+                    Catfish::db('points_book')->insert([
+                        'uid' => $uid,
+                        'zengjian' => $chengzhang['jifen']['like'],
+                        'booktime' => Catfish::now(),
+                        'miaoshu' => Catfish::lang('Like')
+                    ]);
+                }
                 $post = Catfish::getCache('post_'.$tid);
                 if($post != false){
                     $post['zan'] ++ ;
@@ -464,7 +553,8 @@ class Index extends CatfishCMS
                         ]);
                     Catfish::db('tie_cai')->insert([
                         'tid' => $tid,
-                        'uid' => $uid
+                        'uid' => $uid,
+                        'accesstime' => Catfish::now()
                     ]);
                     Catfish::dbCommit();
                 } catch (\Exception $e) {
@@ -476,8 +566,17 @@ class Index extends CatfishCMS
                 Catfish::db('users')
                     ->where('id', $uid)
                     ->update([
-                        'chengzhang' => Catfish::dbRaw('chengzhang+'.$chengzhang['stepon'])
+                        'jifen' => Catfish::dbRaw('jifen+'.$chengzhang['jifen']['stepon']),
+                        'chengzhang' => Catfish::dbRaw('chengzhang+'.$chengzhang['chengzhang']['stepon'])
                     ]);
+                if($chengzhang['jifen']['stepon'] != 0){
+                    Catfish::db('points_book')->insert([
+                        'uid' => $uid,
+                        'zengjian' => $chengzhang['jifen']['stepon'],
+                        'booktime' => Catfish::now(),
+                        'miaoshu' => Catfish::lang('Dislike')
+                    ]);
+                }
                 $post = Catfish::getCache('post_'.$tid);
                 if($post != false){
                     $post['cai'] ++ ;
@@ -530,8 +629,17 @@ class Index extends CatfishCMS
                 Catfish::db('users')
                     ->where('id', $uid)
                     ->update([
-                        'chengzhang' => Catfish::dbRaw('chengzhang+'.$chengzhang['collection'])
+                        'jifen' => Catfish::dbRaw('jifen+'.$chengzhang['jifen']['collection']),
+                        'chengzhang' => Catfish::dbRaw('chengzhang+'.$chengzhang['chengzhang']['collection'])
                     ]);
+                if($chengzhang['jifen']['collection'] != 0){
+                    Catfish::db('points_book')->insert([
+                        'uid' => $uid,
+                        'zengjian' => $chengzhang['jifen']['collection'],
+                        'booktime' => Catfish::now(),
+                        'miaoshu' => Catfish::lang('Collect')
+                    ]);
+                }
                 $post = Catfish::getCache('post_'.$tid);
                 if($post != false){
                     $post['shoucang'] ++ ;
@@ -571,7 +679,8 @@ class Index extends CatfishCMS
                         ]);
                     Catfish::db('gentie_zan')->insert([
                         'cid' => $cid,
-                        'uid' => $uid
+                        'uid' => $uid,
+                        'accesstime' => Catfish::now()
                     ]);
                     Catfish::dbCommit();
                 } catch (\Exception $e) {
@@ -583,8 +692,17 @@ class Index extends CatfishCMS
                 Catfish::db('users')
                     ->where('id', $uid)
                     ->update([
-                        'chengzhang' => Catfish::dbRaw('chengzhang+'.$chengzhang['flike'])
+                        'jifen' => Catfish::dbRaw('jifen+'.$chengzhang['jifen']['flike']),
+                        'chengzhang' => Catfish::dbRaw('chengzhang+'.$chengzhang['chengzhang']['flike'])
                     ]);
+                if($chengzhang['jifen']['flike'] != 0){
+                    Catfish::db('points_book')->insert([
+                        'uid' => $uid,
+                        'zengjian' => $chengzhang['jifen']['flike'],
+                        'booktime' => Catfish::now(),
+                        'miaoshu' => Catfish::lang('Like to follow')
+                    ]);
+                }
                 $post = Catfish::getCache('postgentie_'.$tid.'_'.$subcname);
                 if($post != false){
                     foreach($post['tie'] as $key => $val){
@@ -629,7 +747,8 @@ class Index extends CatfishCMS
                         ]);
                     Catfish::db('gentie_cai')->insert([
                         'cid' => $cid,
-                        'uid' => $uid
+                        'uid' => $uid,
+                        'accesstime' => Catfish::now()
                     ]);
                     Catfish::dbCommit();
                 } catch (\Exception $e) {
@@ -641,8 +760,17 @@ class Index extends CatfishCMS
                 Catfish::db('users')
                     ->where('id', $uid)
                     ->update([
-                        'chengzhang' => Catfish::dbRaw('chengzhang+'.$chengzhang['fstepon'])
+                        'jifen' => Catfish::dbRaw('jifen+'.$chengzhang['jifen']['fstepon']),
+                        'chengzhang' => Catfish::dbRaw('chengzhang+'.$chengzhang['chengzhang']['fstepon'])
                     ]);
+                if($chengzhang['jifen']['fstepon'] != 0){
+                    Catfish::db('points_book')->insert([
+                        'uid' => $uid,
+                        'zengjian' => $chengzhang['jifen']['fstepon'],
+                        'booktime' => Catfish::now(),
+                        'miaoshu' => Catfish::lang('Dislike following posts')
+                    ]);
+                }
                 $post = Catfish::getCache('postgentie_'.$tid.'_'.$subcname);
                 if($post != false){
                     foreach($post['tie'] as $key => $val){
@@ -829,18 +957,36 @@ class Index extends CatfishCMS
         }
         if($pid > 0){
             Catfish::db('tie')
-                ->where('id', Catfish::getPost('pid'))
+                ->where('id', $pid)
                 ->update([
                     'yuedu' => Catfish::dbRaw('yuedu+1'),
                     'lastvisit' => Catfish::now()
                 ]);
             if($islog){
-                $chengzhang = Catfish::getGrowing();
-                Catfish::db('users')
-                    ->where('id', $uid)
-                    ->update([
-                        'chengzhang' => Catfish::dbRaw('chengzhang+'.$chengzhang['access'])
+                $access = Catfish::db('tie_access')->where('uid', $uid)->where('tid', $pid)->field('id')->limit(1)->find();
+                if(empty($access)){
+                    $now = Catfish::now();
+                    $chengzhang = Catfish::getGrowing();
+                    Catfish::db('users')
+                        ->where('id', $uid)
+                        ->update([
+                            'jifen' => Catfish::dbRaw('jifen+'.$chengzhang['jifen']['access']),
+                            'chengzhang' => Catfish::dbRaw('chengzhang+'.$chengzhang['chengzhang']['access'])
+                        ]);
+                    if($chengzhang['jifen']['access'] != 0){
+                        Catfish::db('points_book')->insert([
+                            'uid' => $uid,
+                            'zengjian' => $chengzhang['jifen']['access'],
+                            'booktime' => $now,
+                            'miaoshu' => Catfish::lang('Visit the main post')
+                        ]);
+                    }
+                    Catfish::db('tie_access')->insert([
+                        'tid' => $pid,
+                        'uid' => $uid,
+                        'accesstime' => $now
                     ]);
+                }
             }
         }
         $fkip = Catfish::ip(1);

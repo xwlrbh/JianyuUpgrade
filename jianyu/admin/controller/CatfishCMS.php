@@ -88,6 +88,7 @@ class CatfishCMS
                 Catfish::allot($val['name'], $val['value']);
             }
         }
+        Catfish::allot('openpay', Catfish::get('openpay'));
         Catfish::allot('remind', Catfish::differ($dom));
     }
     protected function show($title, $ugroup = 0, $option = '', $backstageMenu = '', $star = false, $template = null)
@@ -384,5 +385,85 @@ class CatfishCMS
         else{
             @unlink($folder);
         }
+    }
+    protected function alipayPost()
+    {
+        $rule = [
+            'appid' => 'require',
+            'merchantuid' => 'require',
+            'privatekey' => 'require'
+        ];
+        $msg = [
+            'appid.require' => Catfish::lang('AppId must be filled in'),
+            'merchantuid.require' => Catfish::lang('Merchant UID must be filled in'),
+            'privatekey.require' => Catfish::lang('Application private key must be filled in')
+        ];
+        $data = [
+            'appid' => Catfish::getPost('appid'),
+            'merchantuid' => Catfish::getPost('merchantuid'),
+            'privatekey' => Catfish::getPost('privatekey')
+        ];
+        return $this->validatePost($rule, $msg, $data);
+    }
+    protected function wechatPost()
+    {
+        $rule = [
+            'appid' => 'require',
+            'merchantuid' => 'require',
+            'privatekey' => 'require'
+        ];
+        $msg = [
+            'appid.require' => Catfish::lang('AppId must be filled in'),
+            'merchantuid.require' => Catfish::lang('Merchant UID must be filled in'),
+            'privatekey.require' => Catfish::lang('Application key must be filled in')
+        ];
+        $data = [
+            'appid' => Catfish::getPost('appid'),
+            'merchantuid' => Catfish::getPost('merchantuid'),
+            'privatekey' => Catfish::getPost('privatekey')
+        ];
+        return $this->validatePost($rule, $msg, $data);
+    }
+    protected function increasepointsPost()
+    {
+        $rule = [
+            'increase' => 'require|integer'
+        ];
+        $msg = [
+            'increase.require' => Catfish::lang('Input can not be empty'),
+            'increase.integer' => Catfish::lang('Only integers can be entered')
+        ];
+        $data = [
+            'increase' => Catfish::getPost('increase')
+        ];
+        return $this->validatePost($rule, $msg, $data);
+    }
+    protected function decreasepointsPost()
+    {
+        $rule = [
+            'decrease' => 'require|integer'
+        ];
+        $msg = [
+            'decrease.require' => Catfish::lang('Input can not be empty'),
+            'decrease.integer' => Catfish::lang('Only integers can be entered')
+        ];
+        $data = [
+            'decrease' => Catfish::getPost('decrease')
+        ];
+        return $this->validatePost($rule, $msg, $data);
+    }
+    protected function redemptionpointsPost()
+    {
+        $rule = [
+            'jifen' => 'require|integer'
+        ];
+        $msg = [
+            'jifen.require' => Catfish::lang('Input can not be empty'),
+            'jifen.integer' => Catfish::lang('Only integers can be entered')
+        ];
+        $data = [
+            'jifen' => Catfish::getPost('jifen')
+        ];
+        return $this->validatePost($rule, $msg, $data);
     }
 }

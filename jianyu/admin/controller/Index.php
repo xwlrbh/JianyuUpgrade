@@ -1090,13 +1090,15 @@ class Index extends CatfishCMS
                     'geshi' => $geshi,
                     'mingan' => Catfish::getPost('mingan'),
                     'preaudit' => Catfish::getPost('preaudit'),
-                    'fpreaudit' => Catfish::getPost('fpreaudit')
+                    'fpreaudit' => Catfish::getPost('fpreaudit'),
+                    'jifen' => Catfish::getPost('jifen'),
+                    'jifendj' => Catfish::getPost('jifendj')
                 ]);
             Catfish::removeCache('forumsettings');
             echo 'ok';
             exit();
         }
-        $forum = Catfish::db('forum')->where('id',1)->field('fujian,fujiandj,fujiandwn,tiezi,tupian,tupiandj,lianjie,lianjiedj,yanzhengzt,yanzhenggt,shichangzt,shichanggt,geshi,mingan,preaudit,fpreaudit')->find();
+        $forum = Catfish::db('forum')->where('id',1)->field('fujian,fujiandj,fujiandwn,tiezi,tupian,tupiandj,lianjie,lianjiedj,yanzhengzt,yanzhenggt,shichangzt,shichanggt,geshi,mingan,preaudit,fpreaudit,jifen,jifendj')->find();
         Catfish::allot('forum', $forum);
         $dengji = Catfish::db('dengji')->field('id,jibie,djname')->order('jibie asc')->select();
         foreach($dengji as $key => $val){
@@ -1190,7 +1192,7 @@ class Index extends CatfishCMS
             'fstepon' => Catfish::lang('Step on the following post'),
             'collection' => Catfish::lang('Collection'),
         ];
-        $growth = Catfish::db('chengzhang')->field('id,czname,chengzhang')->select();
+        $growth = Catfish::db('chengzhang')->field('id,czname,chengzhang,jifen')->select();
         $xh = 1;
         foreach($growth as $key => $val){
             $growth[$key]['xh'] = $xh++;
@@ -1204,6 +1206,21 @@ class Index extends CatfishCMS
         if(Catfish::isPost(3)){
             Catfish::db('chengzhang')->where('id', intval(Catfish::getPost('id')))->update([
                 'chengzhang' => intval(Catfish::getPost('zhi'))
+            ]);
+            Catfish::removeCache('growingup');
+            echo 'ok';
+            exit();
+        }
+        else{
+            echo Catfish::lang('Your operation is illegal');
+            exit();
+        }
+    }
+    public function jfzhi()
+    {
+        if(Catfish::isPost(3)){
+            Catfish::db('chengzhang')->where('id', intval(Catfish::getPost('id')))->update([
+                'jifen' => intval(Catfish::getPost('zhi'))
             ]);
             Catfish::removeCache('growingup');
             echo 'ok';
@@ -1283,6 +1300,171 @@ class Index extends CatfishCMS
         }
         Catfish::allot('jianyuThemes', $jianyuThemes);
         return $this->show(Catfish::lang('Theme switching'), 3, 'themeswitching');
+    }
+    public function alipay()
+    {
+        $this->checkUser();
+        if(Catfish::isPost(1)){
+            $data = $this->alipayPost();
+            if(!is_array($data)){
+                echo $data;
+                exit();
+            }
+            else{
+                $method = Catfish::getPost('signaturemethod');
+                $applicationpublickeyname = Catfish::getPost('applicationpublickeyname');
+                $applicationpublickeypath = Catfish::getPost('applicationpublickeypath');
+                $alipaypublickeyname = Catfish::getPost('alipaypublickeyname');
+                $alipaypublickeypath = Catfish::getPost('alipaypublickeypath');
+                $alipayrootname = Catfish::getPost('alipayrootname');
+                $alipayrootpath = Catfish::getPost('alipayrootpath');
+                $publickey = Catfish::getPost('alipaypublic');
+                if($method == 'certificate'){
+                    if(empty($applicationpublickeyname) || empty($applicationpublickeypath)){
+                        echo Catfish::lang('Application public key certificate must be uploaded');
+                        exit();
+                    }
+                    if(empty($alipaypublickeyname) || empty($alipaypublickeypath)){
+                        echo Catfish::lang('Alipay public key certificate must be uploaded');
+                        exit();
+                    }
+                    if(empty($alipayrootname) || empty($alipayrootpath)){
+                        echo Catfish::lang('Alipay root certificate must be uploaded');
+                        exit();
+                    }
+                }
+                elseif($method == 'publickey'){
+                    if(empty($publickey)){
+                        echo Catfish::lang('Alipay public key must be filled in');
+                        exit();
+                    }
+                }
+                $alipay = [
+                    'appid' => $data['appid'],
+                    'merchantuid' => $data['merchantuid'],
+                    'privatekey' => $data['privatekey'],
+                    'signaturemethod' => $method,
+                    'apppublickeyname' => $applicationpublickeyname,
+                    'apppublickeypath' => $applicationpublickeypath,
+                    'alipaypublickeyname' => $alipaypublickeyname,
+                    'alipaypublickeypath' => $alipaypublickeypath,
+                    'alipayrootname' => $alipayrootname,
+                    'alipayrootpath' => $alipayrootpath,
+                    'publickey' => $publickey
+                ];
+                Catfish::set('alipay', serialize($alipay));
+                echo 'ok';
+                exit();
+            }
+        }
+        $alipay = Catfish::get('alipay');
+        if(!empty($alipay)){
+            $alipay = unserialize($alipay);
+        }
+        else{
+            $alipay = [
+                'appid' => '',
+                'merchantuid' => '',
+                'privatekey' => '',
+                'signaturemethod' => '',
+                'apppublickeyname' => '',
+                'apppublickeypath' => '',
+                'alipaypublickeyname' => '',
+                'alipaypublickeypath' => '',
+                'alipayrootname' => '',
+                'alipayrootpath' => '',
+                'publickey' => ''
+            ];
+        }
+        Catfish::allot('alipay', $alipay);
+        return $this->show(Catfish::lang('Payment configuration') . ' - ' . Catfish::lang('Alipay'), 1, 'alipay');
+    }
+    public function uploadcertificate()
+    {
+        if(Catfish::isPost(1)){
+            $file = request()->file(Catfish::getPost('file'));
+            if($file){
+                $validate = [
+                    'ext' => 'crt'
+                ];
+                $info = $file->validate($validate)->move(ROOT_PATH . 'data' . DS . 'crt', false);
+                if($info){
+                    $crtname = str_replace('\\','/',$info->getSaveName());
+                    $crtpath = 'data/crt/'.$crtname;
+                    $result = [
+                        'result' => 'ok',
+                        'name' => $crtname,
+                        'path' =>$crtpath,
+                        'message' => ''
+                    ];
+                    return json($result);
+                }else{
+                    $result = [
+                        'result' => 'error',
+                        'message' => Catfish::lang('Certificate upload failed') . ': ' . $file->getError()
+                    ];
+                    return json($result);
+                }
+            }
+            else{
+                $result = [
+                    'result' => 'error',
+                    'message' => Catfish::lang('No uploaded files')
+                ];
+                return json($result);
+            }
+        }
+        $result = [
+            'result' => 'error',
+            'message' => Catfish::lang('Your operation is illegal')
+        ];
+        return json($result);
+    }
+    public function wechat()
+    {
+        $this->checkUser();
+        if(Catfish::isPost(1)){
+            $data = $this->wechatPost();
+            if(!is_array($data)){
+                echo $data;
+                exit();
+            }
+            else{
+                $wechat = [
+                    'appid' => $data['appid'],
+                    'merchantuid' => $data['merchantuid'],
+                    'privatekey' => $data['privatekey'],
+                    'paymethod' => 'NATIVE',
+                    'openid' => '',
+                    'certname' => '',
+                    'certpath' => '',
+                    'keyname' => '',
+                    'keypath' => ''
+                ];
+                Catfish::set('wechat', serialize($wechat));
+                echo 'ok';
+                exit();
+            }
+        }
+        $wechat = Catfish::get('wechat');
+        if(!empty($wechat)){
+            $wechat = unserialize($wechat);
+        }
+        else{
+            $wechat = [
+                'appid' => '',
+                'merchantuid' => '',
+                'privatekey' => '',
+                'paymethod' => 'NATIVE',
+                'openid' => '',
+                'certname' => '',
+                'certpath' => '',
+                'keyname' => '',
+                'keypath' => ''
+            ];
+        }
+        Catfish::allot('wechat', $wechat);
+        return $this->show(Catfish::lang('Payment configuration') . ' - ' . Catfish::lang('WeChat'), 1, 'wechat');
     }
     public function _empty()
     {
@@ -1902,5 +2084,127 @@ class Index extends CatfishCMS
             return $post['zhengwen'];
         }
         return '';
+    }
+    public function userpoints()
+    {
+        $this->checkUser();
+        $utp = intval(Catfish::getSession('user_type'));
+        $yonghuming = Catfish::getGet('yonghuming');
+        if($yonghuming === false){
+            $yonghuming = '';
+        }
+        $query = [];
+        $catfish = Catfish::db('users')
+            ->where('id', '>', 1)
+            ->where('utype', '>', $utp);
+        if($yonghuming != ''){
+            $catfish = $catfish->where('yonghu','=',$yonghuming);
+            $query['yonghuming'] = $yonghuming;
+        }
+        $catfish = $catfish->field('id,yonghu,nicheng,email,jifen')
+            ->order('id desc')
+            ->paginate(20,false,[
+                'query' => $query
+            ]);
+        Catfish::allot('pages', $catfish->render());
+        $catfish = $catfish->items();
+        Catfish::allot('catfishcms', $catfish);
+        Catfish::allot('dengji', Catfish::getSession('user_type'));
+        return $this->show(Catfish::lang('User points'), 1, 'userpoints');
+    }
+    public function increasepoints()
+    {
+        if(Catfish::isPost(1)){
+            $data = $this->increasepointsPost();
+            if(!is_array($data)){
+                echo $data;
+                exit();
+            }
+            else{
+                Catfish::db('users')
+                    ->where('id', Catfish::getPost('uid'))
+                    ->update([
+                        'jifen' => Catfish::dbRaw('jifen+'.$data['increase'])
+                    ]);
+                if($data['increase'] != 0){
+                    Catfish::db('points_book')->insert([
+                        'uid' => Catfish::getPost('uid'),
+                        'zengjian' => $data['increase'],
+                        'booktime' => Catfish::now(),
+                        'miaoshu' => Catfish::lang('Administrator changes')
+                    ]);
+                }
+                echo 'ok';
+                exit();
+            }
+        }
+        else{
+            echo Catfish::lang('Your operation is illegal');
+            exit();
+        }
+    }
+    public function decreasepoints()
+    {
+        if(Catfish::isPost(1)){
+            $data = $this->decreasepointsPost();
+            if(!is_array($data)){
+                echo $data;
+                exit();
+            }
+            else{
+                $uid = Catfish::getPost('uid');
+                $jifen = Catfish::db('users')->where('id', $uid)->field('jifen')->find();
+                if($jifen['jifen'] < $data['decrease']){
+                    echo Catfish::lang('The reduced number of points cannot be greater than the existing number of points');
+                    exit();
+                }
+                Catfish::db('users')
+                    ->where('id', $uid)
+                    ->update([
+                        'jifen' => Catfish::dbRaw('jifen-'.$data['decrease'])
+                    ]);
+                if($data['decrease'] != 0){
+                    Catfish::db('points_book')->insert([
+                        'uid' => $uid,
+                        'zengjian' => - $data['decrease'],
+                        'booktime' => Catfish::now(),
+                        'miaoshu' => Catfish::lang('Administrator changes')
+                    ]);
+                }
+                echo 'ok';
+                exit();
+            }
+        }
+        else{
+            echo Catfish::lang('Your operation is illegal');
+            exit();
+        }
+    }
+    public function redemptionpoints()
+    {
+        $this->checkUser();
+        if(Catfish::isPost(1)){
+            $data = $this->redemptionpointsPost();
+            if(!is_array($data)){
+                echo $data;
+                exit();
+            }
+            else{
+                if($data['jifen'] < 1){
+                    echo Catfish::lang('The set points cannot be less than 1');
+                    exit();
+                }
+                Catfish::set('jifenduihuan', intval($data['jifen']));
+                echo 'ok';
+                exit();
+            }
+        }
+        $jifen = Catfish::get('jifenduihuan');
+        if($jifen === false){
+            $jifen = '';
+        }
+        Catfish::allot('catfishcms', $jifen);
+        Catfish::allot('openpay', Catfish::get('openpay'));
+        return $this->show(Catfish::lang('Redemption of points'), 1, 'redemptionpoints');
     }
 }

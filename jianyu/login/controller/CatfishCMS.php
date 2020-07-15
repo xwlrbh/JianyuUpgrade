@@ -102,10 +102,13 @@ class CatfishCMS
         $ip = Catfish::ip();
         $chengzhang = Catfish::getGrowing();
         $chengzhangplus = 0;
+        $jifenplus = 0;
         if(!$this->istoday($user['lastlogin'])){
-            $chengzhangplus = $chengzhang['login'];
+            $chengzhangplus = $chengzhang['chengzhang']['login'];
+            $jifenplus = $chengzhang['jifen']['login'];
         }
         $cz = $user['chengzhang'] + $chengzhangplus;
+        $jf = $user['jifen'] + $jifenplus;
         $dengji = $this->jibie($cz);
         Catfish::db('users')
             ->where('id', $user['id'])
@@ -114,6 +117,7 @@ class CatfishCMS
                 'lastonline' => Catfish::now(),
                 'loginip' => $ip,
                 'dengji' => $dengji,
+                'jifen' => $jf,
                 'chengzhang' => $cz
             ]);
         Catfish::db('users_tongji')
@@ -121,6 +125,14 @@ class CatfishCMS
             ->update([
                 'denglu' => Catfish::dbRaw('denglu+1')
             ]);
+        if($jifenplus != 0){
+            Catfish::db('points_book')->insert([
+                'uid' => $user['id'],
+                'zengjian' => $jifenplus,
+                'booktime' => Catfish::now(),
+                'miaoshu' => Catfish::lang('Log in')
+            ]);
+        }
         $this->yuetongji($user['id']);
         Catfish::setSession('user_id',$user['id']);
         Catfish::setSession('user',$data['user']);

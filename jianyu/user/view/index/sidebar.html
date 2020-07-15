@@ -27,6 +27,20 @@
         <a href="{:Url('user/Index/changepassword')}" class="nav-link{if $current == 'changepassword'} bg-info text-white{else /} text-dark{/if}">{:lang('Change Password')}</a>
     </nav>
 </div>
+<div class="text-secondary pt-3 clearfix">
+    <h6 class="float-left">
+        <i class="fa fa-money"></i>
+        {:lang('My wealth')}
+    </h6>
+    <i class="fa fa-minus-square-o float-right"></i>
+</div>
+<div>
+    <nav class="nav flex-column">
+        <a href="{:Url('user/Index/myscores')}" class="nav-link{if $current == 'myscores'} bg-info text-white{else /} text-dark{/if}">{:lang('My scores')}</a>
+        <a href="{:Url('user/Index/earnpoints')}" class="nav-link{if $current == 'earnpoints'} bg-info text-white{else /} text-dark{/if}">{:lang('Earn points')}</a>
+        <a href="{:Url('user/Index/pointsbill')}" class="nav-link{if $current == 'pointsbill'} bg-info text-white{else /} text-dark{/if}">{:lang('Points bill')}</a>
+    </nav>
+</div>
 {if condition="$isModerator == 1"}
 <div class="text-secondary pt-3 clearfix">
     <h6 class="float-left">

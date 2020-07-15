@@ -46,6 +46,21 @@
         {/if}
     </nav>
 </div>
+{if condition="$ugroup <= 1"}
+<div class="text-secondary pt-3 clearfix">
+    <h6 class="float-left">
+        <i class="fa fa-cubes"></i>
+        {:lang('Points management')}
+    </h6>
+    <i class="fa fa-minus-square-o float-right"></i>
+</div>
+<div>
+    <nav class="nav flex-column">
+        <a href="{:Url('admin/Index/userpoints')}" class="nav-link{if $option == 'userpoints'} bg-secondary text-white{else /} text-dark{/if}">{:lang('User points')}</a>
+        <a href="{:Url('admin/Index/redemptionpoints')}" class="nav-link{if $option == 'redemptionpoints'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Redemption of points')}</a>
+    </nav>
+</div>
+{/if}
 {if condition="$ugroup <= 3"}
 <div class="text-secondary pt-3 clearfix">
     <h6 class="float-left">
@@ -62,6 +77,21 @@
         <a href="{:Url('admin/Index/growthsetting')}" class="nav-link{if $option == 'growthsetting'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Growth setting')}</a>
         <a href="{:Url('admin/Index/smtpsettings')}" class="nav-link{if $option == 'smtpsettings'} bg-secondary text-white{else /} text-dark{/if}">{:lang('SMTP settings')}</a>
         <a href="{:Url('admin/Index/themeswitching')}" class="nav-link{if $option == 'themeswitching'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Theme switching')}</a>
+    </nav>
+</div>
+{/if}
+{if condition="$ugroup <= 1 && $openpay == 1"}
+<div class="text-secondary pt-3 clearfix">
+    <h6 class="float-left">
+        <i class="fa fa-money"></i>
+        {:lang('Payment configuration')}
+    </h6>
+    <i class="fa fa-minus-square-o float-right"></i>
+</div>
+<div>
+    <nav class="nav flex-column">
+        <a href="{:Url('admin/Index/alipay')}" class="nav-link{if $option == 'alipay'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Alipay')}</a>
+        <a href="{:Url('admin/Index/wechat')}" class="nav-link{if $option == 'wechat'} bg-secondary text-white{else /} text-dark{/if}">{:lang('WeChat')}</a>
     </nav>
 </div>
 {/if}

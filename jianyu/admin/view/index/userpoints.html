@@ -1,0 +1,74 @@
+{include file="index/header" /}
+<form method="get">
+    <div class="form-row align-items-center">
+        <div class="col-auto">
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text bg-light">{:lang('Username')}</div>
+                </div>
+                <input type="text" name="yonghuming" class="form-control">
+            </div>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-light mb-2">{:lang('Search')}</button>
+        </div>
+    </div>
+</form>
+<form>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th scope="col">{:lang('Username')}</th>
+            <th scope="col">{:lang('Nickname')}</th>
+            {if condition="$dengji <= 3"}
+            <th scope="col">{:lang('E-mail')}</th>
+            {/if}
+            <th scope="col">{:lang('Integral')}</th>
+            {if condition="$dengji <= 3"}
+            <th scope="col" class="text-center">{:lang('Increase points')}</th>
+            <th scope="col" class="text-center">{:lang('Decrease points')}</th>
+            {/if}
+        </tr>
+        </thead>
+        <tbody>
+        {volist name="catfishcms" id="vo"}
+        <tr>
+            <td>{$vo.yonghu}</td>
+            <td>{$vo.nicheng}</td>
+            {if condition="$dengji <= 3"}
+            <td>{$vo.email}</td>
+            {/if}
+            <td class="jifen">{$vo.jifen}</td>
+            {if condition="$dengji <= 3"}
+            <td class="text-center">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" placeholder="{:lang('Enter increase')}">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary rounded-0 border-0 increasepoints" type="button"><i class="fa fa-plus"></i></button>
+                        <input type="hidden" value="{$vo.id}">
+                    </div>
+                </div>
+            </td>
+            <td class="text-center">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" placeholder="{:lang('Input reduction')}">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary rounded-0 border-0 decreasepoints" type="button"><i class="fa fa-minus"></i></button>
+                        <input type="hidden" value="{$vo.id}">
+                    </div>
+                </div>
+            </td>
+            {/if}
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+</form>
+<nav>
+    <ul class="pagination justify-content-center my-4">
+        {$pages}
+    </ul>
+</nav>
+<script src="{$domain}public/common/js/list.js"></script>
+<script src="{$domain}public/common/js/userpoints.js"></script>
+{include file="index/footer" /}

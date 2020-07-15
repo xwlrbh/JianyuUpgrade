@@ -934,7 +934,7 @@ class Catfish
     {
         $forum = self::getCache('forumsettings');
         if($forum === false){
-            $forum = self::db('forum')->where('id',1)->field('fujian,fujiandj,fujiandwn,tiezi,tupian,tupiandj,lianjie,lianjiedj,yanzhengzt,yanzhenggt,shichangzt,shichanggt,geshi,mingan,preaudit,fpreaudit')->find();
+            $forum = self::db('forum')->where('id',1)->field('fujian,fujiandj,fujiandwn,tiezi,tupian,tupiandj,lianjie,lianjiedj,yanzhengzt,yanzhenggt,shichangzt,shichanggt,geshi,mingan,preaudit,fpreaudit,jifen,jifendj')->find();
             self::setCache('forumsettings',$forum,86400);
         }
         return $forum;
@@ -969,10 +969,14 @@ class Catfish
     {
         $growing = self::getCache('growingup');
         if($growing === false){
-            $growing = [];
+            $growing = [
+                'chengzhang' => [],
+                'jifen' => []
+            ];
             $growingarr = self::db('chengzhang')->select();
             foreach($growingarr as $key => $val){
-                $growing[$val['czname']] = $val['chengzhang'];
+                $growing['chengzhang'][$val['czname']] = $val['chengzhang'];
+                $growing['jifen'][$val['czname']] = $val['jifen'];
             }
             self::setCache('growingup',$growing,86400);
         }

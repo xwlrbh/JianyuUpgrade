@@ -9,6 +9,7 @@
             <th scope="col">{:lang('Serial number')}</th>
             <th scope="col">{:lang('Trigger event')}</th>
             <th scope="col">{:lang('Increase growth value')}</th>
+            <th scope="col">{:lang('Integral')}</th>
         </tr>
         </thead>
         <tbody id="chengzhangtr">
@@ -19,6 +20,11 @@
             <td>
                 <div class="form-group">
                     <input type="text" data-id="{$vo.id}" class="form-control-plaintext px-2 czzhi" value="{$vo.chengzhang}">
+                </div>
+            </td>
+            <td>
+                <div class="form-group">
+                    <input type="text" data-id="{$vo.id}" class="form-control-plaintext px-2 jfzhi" value="{$vo.jifen}">
                 </div>
             </td>
         </tr>

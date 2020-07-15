@@ -1,0 +1,26 @@
+{include file="index/header" /}
+<table class="table table-bordered table-hover">
+    <thead>
+    <tr>
+        <th scope="col" class="text-center">{:lang('Change time')}</th>
+        <th scope="col" class="text-center">{:lang('Points change')}</th>
+        <th scope="col" class="text-center">{:lang('Reason for change')}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {volist name="data" id="vo"}
+    <tr>
+        <td class="text-center">{$vo.booktime}</td>
+        <td class="text-center">{$vo.zengjian}</td>
+        <td>{$vo.miaoshu}</td>
+    </tr>
+    {/volist}
+    </tbody>
+</table>
+<nav>
+    <ul class="pagination justify-content-center mb-4">
+        {$pages}
+    </ul>
+</nav>
+<script src="{$domain}public/common/js/list.js"></script>
+{include file="index/footer" /}

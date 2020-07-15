@@ -22,7 +22,7 @@ class Index extends CatfishCMS
                 exit();
             }
             else{
-                $user = Catfish::db('users')->where('yonghu',$data['user'])->field('id,password,touxiang,lastlogin,randomcode,status,utype,mtype,dengji,chengzhang')->find();
+                $user = Catfish::db('users')->where('yonghu',$data['user'])->field('id,password,touxiang,lastlogin,randomcode,status,utype,mtype,dengji,jifen,chengzhang')->find();
                 if(empty($user))
                 {
                     echo Catfish::lang('Username error');
@@ -58,6 +58,12 @@ class Index extends CatfishCMS
                 Catfish::redirect('user/Index/index');
                 exit();
             }
+        }
+        if(Catfish::hasGet('jumpto')){
+            Catfish::allot('jumpto', Catfish::getGet('jumpto'));
+        }
+        else{
+            Catfish::allot('jumpto', '');
         }
         Catfish::allot('shouji', $this->mobile());
         $view = Catfish::output();
