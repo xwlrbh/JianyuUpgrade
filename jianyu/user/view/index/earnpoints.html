@@ -16,10 +16,13 @@
     {/volist}
     </tbody>
 </table>
-<p><a href="{:Url('user/Index/myscores')}" class="text-secondary">{:lang('See how many points I have')}</a></p>
-<p>{:lang('Other ways to earn points')}: </p>
-<p class="text-secondary">{:lang('Contact the administrator')}</p>
-{if condition="$openpay == 1"}
-<p class="text-secondary mb-5"><a href="{:Url('pay/Index/index')}?type=jifen" target="_blank" class="text-secondary">{:lang('Buy online')}</a> ( {:lang('One yuan redeemable points: ')}{$jifenduihuan} )</p>
-{/if}
+<div class="mb-5">
+    <p><a href="{:Url('user/Index/myscores')}" class="text-info">{:lang('See how many points I have')}</a></p>
+    <p>{:lang('Other ways to earn points')}: </p>
+    <p class="text-secondary">1. {:lang('Contact the administrator')}</p>
+    <p class="text-secondary">2. <a href="{:Url('user/Index/checkin')}" class="text-info">{:lang('Check in')}</a></p>
+    {if condition="$openpay == 1"}
+    <p class="text-secondary">3. <a href="{:Url('pay/Index/index')}?type=jifen" target="_blank" class="text-info">{:lang('Buy online')}</a> ( {:lang('One yuan redeemable points: ')}{$jifenduihuan} )</p>
+    {/if}
+</div>
 {include file="index/footer" /}

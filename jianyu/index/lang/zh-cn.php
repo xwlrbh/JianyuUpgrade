@@ -62,4 +62,7 @@ return [
     'Like to follow' => '对跟帖点赞',
     'Dislike following posts' => '对跟帖踩',
     'Visit the main post' => '访问主帖',
+    'You have checked in today, please check in tomorrow' => '您今天已经签到过了，请明天来签到',
+    'Check in' => '签到',
+    'Checked in' => '已签到',
 ];

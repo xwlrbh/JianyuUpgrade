@@ -1,0 +1,55 @@
+{include file="index/header" /}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div id="qiandao" class="mt-4">
+                <div class="text-center">
+                    <button type="button" class="btn btn-outline-secondary" disabled>{$benyue}</button>
+                </div>
+                <div class="text-center">
+                    {volist name="data" id="vo" key="k"}
+                    {if condition="($k - 1) % 7 == 0"}
+                    <br>
+                    {/if}
+                    {if condition="$vo.ri == '00'"}
+                    <button type="button" class="btn btn-light text-light" disabled>{$vo.ri}</button>
+                    {else /}
+                    <button type="button" class="btn{if condition="$vo.qiandao == 1"} btn-warning{elseif condition="$vo.jintian == 1"} btn-info{else /} btn-light{/if}{if condition="$vo.jintian == 1 && $vo.qiandao != 1"} keqiandao{/if}"{if condition="$vo.jintian != 1 || $vo.qiandao == 1"} disabled{/if}>{$vo.ri}</button>
+                    {/if}
+                    {/volist}
+                </div>
+                <div class="text-center mt-3">
+                    <button type="button" class="btn btn-light" id="shanggeyue"><i class="fa fa-arrow-left mr-2" aria-hidden="true"></i><span>{$shanggeyue}</span><i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+                    {if condition="$xiageyue != ''"}
+                    <button type="button" class="btn btn-light" id="xiageyue"><span>{$xiageyue}</span><i class="fa fa-refresh fa-spin ml-2 d-none"></i><i class="fa fa-arrow-right ml-2" aria-hidden="true"></i></button>
+                    {/if}
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <button type="button" class="btn btn-warning" disabled></button>
+                {:lang('Checked in')}
+                <button type="button" class="btn btn-info ml-3" disabled></button>
+                {:lang('Can check in')}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-0">
+                <div class="card-body">
+                    <h5 class="card-title">{:lang('Check in reward points')}</h5>
+                    <p class="card-text">{:lang('Check in to get points')}: {$qiandao.checkin}</p>
+                    <p class="card-text">{:lang('Check in consecutively to get extra points')}: {$qiandao.checkincontinu}</p>
+                    <p class="card-text">{:lang('Check in for 3 consecutive days to get extra points')}: {$qiandao.checkinthreedays}</p>
+                    <p class="card-text">{:lang('Check in for a week to get extra points')}: {$qiandao.checkinweek}</p>
+                    <p class="card-text">{:lang('Check in for two consecutive weeks to get extra points')}: {$qiandao.checkintwoweek}</p>
+                    <p class="card-text">{:lang('Check in for one consecutive month to get extra points')}: {$qiandao.checkinmonth}</p>
+                    <p class="card-text">{:lang('Check in for two consecutive months to get extra points')}: {$qiandao.checkintwomonth}</p>
+                    <p class="card-text">{:lang('Check in for three consecutive months to get extra points')}: {$qiandao.checkinthreemonth}</p>
+                    <p class="card-text">{:lang('Check in for half a year to get extra points')}: {$qiandao.checkinhalfyear}</p>
+                    <p class="card-text">{:lang('Check in for one consecutive year to get extra points')}: {$qiandao.checkinyear}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{$domain}public/common/js/user/checkin.js"></script>
+{include file="index/footer" /}

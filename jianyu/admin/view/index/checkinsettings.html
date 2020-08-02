@@ -1,0 +1,48 @@
+{include file="index/header" /}
+<form>
+    <div class="form-group mt-4">
+        <label>{:lang('Check in to get points')}</label>
+        <input type="number" name="checkin" min="0" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" value="{$qiandao.checkin}">
+    </div>
+    <div class="form-group mt-4">
+        <label>{:lang('Check in consecutively to get extra points')}</label>
+        <input type="number" name="checkincontinu" min="0" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" value="{$qiandao.checkincontinu}">
+    </div>
+    <div class="form-group mt-4">
+        <label>{:lang('Check in for 3 consecutive days to get extra points')}</label>
+        <input type="number" name="checkinthreedays" min="0" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" value="{$qiandao.checkinthreedays}">
+    </div>
+    <div class="form-group mt-4">
+        <label>{:lang('Check in for a week to get extra points')}</label>
+        <input type="number" name="checkinweek" min="0" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" value="{$qiandao.checkinweek}">
+    </div>
+    <div class="form-group mt-4">
+        <label>{:lang('Check in for two consecutive weeks to get extra points')}</label>
+        <input type="number" name="checkintwoweek" min="0" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" value="{$qiandao.checkintwoweek}">
+    </div>
+    <div class="form-group mt-4">
+        <label>{:lang('Check in for one consecutive month to get extra points')}</label>
+        <input type="number" name="checkinmonth" min="0" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" value="{$qiandao.checkinmonth}">
+    </div>
+    <div class="form-group mt-4">
+        <label>{:lang('Check in for two consecutive months to get extra points')}</label>
+        <input type="number" name="checkintwomonth" min="0" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" value="{$qiandao.checkintwomonth}">
+    </div>
+    <div class="form-group mt-4">
+        <label>{:lang('Check in for three consecutive months to get extra points')}</label>
+        <input type="number" name="checkinthreemonth" min="0" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" value="{$qiandao.checkinthreemonth}">
+    </div>
+    <div class="form-group mt-4">
+        <label>{:lang('Check in for half a year to get extra points')}</label>
+        <input type="number" name="checkinhalfyear" min="0" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" value="{$qiandao.checkinhalfyear}">
+    </div>
+    <div class="form-group mt-4">
+        <label>{:lang('Check in for one consecutive year to get extra points')}</label>
+        <input type="number" name="checkinyear" min="0" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" value="{$qiandao.checkinyear}">
+    </div>
+    <div class="text-center mb-5">
+        <input type="hidden" name="verification" value="{$verification}">
+        <button type="button" id="formsubmit" class="btn btn-info submit">{:lang('Submit')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+    </div>
+</form>
+{include file="index/footer" /}

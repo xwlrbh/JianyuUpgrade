@@ -1318,7 +1318,7 @@ class Index extends CatfishCMS
                 $alipaypublickeypath = Catfish::getPost('alipaypublickeypath');
                 $alipayrootname = Catfish::getPost('alipayrootname');
                 $alipayrootpath = Catfish::getPost('alipayrootpath');
-                $publickey = Catfish::getPost('alipaypublic');
+                $publickey = Catfish::getPost('alipaypublic', false);
                 if($method == 'certificate'){
                     if(empty($applicationpublickeyname) || empty($applicationpublickeypath)){
                         echo Catfish::lang('Application public key certificate must be uploaded');
@@ -2206,5 +2206,53 @@ class Index extends CatfishCMS
         Catfish::allot('catfishcms', $jifen);
         Catfish::allot('openpay', Catfish::get('openpay'));
         return $this->show(Catfish::lang('Redemption of points'), 1, 'redemptionpoints');
+    }
+    public function checkinsettings()
+    {
+        $this->checkUser();
+        if(Catfish::isPost(3)){
+            $data = $this->checkinsettingsPost();
+            if(!is_array($data)){
+                echo $data;
+                exit();
+            }
+            else{
+                $qiandao = [
+                    'checkin' => intval($data['checkin']),
+                    'checkincontinu' => intval($data['checkincontinu']),
+                    'checkinthreedays' => intval($data['checkinthreedays']),
+                    'checkinweek' => intval($data['checkinweek']),
+                    'checkintwoweek' => intval($data['checkintwoweek']),
+                    'checkinmonth' => intval($data['checkinmonth']),
+                    'checkintwomonth' => intval($data['checkintwomonth']),
+                    'checkinthreemonth' => intval($data['checkinthreemonth']),
+                    'checkinhalfyear' => intval($data['checkinhalfyear']),
+                    'checkinyear' => intval($data['checkinyear'])
+                ];
+                Catfish::set('qiandaojifen', serialize($qiandao));
+                echo 'ok';
+                exit();
+            }
+        }
+        $qiandao = Catfish::get('qiandaojifen');
+        if(empty($qiandao)){
+            $qiandao = [
+                'checkin' => 0,
+                'checkincontinu' => 0,
+                'checkinthreedays' => 0,
+                'checkinweek' => 0,
+                'checkintwoweek' => 0,
+                'checkinmonth' => 0,
+                'checkintwomonth' => 0,
+                'checkinthreemonth' => 0,
+                'checkinhalfyear' => 0,
+                'checkinyear' => 0,
+            ];
+        }
+        else{
+            $qiandao = unserialize($qiandao);
+        }
+        Catfish::allot('qiandao', $qiandao);
+        return $this->show(Catfish::lang('Check-in settings'), 3, 'checkinsettings');
     }
 }

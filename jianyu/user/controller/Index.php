@@ -1445,4 +1445,212 @@ class Index extends CatfishCMS
         Catfish::allot('data', $datarr);
         return $this->show(Catfish::lang('Points bill'), 'pointsbill');
     }
+    public function checkin()
+    {
+        $this->checkUser();
+        if(Catfish::hasPost('act')){
+            $benyue = Catfish::getPost('act');
+        }
+        else{
+            $benyue = date("Y-m");
+        }
+        $start = $benyue . '-01';
+        $startweek = date('w', strtotime($start));
+        $end = date("Y-m-d", strtotime($start . ' +1 month -1 day'));
+        $qiandao = Catfish::db('sign_in')->where('uid', Catfish::getSession('user_id'))->where('qiandao', 'between time', [$start,$end])->field('id,qiandao')->select();
+        $riqi = [];
+        $tmpArr = [];
+        foreach($qiandao as $key => $val){
+            $tmpArr[date('j', strtotime($val['qiandao']))] = $val['qiandao'];
+        }
+        if($startweek > 0){
+            for($i = 0; $i < $startweek; $i ++){
+                $riqi[] = [
+                    'ri' => '00',
+                    'qiandao' => 0,
+                    'jintian' => 0,
+                    'kong' => 1
+                ];
+            }
+        }
+        $ts = date('t', strtotime($start));
+        for($i = 1; $i <= $ts; $i ++){
+            $today = 0;
+            if($i == date('j') && $benyue == date("Y-m")){
+                $today = 1;
+            }
+            if($i < 10){
+                $ri = '0' . $i;
+            }
+            else{
+                $ri = $i;
+            }
+            if(isset($tmpArr[$i])){
+                $riqi[] = [
+                    'ri' => $ri,
+                    'qiandao' => 1,
+                    'jintian' => $today,
+                    'kong' => 0
+                ];
+            }
+            else{
+                $riqi[] = [
+                    'ri' => $ri,
+                    'qiandao' => 0,
+                    'jintian' => $today,
+                    'kong' => 0
+                ];
+            }
+        }
+        $alen = count($riqi) % 7;
+        if($alen > 0){
+            $alen = 7 - $alen;
+            for($i = 0; $i < $alen; $i ++){
+                $riqi[] = [
+                    'ri' => '00',
+                    'qiandao' => 0,
+                    'jintian' => 0,
+                    'kong' => 1
+                ];
+            }
+        }
+        Catfish::allot('data', $riqi);
+        $qiandao = Catfish::get('qiandaojifen');
+        if(empty($qiandao)){
+            $qiandao = [
+                'checkin' => 0,
+                'checkincontinu' => 0,
+                'checkinthreedays' => 0,
+                'checkinweek' => 0,
+                'checkintwoweek' => 0,
+                'checkinmonth' => 0,
+                'checkintwomonth' => 0,
+                'checkinthreemonth' => 0,
+                'checkinhalfyear' => 0,
+                'checkinyear' => 0,
+            ];
+        }
+        else{
+            $qiandao = unserialize($qiandao);
+        }
+        Catfish::allot('qiandao', $qiandao);
+        $prev = date("Y-m", strtotime($start . ' -1 month'));
+        Catfish::allot('shanggeyue', $prev);
+        if($benyue == date("Y-m")){
+            $xiageyue = '';
+        }
+        else{
+            $xiageyue = date("Y-m", strtotime($start . ' +1 month'));
+        }
+        Catfish::allot('xiageyue', $xiageyue);
+        Catfish::allot('benyue', $benyue);
+        if(Catfish::hasPost('act')){
+            return Catfish::output('checkins');
+        }
+        else{
+            return $this->show(Catfish::lang('Check in'), 'checkin');
+        }
+    }
+    public function qiandao()
+    {
+        if(Catfish::isPost(20)){
+            if(Catfish::hasPost('act') && Catfish::getPost('act') == 'qiandao'){
+                $uid = Catfish::getSession('user_id');
+                $today = date("Y-m-d");
+                $lianxu = 1;
+                $isqiandao = false;
+                $qiandao = Catfish::db('sign_in')->where('uid', $uid)->field('id,qiandao,lianxu')->order('id desc')->limit(1)->find();
+                if(!empty($qiandao)){
+                    if($qiandao['qiandao'] == $today){
+                        $isqiandao = true;
+                    }
+                    elseif($qiandao['qiandao'] == date('Y-m-d', strtotime('yesterday'))){
+                        $lianxu = $qiandao['lianxu'] + 1;
+                    }
+                }
+                if($isqiandao == false){
+                    Catfish::db('sign_in')->insert([
+                        'uid' => $uid,
+                        'qiandao' => $today,
+                        'lianxu' => $lianxu
+                    ]);
+                    Catfish::setCookie('qiandao_' . $uid, $today, 86400);
+                    $qiandao = Catfish::get('qiandaojifen');
+                    if(!empty($qiandao)){
+                        $qiandao = unserialize($qiandao);
+                        $jifen = intval($qiandao['checkin']);
+                        if($lianxu > 1){
+                            $jifen += intval($qiandao['checkincontinu']);
+                        }
+                        switch($lianxu){
+                            case 3:
+                                $jifen += intval($qiandao['checkinthreedays']);
+                                break;
+                            case 7:
+                                $jifen += intval($qiandao['checkinweek']);
+                                break;
+                            case 14:
+                                $jifen += intval($qiandao['checkintwoweek']);
+                                break;
+                            case 30:
+                                $jifen += intval($qiandao['checkinmonth']);
+                                break;
+                            case 60:
+                                $jifen += intval($qiandao['checkintwomonth']);
+                                break;
+                            case 90:
+                                $jifen += intval($qiandao['checkinthreemonth']);
+                                break;
+                            case 182:
+                                $jifen += intval($qiandao['checkinhalfyear']);
+                                break;
+                            case 365:
+                                $jifen += intval($qiandao['checkinyear']);
+                                break;
+                        }
+                        Catfish::db('users')
+                            ->where('id', $uid)
+                            ->update([
+                                'jifen' => Catfish::dbRaw('jifen+'.$jifen)
+                            ]);
+                        if($jifen != 0){
+                            Catfish::db('points_book')->insert([
+                                'uid' => $uid,
+                                'zengjian' => $jifen,
+                                'booktime' => Catfish::now(),
+                                'miaoshu' => Catfish::lang('Check in')
+                            ]);
+                        }
+                    }
+                    $result = [
+                        'result' => 'ok',
+                        'message' => ''
+                    ];
+                    return json($result);
+                }
+                else{
+                    Catfish::setCookie('qiandao_' . $uid, $today, 86400);
+                    $result = [
+                        'result' => 'checked',
+                        'message' => Catfish::lang('You have checked in today, please check in tomorrow')
+                    ];
+                    return json($result);
+                }
+            }
+            else{
+                $result = [
+                    'result' => 'error',
+                    'message' => Catfish::lang('Your operation is illegal')
+                ];
+                return json($result);
+            }
+        }
+        else{
+            $result = [
+                'result' => 'error',
+                'message' => Catfish::lang('Your operation is illegal')
+            ];
+            return json($result);
+        }
+    }
 }

@@ -109,6 +109,12 @@ class CatfishCMS
         if($isicon == 0){
             Catfish::allot('icon', $this->domain.'public/common/images/favicon.ico');
         }
+        $qiandao = 0;
+        $qiandaocookie = 'qiandao_' . Catfish::getSession('user_id');
+        if(Catfish::hasSession('user_id') && Catfish::hasCookie($qiandaocookie) && Catfish::getCookie($qiandaocookie) == date("Y-m-d")){
+            $qiandao = 1;
+        }
+        Catfish::allot('qiandao', $qiandao);
     }
     private function autologin()
     {
@@ -170,7 +176,8 @@ class CatfishCMS
                 'shanchugentie' => Catfish::url('index/Index/shanchugentie'),
                 'huifu' => Catfish::url('index/Index/huifu'),
                 'fatie' => Catfish::url('user/Index/index'),
-                'feedback' => Catfish::url('index/Index/feedback')
+                'feedback' => Catfish::url('index/Index/feedback'),
+                'qiandao' => Catfish::url('index/Index/qiandao')
             ];
             Catfish::setCache('urlarr_'.$order,$urlarr,$this->time);
         }

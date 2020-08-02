@@ -837,7 +837,7 @@ class Catfish
     }
     public static function filterJs($str)
     {
-        while(preg_match("/(<script)|(<style)|(<iframe)|(<frame)|(<object)|(<frameset)|(<bgsound)|(<video)|(<source)|(<audio)|(<track)|(<marquee)/i",$str) || preg_match("/(?<!\w)((onabort)|(onactivate)|(onafter)|(onbefore)|(onbegin)|(onblur)|(onbounce)|(oncellchange)|(onchange)|(onclick)|(oncont)|(oncopy)|(oncut)|(ondata)|(ondblclick)|(ondeactivate)|(ondrag)|(ondrop)|(onerror)|(onfilter)|(onfinish)|(onfocus)|(onhelp)|(onkey)|(onlayout)|(onlose)|(onload)|(onmouse)|(onmove)|(onpaste)|(onproperty)|(onready)|(onreset)|(onresize)|(onrow)|(onscroll)|(onselect)|(onstart)|(onstop)|(onseek)|(onsubmit)|(ontoggle)|(onunload))/i",$str))
+        while(preg_match("/(<script)|(<style)|(<iframe)|(<frame)|(<object)|(<frameset)|(<bgsound)|(<video)|(<source)|(<audio)|(<track)|(<marquee)/i",$str) || preg_match("/(?<!\w|\.|>)((onabort)|(onactivate)|(onafter)|(onbefore)|(onbegin)|(onblur)|(onbounce)|(oncellchange)|(onchange)|(onclick)|(oncont)|(oncopy)|(oncut)|(ondata)|(ondblclick)|(ondeactivate)|(ondrag)|(ondrop)|(onerror)|(onfilter)|(onfinish)|(onfocus)|(onhelp)|(onkey)|(onlayout)|(onlose)|(onload)|(onmouse)|(onmove)|(onpaste)|(onproperty)|(onready)|(onreset)|(onresize)|(onrow)|(onscroll)|(onselect)|(onstart)|(onstop)|(onseek)|(onsubmit)|(ontoggle)|(onunload))/i",$str))
         {
             $str = preg_replace(['/<script[\s\S]*?<\/script[\s]*>/i','/<style[\s\S]*?<\/style[\s]*>/i','/<iframe[\s\S]*?(<\/iframe|\/)[\s]*>/i','/<frame[\s\S]*?(<\/frame|\/)[\s]*>/i','/<object[\s\S]*?(<\/object|\/)[\s]*>/i','/<frameset[\s\S]*?(<\/frameset|\/)[\s]*>/i','/<bgsound[\s\S]*?(<\/bgsound|\/)[\s]*>/i','/<video[\s\S]*?(<\/video|\/)[\s]*>/i','/<source[\s\S]*?(<\/source|\/)[\s]*>/i','/<audio[\s\S]*?(<\/audio|\/)[\s]*>/i','/<track[\s\S]*?(<\/track|\/)[\s]*>/i','/<marquee[\s\S]*?(<\/marquee|\/)[\s]*>/i','/ on[A-Za-z]+[\s]*=[\s]*[\'|"][\s\S]*?[\'|"]/i','/ on[A-Za-z]+[\s]*=[\s]*[^>]+/i'],'',$str);
         }
@@ -956,6 +956,18 @@ class Catfish
             self::setCache('jianyuremind',$remind,360000);
         }
         return $remind;
+    }
+	public static function ccpm()
+    {
+        $ccpm = self::getCache('jianyuccpm');
+        if($ccpm === false){
+            $ccpm = self::curl('http://jianyuluntan.com/cpm/?dm='.self::get('domain').'&tl='.urlencode(self::get('title')).'&ct='.strtotime(self::get('creationtime')).'&vr='.urlencode(self::getConfig('jianyu.version')).'&nm='.urlencode(self::getConfig('jianyu.name')));
+            if($ccpm === false){
+                $ccpm = 0;
+            }
+            self::setCache('jianyuccpm',$ccpm,360000);
+        }
+        return $ccpm;
     }
     public static function getnm()
     {

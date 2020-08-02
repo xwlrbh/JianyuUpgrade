@@ -401,7 +401,7 @@ class CatfishCMS
         $data = [
             'appid' => Catfish::getPost('appid'),
             'merchantuid' => Catfish::getPost('merchantuid'),
-            'privatekey' => Catfish::getPost('privatekey')
+            'privatekey' => Catfish::getPost('privatekey', false)
         ];
         return $this->validatePost($rule, $msg, $data);
     }
@@ -420,7 +420,7 @@ class CatfishCMS
         $data = [
             'appid' => Catfish::getPost('appid'),
             'merchantuid' => Catfish::getPost('merchantuid'),
-            'privatekey' => Catfish::getPost('privatekey')
+            'privatekey' => Catfish::getPost('privatekey', false)
         ];
         return $this->validatePost($rule, $msg, $data);
     }
@@ -463,6 +463,56 @@ class CatfishCMS
         ];
         $data = [
             'jifen' => Catfish::getPost('jifen')
+        ];
+        return $this->validatePost($rule, $msg, $data);
+    }
+    protected function checkinsettingsPost()
+    {
+        $rule = [
+            'checkin' => 'require|integer',
+            'checkincontinu' => 'require|integer',
+            'checkinthreedays' => 'require|integer',
+            'checkinweek' => 'require|integer',
+            'checkintwoweek' => 'require|integer',
+            'checkinmonth' => 'require|integer',
+            'checkintwomonth' => 'require|integer',
+            'checkinthreemonth' => 'require|integer',
+            'checkinhalfyear' => 'require|integer',
+            'checkinyear' => 'require|integer'
+        ];
+        $msg = [
+            'checkin.require' => Catfish::lang('Input can not be empty'),
+            'checkin.integer' => Catfish::lang('Only integers can be entered'),
+            'checkincontinu.require' => Catfish::lang('Input can not be empty'),
+            'checkincontinu.integer' => Catfish::lang('Only integers can be entered'),
+            'checkinthreedays.require' => Catfish::lang('Input can not be empty'),
+            'checkinthreedays.integer' => Catfish::lang('Only integers can be entered'),
+            'checkinweek.require' => Catfish::lang('Input can not be empty'),
+            'checkinweek.integer' => Catfish::lang('Only integers can be entered'),
+            'checkintwoweek.require' => Catfish::lang('Input can not be empty'),
+            'checkintwoweek.integer' => Catfish::lang('Only integers can be entered'),
+            'checkinmonth.require' => Catfish::lang('Input can not be empty'),
+            'checkinmonth.integer' => Catfish::lang('Only integers can be entered'),
+            'checkintwomonth.require' => Catfish::lang('Input can not be empty'),
+            'checkintwomonth.integer' => Catfish::lang('Only integers can be entered'),
+            'checkinthreemonth.require' => Catfish::lang('Input can not be empty'),
+            'checkinthreemonth.integer' => Catfish::lang('Only integers can be entered'),
+            'checkinhalfyear.require' => Catfish::lang('Input can not be empty'),
+            'checkinhalfyear.integer' => Catfish::lang('Only integers can be entered'),
+            'checkinyear.require' => Catfish::lang('Input can not be empty'),
+            'checkinyear.integer' => Catfish::lang('Only integers can be entered')
+        ];
+        $data = [
+            'checkin' => Catfish::getPost('checkin'),
+            'checkincontinu' => Catfish::getPost('checkincontinu'),
+            'checkinthreedays' => Catfish::getPost('checkinthreedays'),
+            'checkinweek' => Catfish::getPost('checkinweek'),
+            'checkintwoweek' => Catfish::getPost('checkintwoweek'),
+            'checkinmonth' => Catfish::getPost('checkinmonth'),
+            'checkintwomonth' => Catfish::getPost('checkintwomonth'),
+            'checkinthreemonth' => Catfish::getPost('checkinthreemonth'),
+            'checkinhalfyear' => Catfish::getPost('checkinhalfyear'),
+            'checkinyear' => Catfish::getPost('checkinyear'),
         ];
         return $this->validatePost($rule, $msg, $data);
     }

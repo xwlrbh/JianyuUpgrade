@@ -29,6 +29,18 @@
 </div>
 <div class="text-secondary pt-3 clearfix">
     <h6 class="float-left">
+        <i class="fa fa-street-view"></i>
+        {:lang('My daily')}
+    </h6>
+    <i class="fa fa-minus-square-o float-right"></i>
+</div>
+<div>
+    <nav class="nav flex-column">
+        <a href="{:Url('user/Index/checkin')}" class="nav-link{if $current == 'checkin'} bg-info text-white{else /} text-dark{/if}">{:lang('Check in')}</a>
+    </nav>
+</div>
+<div class="text-secondary pt-3 clearfix">
+    <h6 class="float-left">
         <i class="fa fa-money"></i>
         {:lang('My wealth')}
     </h6>

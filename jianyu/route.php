@@ -34,5 +34,14 @@ return [
     'shanchugentie' => 'index/Index/shanchugentie',
     'feedback' => 'index/Index/feedback',
     'search/:find' => 'index/Index/search',
-    'search' => 'index/Index/search'
+    'search' => 'index/Index/search',
+    'qiandao' => 'index/Index/qiandao',
+    'pay' => 'pay/Index/index',
+    'alinotify' => 'pay/Index/alinotify',
+    'payreturn/:id' => 'pay/Index/payreturn',
+    'alipay/:id' => 'pay/Index/alipay',
+    'payinstall' => 'pay/Index/payinstall',
+    'wechat' => 'pay/Index/wechat',
+    'payqrcode' => 'pay/Index/payqrcode',
+    'wxnotify' => 'pay/Index/wxnotify'
 ];

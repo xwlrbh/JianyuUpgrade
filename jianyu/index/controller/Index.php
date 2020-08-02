@@ -1027,4 +1027,117 @@ class Index extends CatfishCMS
             Catfish::toError();
         }
     }
+    public function qiandao()
+    {
+        if(Catfish::hasSession('user_id')){
+            if(Catfish::hasPost('act'))
+            {
+                $act = Catfish::getPost('act');
+                if($act == 'qiandao'){
+                    $uid = Catfish::getSession('user_id');
+                    $today = date("Y-m-d");
+                    $lianxu = 1;
+                    $isqiandao = false;
+                    $qiandao = Catfish::db('sign_in')->where('uid', $uid)->field('id,qiandao,lianxu')->order('id desc')->limit(1)->find();
+                    if(!empty($qiandao)){
+                        if($qiandao['qiandao'] == $today){
+                            $isqiandao = true;
+                        }
+                        elseif($qiandao['qiandao'] == date('Y-m-d', strtotime('yesterday'))){
+                            $lianxu = $qiandao['lianxu'] + 1;
+                        }
+                    }
+                    if($isqiandao == false){
+                        Catfish::db('sign_in')->insert([
+                            'uid' => $uid,
+                            'qiandao' => $today,
+                            'lianxu' => $lianxu
+                        ]);
+                        Catfish::setCookie('qiandao_' . $uid, $today, 86400);
+                        $qiandao = Catfish::get('qiandaojifen');
+                        if(!empty($qiandao)){
+                            $qiandao = unserialize($qiandao);
+                            $jifen = intval($qiandao['checkin']);
+                            if($lianxu > 1){
+                                $jifen += intval($qiandao['checkincontinu']);
+                            }
+                            switch($lianxu){
+                                case 3:
+                                    $jifen += intval($qiandao['checkinthreedays']);
+                                    break;
+                                case 7:
+                                    $jifen += intval($qiandao['checkinweek']);
+                                    break;
+                                case 14:
+                                    $jifen += intval($qiandao['checkintwoweek']);
+                                    break;
+                                case 30:
+                                    $jifen += intval($qiandao['checkinmonth']);
+                                    break;
+                                case 60:
+                                    $jifen += intval($qiandao['checkintwomonth']);
+                                    break;
+                                case 90:
+                                    $jifen += intval($qiandao['checkinthreemonth']);
+                                    break;
+                                case 182:
+                                    $jifen += intval($qiandao['checkinhalfyear']);
+                                    break;
+                                case 365:
+                                    $jifen += intval($qiandao['checkinyear']);
+                                    break;
+                            }
+                            Catfish::db('users')
+                                ->where('id', $uid)
+                                ->update([
+                                    'jifen' => Catfish::dbRaw('jifen+'.$jifen)
+                                ]);
+                            if($jifen != 0){
+                                Catfish::db('points_book')->insert([
+                                    'uid' => $uid,
+                                    'zengjian' => $jifen,
+                                    'booktime' => Catfish::now(),
+                                    'miaoshu' => Catfish::lang('Check in')
+                                ]);
+                            }
+                        }
+                        $result = [
+                            'result' => 'ok',
+                            'message' => ''
+                        ];
+                        return json($result);
+                    }
+                    else{
+                        Catfish::setCookie('qiandao_' . $uid, $today, 86400);
+                        $result = [
+                            'result' => 'checked',
+                            'message' => Catfish::lang('You have checked in today, please check in tomorrow')
+                        ];
+                        return json($result);
+                    }
+                }
+                else{
+                    $result = [
+                        'result' => 'error',
+                        'message' => Catfish::lang('The operation failed, please try again later')
+                    ];
+                    return json($result);
+                }
+            }
+            else{
+                $result = [
+                    'result' => 'error',
+                    'message' => Catfish::lang('The operation failed, please try again later')
+                ];
+                return json($result);
+            }
+        }
+        else{
+            $result = [
+                'result' => 'nologin',
+                'message' => ''
+            ];
+            return json($result);
+        }
+    }
 }
