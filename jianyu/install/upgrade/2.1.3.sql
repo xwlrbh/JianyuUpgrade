@@ -1,0 +1,1 @@
+ALTER TABLE `jianyu_forum` ADD `kzleixing` VARCHAR( 50 ) NOT NULL DEFAULT '' AFTER `jifendj` ;

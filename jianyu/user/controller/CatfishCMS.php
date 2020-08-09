@@ -81,6 +81,13 @@ class CatfishCMS
                 }
                 Catfish::allot($val['name'], $val['value']);
             }
+            elseif($val['name'] == 'icon'){
+                $icon = Catfish::domain().'public/common/images/favicon.ico';
+                if(empty($val['value'])){
+                    $val['value'] = $icon;
+                }
+                Catfish::allot($val['name'], $val['value']);
+            }
             else
             {
                 Catfish::allot($val['name'], $val['value']);
@@ -119,12 +126,19 @@ class CatfishCMS
     {
         $tie_type = Catfish::getCache('tie_type');
         if($tie_type === false){
+            $lim = Catfish::iszero(Catfish::remind()) ? 2 : 3;
             $tie_type = Catfish::db('tietype')
                 ->field('id,tpname')
                 ->order('id asc')
+                ->limit($lim)
                 ->select();
             foreach($tie_type as $key => $val){
-                $tie_type[$key]['tpname'] = ucfirst($val['tpname']);
+                if(!empty($val['tpname'])){
+                    $tie_type[$key]['tpname'] = ucfirst($val['tpname']);
+                }
+                else{
+                    unset($tie_type[$key]);
+                }
             }
             Catfish::setCache('tie_type',$tie_type,1200);
         }
@@ -373,6 +387,7 @@ class CatfishCMS
             $leixing = [];
             $leixingarr = Catfish::db('tietype')
                 ->field('id,tpname')
+                ->limit(3)
                 ->select();
             foreach($leixingarr as $key => $val){
                 $leixing[$val['id']] = Catfish::lang(ucfirst($val['tpname']));

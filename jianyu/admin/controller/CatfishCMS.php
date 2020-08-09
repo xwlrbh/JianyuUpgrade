@@ -83,6 +83,16 @@ class CatfishCMS
                 }
                 Catfish::allot($val['name'], $val['value']);
             }
+            elseif($val['name'] == 'icon'){
+                $icon = Catfish::domain().'public/common/images/favicon.ico';
+                if(empty($val['value'])){
+                    $val['value'] = $icon;
+                }
+                else{
+                    $val['value'] = Catfish::iszero(Catfish::remind()) ? $icon : $val['value'];
+                }
+                Catfish::allot($val['name'], $val['value']);
+            }
             else
             {
                 Catfish::allot($val['name'], $val['value']);

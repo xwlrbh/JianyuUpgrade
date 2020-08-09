@@ -391,4 +391,6 @@ return [
     'Check in for three consecutive months to get extra points' => '连续三月签到可获得额外积分',
     'Check in for half a year to get extra points' => '连续半年签到可获得额外积分',
     'Check in for one consecutive year to get extra points' => '连续一年签到可获得额外积分',
+    'Extension type name' => '扩展类型名',
+    'You can extend a post type' => '您可以扩展一个发帖类型',
 ];

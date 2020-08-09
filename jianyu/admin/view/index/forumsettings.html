@@ -165,6 +165,13 @@
             <option value="1"{if condition="$forum.fpreaudit eq 1"} selected{/if}>{:lang('Pre-review required')}</option>
         </select>
     </div>
+    {if condition="$extend eq 1"}
+    <div class="form-group">
+        <label>{:lang('Extension type name')}</label>
+        <input type="text" class="form-control" name="kzleixing" value="{$forum.kzleixing}">
+        <small class="form-text text-muted">{:lang('You can extend a post type')}</small>
+    </div>
+    {/if}
     <div class="form-group">
         <label>{:lang('Allow extensions to upload attachments')}</label>
         <textarea class="form-control" rows="5" name="geshi">{$forum.geshi}</textarea>

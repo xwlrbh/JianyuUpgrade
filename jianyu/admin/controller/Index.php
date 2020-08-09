@@ -161,8 +161,8 @@ class Index extends CatfishCMS
         if(Catfish::isPost(5)){
             $id = Catfish::getPost('id');
             $tmp = Catfish::db('tie')->where('id',$id)->field('uid,sid,fabushijian,tietype')->find();
-            $ttname = Catfish::db('tietype')->where('id',$tmp['tietype'])->field('tpname')->find();
-            $ttname = 'tj' . $ttname['tpname'];
+            $ttname = Catfish::db('tietype')->where('id',$tmp['tietype'])->field('bieming')->find();
+            $ttname = 'tj' . $ttname['bieming'];
             $yue = date('Ym', strtotime($tmp['fabushijian']));
             $tbnm = Catfish::prefix().'users_tongji_'.$yue;
             $istb = Catfish::hastable($tbnm);
@@ -1072,6 +1072,10 @@ class Index extends CatfishCMS
         if(Catfish::isPost(3)){
             $geshi = Catfish::getPost('geshi');
             $geshi = Catfish::toComma($geshi, true);
+            $kzleixing = '';
+            if(Catfish::hasPost('kzleixing')){
+                $kzleixing = Catfish::getPost('kzleixing');
+            }
             Catfish::db('forum')
                 ->where('id', 1)
                 ->update([
@@ -1092,14 +1096,34 @@ class Index extends CatfishCMS
                     'preaudit' => Catfish::getPost('preaudit'),
                     'fpreaudit' => Catfish::getPost('fpreaudit'),
                     'jifen' => Catfish::getPost('jifen'),
-                    'jifendj' => Catfish::getPost('jifendj')
+                    'jifendj' => Catfish::getPost('jifendj'),
+                    'kzleixing' => $kzleixing
                 ]);
+            $tietype = Catfish::db('tietype')->where('id',3)->field('id')->find();
+            if(empty($tietype) && $kzleixing != ''){
+                $bieming = 'kz' . strtolower(substr(md5(time()), 0, 6));
+                Catfish::db('tietype')->insert([
+                    'id' => 3,
+                    'tpname' => $kzleixing,
+                    'bieming' => $bieming
+                ]);
+                Catfish::dbExecute("ALTER TABLE `".Catfish::prefix()."users_tongji` ADD `tj{$bieming}` INT( 11 ) UNSIGNED NOT NULL DEFAULT '0';");
+                Catfish::dbExecute("ALTER TABLE `".Catfish::prefix()."msort` ADD `tj{$bieming}` INT( 11 ) UNSIGNED NOT NULL DEFAULT '0';");
+            }
+            else{
+                Catfish::db('tietype')->where('id',3)->update([
+                    'tpname' => $kzleixing
+                ]);
+            }
+            Catfish::removeCache('tie_type');
             Catfish::removeCache('forumsettings');
             echo 'ok';
             exit();
         }
-        $forum = Catfish::db('forum')->where('id',1)->field('fujian,fujiandj,fujiandwn,tiezi,tupian,tupiandj,lianjie,lianjiedj,yanzhengzt,yanzhenggt,shichangzt,shichanggt,geshi,mingan,preaudit,fpreaudit,jifen,jifendj')->find();
+        $forum = Catfish::db('forum')->where('id',1)->field('fujian,fujiandj,fujiandwn,tiezi,tupian,tupiandj,lianjie,lianjiedj,yanzhengzt,yanzhenggt,shichangzt,shichanggt,geshi,mingan,preaudit,fpreaudit,jifen,jifendj,kzleixing')->find();
         Catfish::allot('forum', $forum);
+        $extend = Catfish::iszero(Catfish::remind()) ? 0 : 1;
+        Catfish::allot('extend', $extend);
         $dengji = Catfish::db('dengji')->field('id,jibie,djname')->order('jibie asc')->select();
         foreach($dengji as $key => $val){
             if(!empty($val['djname'])){

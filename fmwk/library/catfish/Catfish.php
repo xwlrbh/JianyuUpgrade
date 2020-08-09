@@ -645,6 +645,13 @@ class Catfish
                 $domain = str_replace('://','://www.',$domain);
             }
         }
+        $isssl = Request::instance()->isSsl();
+        if($isssl && stripos($domain,'http://') !== false){
+            $domain = str_replace('http://','https://',$domain);
+        }
+        elseif(!$isssl && stripos($domain,'https://') !== false){
+            $domain = str_replace('https://','http://',$domain);
+        }
         return $domain;
     }
     public static function view($table, $field)

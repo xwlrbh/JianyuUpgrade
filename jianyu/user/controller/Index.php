@@ -83,8 +83,8 @@ class Index extends CatfishCMS
                 if(!empty($fujian)){
                     $annex = 1;
                 }
-                $ttname = Catfish::db('tietype')->where('id',$tietype)->field('tpname')->find();
-                $ttname = 'tj' . $ttname['tpname'];
+                $ttname = Catfish::db('tietype')->where('id',$tietype)->field('bieming')->find();
+                $ttname = 'tj' . $ttname['bieming'];
                 $this->newtongjitb();
                 $now = Catfish::now();
                 $chengzhang = Catfish::getGrowing();
@@ -157,7 +157,7 @@ class Index extends CatfishCMS
                     Catfish::dbCommit();
                 } catch (\Exception $e) {
                     Catfish::dbRollback();
-                    echo Catfish::lang('The operation failed, please try again later');
+                    echo Catfish::lang('The operation failed, please try again later') . $e->getMessage();
                     exit();
                 }
                 Catfish::tongji('zhutie');
@@ -305,15 +305,15 @@ class Index extends CatfishCMS
                 else{
                     $fujian = $ofujian;
                 }
-                $tieyptb = Catfish::db('tietype')->field('id, tpname')->select();
+                $tieyptb = Catfish::db('tietype')->field('id, bieming')->select();
                 $nttname = '';
                 $ottname = '';
                 foreach($tieyptb as $key => $val){
                     if($val['id'] == $tietype){
-                        $nttname = 'tj' . $val['tpname'];
+                        $nttname = 'tj' . $val['bieming'];
                     }
                     if($val['id'] == $tie['tietype']){
-                        $ottname = 'tj' . $val['tpname'];
+                        $ottname = 'tj' . $val['bieming'];
                     }
                 }
                 $tietop = Catfish::db('tie_top')->where('tid', $tid)->field('id,sid')->find();
@@ -513,8 +513,8 @@ class Index extends CatfishCMS
                 echo Catfish::lang('Your operation is illegal');
                 exit();
             }
-            $ttname = Catfish::db('tietype')->where('id',$tmp['tietype'])->field('tpname')->find();
-            $ttname = 'tj' . $ttname['tpname'];
+            $ttname = Catfish::db('tietype')->where('id',$tmp['tietype'])->field('bieming')->find();
+            $ttname = 'tj' . $ttname['bieming'];
             $yue = date('Ym', strtotime($tmp['fabushijian']));
             $tbnm = Catfish::prefix().'users_tongji_'.$yue;
             $istb = Catfish::hastable($tbnm);
@@ -934,8 +934,8 @@ class Index extends CatfishCMS
                 echo Catfish::lang('Your operation is illegal');
                 exit();
             }
-            $ttname = Catfish::db('tietype')->where('id',$tmp['tietype'])->field('tpname')->find();
-            $ttname = 'tj' . $ttname['tpname'];
+            $ttname = Catfish::db('tietype')->where('id',$tmp['tietype'])->field('bieming')->find();
+            $ttname = 'tj' . $ttname['bieming'];
             $yue = date('Ym', strtotime($tmp['fabushijian']));
             $tbnm = Catfish::prefix().'users_tongji_'.$yue;
             $istb = Catfish::hastable($tbnm);
