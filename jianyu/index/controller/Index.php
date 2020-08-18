@@ -92,7 +92,8 @@ class Index extends CatfishCMS
                         }
                         Catfish::db('tie_jifen')->insert([
                             'tid' => $tid,
-                            'uid' => $uid
+                            'uid' => $uid,
+                            'paytime' => $now
                         ]);
                         Catfish::dbCommit();
                         echo 'ok';

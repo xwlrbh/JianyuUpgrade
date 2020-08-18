@@ -41,6 +41,24 @@
 </div>
 <div class="text-secondary pt-3 clearfix">
     <h6 class="float-left">
+        <i class="fa fa-paw"></i>
+        {:lang('My footprint')}
+    </h6>
+    <i class="fa fa-minus-square-o float-right"></i>
+</div>
+<div>
+    <nav class="nav flex-column">
+        <a href="{:Url('user/Index/mycollection')}" class="nav-link{if $current == 'mycollection'} bg-info text-white{else /} text-dark{/if}">{:lang('My collection')}</a>
+        <a href="{:Url('user/Index/postsvisited')}" class="nav-link{if $current == 'postsvisited'} bg-info text-white{else /} text-dark{/if}">{:lang('Posts visited')}</a>
+        <a href="{:Url('user/Index/pointspaidposts')}" class="nav-link{if $current == 'pointspaidposts'} bg-info text-white{else /} text-dark{/if}">{:lang('Points paid posts')}</a>
+        <a href="{:Url('user/Index/likedposts')}" class="nav-link{if $current == 'likedposts'} bg-info text-white{else /} text-dark{/if}">{:lang('Liked posts')}</a>
+        <a href="{:Url('user/Index/dislikedpost')}" class="nav-link{if $current == 'dislikedpost'} bg-info text-white{else /} text-dark{/if}">{:lang('Disliked post')}</a>
+        <a href="{:Url('user/Index/likedfollow')}" class="nav-link{if $current == 'likedfollow'} bg-info text-white{else /} text-dark{/if}">{:lang('Liked follow')}</a>
+        <a href="{:Url('user/Index/dislikedfollow')}" class="nav-link{if $current == 'dislikedfollow'} bg-info text-white{else /} text-dark{/if}">{:lang('Disliked follow')}</a>
+    </nav>
+</div>
+<div class="text-secondary pt-3 clearfix">
+    <h6 class="float-left">
         <i class="fa fa-money"></i>
         {:lang('My wealth')}
     </h6>

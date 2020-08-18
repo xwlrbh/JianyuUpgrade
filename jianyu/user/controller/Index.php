@@ -1653,4 +1653,297 @@ class Index extends CatfishCMS
             return json($result);
         }
     }
+    public function mycollection()
+    {
+        $this->checkUser();
+        $catfish = Catfish::view('tie_favorites','id,tid,createtime')
+            ->view('tie','biaoti,annex,review,status','tie.id=tie_favorites.tid')
+            ->where('tie_favorites.uid',Catfish::getSession('user_id'))
+            ->order('tie_favorites.id desc')
+            ->paginate(20);
+        Catfish::allot('pages', $catfish->render());
+        $catfish = $catfish->items();
+        Catfish::allot('catfishcms', $catfish);
+        return $this->show(Catfish::lang('My collection'), 'mycollection');
+    }
+    public function delmycollection()
+    {
+        if(Catfish::isPost(20)){
+            $id = intval(Catfish::getPost('id'));
+            $uid = Catfish::getSession('user_id');
+            $favorites = Catfish::db('tie_favorites')
+                ->where('id', $id)
+                ->where('uid', $uid)
+                ->field('tid')
+                ->find();
+            if(empty($favorites)){
+                echo Catfish::lang('Your operation is illegal');
+                exit();
+            }
+            Catfish::dbStartTrans();
+            try{
+                Catfish::db('tie_favorites')
+                    ->where('id', $id)
+                    ->where('uid', $uid)
+                    ->delete();
+                Catfish::db('tie')
+                    ->where('id', $favorites['tid'])
+                    ->update([
+                        'shoucang' => Catfish::dbRaw('shoucang-1')
+                    ]);
+                Catfish::dbCommit();
+            } catch (\Exception $e) {
+                Catfish::dbRollback();
+                echo Catfish::lang('The operation failed, please try again later');
+                exit();
+            }
+            echo 'ok';
+            exit();
+        }
+        else{
+            echo Catfish::lang('Your operation is illegal');
+            exit();
+        }
+    }
+    public function likedposts()
+    {
+        $this->checkUser();
+        $catfish = Catfish::view('tie_zan','id,tid,accesstime')
+            ->view('tie','biaoti,annex,review,status','tie.id=tie_zan.tid')
+            ->where('tie_zan.uid',Catfish::getSession('user_id'))
+            ->order('tie_zan.id desc')
+            ->paginate(20);
+        Catfish::allot('pages', $catfish->render());
+        $catfish = $catfish->items();
+        Catfish::allot('catfishcms', $catfish);
+        return $this->show(Catfish::lang('Liked posts'), 'likedposts');
+    }
+    public function dellikedposts()
+    {
+        if(Catfish::isPost(20)){
+            $id = intval(Catfish::getPost('id'));
+            $uid = Catfish::getSession('user_id');
+            $favorites = Catfish::db('tie_zan')
+                ->where('id', $id)
+                ->where('uid', $uid)
+                ->field('tid')
+                ->find();
+            if(empty($favorites)){
+                echo Catfish::lang('Your operation is illegal');
+                exit();
+            }
+            Catfish::dbStartTrans();
+            try{
+                Catfish::db('tie_zan')
+                    ->where('id', $id)
+                    ->where('uid', $uid)
+                    ->delete();
+                Catfish::db('tie')
+                    ->where('id', $favorites['tid'])
+                    ->update([
+                        'zan' => Catfish::dbRaw('zan-1')
+                    ]);
+                Catfish::dbCommit();
+            } catch (\Exception $e) {
+                Catfish::dbRollback();
+                echo Catfish::lang('The operation failed, please try again later');
+                exit();
+            }
+            echo 'ok';
+            exit();
+        }
+        else{
+            echo Catfish::lang('Your operation is illegal');
+            exit();
+        }
+    }
+    public function dislikedpost()
+    {
+        $this->checkUser();
+        $catfish = Catfish::view('tie_cai','id,tid,accesstime')
+            ->view('tie','biaoti,annex,review,status','tie.id=tie_cai.tid')
+            ->where('tie_cai.uid',Catfish::getSession('user_id'))
+            ->order('tie_cai.id desc')
+            ->paginate(20);
+        Catfish::allot('pages', $catfish->render());
+        $catfish = $catfish->items();
+        Catfish::allot('catfishcms', $catfish);
+        return $this->show(Catfish::lang('Disliked post'), 'dislikedpost');
+    }
+    public function deldislikedpost()
+    {
+        if(Catfish::isPost(20)){
+            $id = intval(Catfish::getPost('id'));
+            $uid = Catfish::getSession('user_id');
+            $favorites = Catfish::db('tie_cai')
+                ->where('id', $id)
+                ->where('uid', $uid)
+                ->field('tid')
+                ->find();
+            if(empty($favorites)){
+                echo Catfish::lang('Your operation is illegal');
+                exit();
+            }
+            Catfish::dbStartTrans();
+            try{
+                Catfish::db('tie_cai')
+                    ->where('id', $id)
+                    ->where('uid', $uid)
+                    ->delete();
+                Catfish::db('tie')
+                    ->where('id', $favorites['tid'])
+                    ->update([
+                        'cai' => Catfish::dbRaw('cai-1')
+                    ]);
+                Catfish::dbCommit();
+            } catch (\Exception $e) {
+                Catfish::dbRollback();
+                echo Catfish::lang('The operation failed, please try again later');
+                exit();
+            }
+            echo 'ok';
+            exit();
+        }
+        else{
+            echo Catfish::lang('Your operation is illegal');
+            exit();
+        }
+    }
+    public function likedfollow()
+    {
+        $this->checkUser();
+        $catfish = Catfish::view('gentie_zan','id,accesstime')
+            ->view('tie_comments','status,content','tie_comments.id=gentie_zan.cid')
+            ->view('tie_comm_ontact','tid','tie_comm_ontact.cid=tie_comments.id')
+            ->where('gentie_zan.uid',Catfish::getSession('user_id'))
+            ->order('gentie_zan.id desc')
+            ->paginate(20);
+        Catfish::allot('pages', $catfish->render());
+        $catfish = $catfish->items();
+        Catfish::allot('catfishcms', $catfish);
+        return $this->show(Catfish::lang('Liked follow'), 'likedfollow');
+    }
+    public function dellikedfollow()
+    {
+        if(Catfish::isPost(20)){
+            $id = intval(Catfish::getPost('id'));
+            $uid = Catfish::getSession('user_id');
+            $favorites = Catfish::db('gentie_zan')
+                ->where('id', $id)
+                ->where('uid', $uid)
+                ->field('cid')
+                ->find();
+            if(empty($favorites)){
+                echo Catfish::lang('Your operation is illegal');
+                exit();
+            }
+            Catfish::dbStartTrans();
+            try{
+                Catfish::db('gentie_zan')
+                    ->where('id', $id)
+                    ->where('uid', $uid)
+                    ->delete();
+                Catfish::db('tie_comments')
+                    ->where('id', $favorites['cid'])
+                    ->update([
+                        'zan' => Catfish::dbRaw('zan-1')
+                    ]);
+                Catfish::dbCommit();
+            } catch (\Exception $e) {
+                Catfish::dbRollback();
+                echo Catfish::lang('The operation failed, please try again later');
+                exit();
+            }
+            echo 'ok';
+            exit();
+        }
+        else{
+            echo Catfish::lang('Your operation is illegal');
+            exit();
+        }
+    }
+    public function dislikedfollow()
+    {
+        $this->checkUser();
+        $catfish = Catfish::view('gentie_cai','id,accesstime')
+            ->view('tie_comments','status,content','tie_comments.id=gentie_cai.cid')
+            ->view('tie_comm_ontact','tid','tie_comm_ontact.cid=tie_comments.id')
+            ->where('gentie_cai.uid',Catfish::getSession('user_id'))
+            ->order('gentie_cai.id desc')
+            ->paginate(20);
+        Catfish::allot('pages', $catfish->render());
+        $catfish = $catfish->items();
+        Catfish::allot('catfishcms', $catfish);
+        return $this->show(Catfish::lang('Disliked follow'), 'dislikedfollow');
+    }
+    public function deldislikedfollow()
+    {
+        if(Catfish::isPost(20)){
+            $id = intval(Catfish::getPost('id'));
+            $uid = Catfish::getSession('user_id');
+            $favorites = Catfish::db('gentie_cai')
+                ->where('id', $id)
+                ->where('uid', $uid)
+                ->field('cid')
+                ->find();
+            if(empty($favorites)){
+                echo Catfish::lang('Your operation is illegal');
+                exit();
+            }
+            Catfish::dbStartTrans();
+            try{
+                Catfish::db('gentie_cai')
+                    ->where('id', $id)
+                    ->where('uid', $uid)
+                    ->delete();
+                Catfish::db('tie_comments')
+                    ->where('id', $favorites['cid'])
+                    ->update([
+                        'cai' => Catfish::dbRaw('cai-1')
+                    ]);
+                Catfish::dbCommit();
+            } catch (\Exception $e) {
+                Catfish::dbRollback();
+                echo Catfish::lang('The operation failed, please try again later');
+                exit();
+            }
+            echo 'ok';
+            exit();
+        }
+        else{
+            echo Catfish::lang('Your operation is illegal');
+            exit();
+        }
+    }
+    public function pointspaidposts()
+    {
+        $this->checkUser();
+        $catfish = Catfish::view('tie_jifen','id,tid,paytime')
+            ->view('tie','biaoti,annex,review,status','tie.id=tie_jifen.tid')
+            ->where('tie_jifen.uid',Catfish::getSession('user_id'))
+            ->order('tie_jifen.id desc')
+            ->paginate(20);
+        Catfish::allot('pages', $catfish->render());
+        $catfish = $catfish->items();
+        foreach($catfish as $key => $val){
+            if($val['paytime'] == '2000-01-01 00:00:00'){
+                $catfish[$key]['paytime'] = Catfish::lang('Nnknown');
+            }
+        }
+        Catfish::allot('catfishcms', $catfish);
+        return $this->show(Catfish::lang('Points paid posts'), 'pointspaidposts');
+    }
+    public function postsvisited()
+    {
+        $this->checkUser();
+        $catfish = Catfish::view('tie_access','id,tid,accesstime')
+            ->view('tie','biaoti,annex,review,status','tie.id=tie_access.tid')
+            ->where('tie_access.uid',Catfish::getSession('user_id'))
+            ->order('tie_access.id desc')
+            ->paginate(20);
+        Catfish::allot('pages', $catfish->render());
+        $catfish = $catfish->items();
+        Catfish::allot('catfishcms', $catfish);
+        return $this->show(Catfish::lang('Posts visited'), 'postsvisited');
+    }
 }

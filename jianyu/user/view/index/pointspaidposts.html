@@ -1,0 +1,26 @@
+{include file="index/header" /}
+<form>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col">{:lang('Title')}</th>
+            <th scope="col">{:lang('Payment time')}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name="catfishcms" id="vo"}
+        <tr>
+            <td>{if condition="$vo.review eq 0 || $vo.status eq 0"}{$vo.biaoti}<span class="ml-2 text-secondary">[{:lang('Deleted')}]</span>{else /}<a class="text-info" href="{:Url('index/Index/post',['find'=>$vo.tid])}" target="_blank">{$vo.biaoti}</a>{if condition="$vo.annex eq 1"}&nbsp;<i class="fa fa-paperclip text-info"></i>{/if}{/if}</td>
+            <td>{$vo.paytime}</td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+</form>
+<nav>
+    <ul class="pagination justify-content-center mb-4">
+        {$pages}
+    </ul>
+</nav>
+<script src="{$domain}public/common/js/list.js"></script>
+{include file="index/footer" /}
