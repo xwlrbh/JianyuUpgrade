@@ -41,6 +41,15 @@
         <div class="d-none" id="iconid">{$sort.icon}</div>
         <small class="form-text text-muted">{:lang('The icon can be displayed on the menu item, please enter the HTML code of the icon')}</small>
     </div>
+    <div class="form-group">
+        <label>{:lang('Image of the section')}</label>
+        <div>{if condition="$sort.image != ''"}<img src="{$domain}{$sort.image}" class="img-fluid">&nbsp;<a href="#!" class="text-muted" id="delimage" data-container="body" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="{:lang('Delete')}" data-id="{$sort.id}"><i class="fa fa-trash mr-1"></i>{:lang('Delete')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></a>{/if}</div>
+        <div class="custom-file">
+            <input type="file" class="custom-file-input" id="image" name="image">
+            <label class="custom-file-label" for="image" data-browse="{:lang('Browse')}">{:lang('Choose a picture')}</label>
+        </div>
+        <small class="form-text text-muted">{:lang('In order to ensure the front-end display effect, the width and height ratio of the pictures uploaded in each section should be as consistent as possible')}</small>
+    </div>
     <div class="form-group mt-4">
         <label>{:lang('Whether it is used for modules')}</label>
         <div class="custom-control custom-checkbox">
@@ -75,9 +84,14 @@
         <textarea name="description" class="form-control" rows="3">{$sort.description}</textarea>
     </div>
     <div class="text-center mb-5">
+        <input type="hidden" name="c" value="{$sort.id}">
         <input type="hidden" name="verification" value="{$verification}">
-        <button type="button" id="formsubmit" class="btn btn-info submit">{:lang('Submit')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+        <button type="button" id="formsubmit" class="btn btn-info">{:lang('Submit')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
     </div>
 </form>
+<div class="d-none" id="quedingshanchu">{:lang('Confirm to delete?')}</div>
+<div class="d-none" id="bukehuifu">{:lang('Are you sure you want to delete it? It cannot be recovered after deletion!')}</div>
+<script src="{$domain}public/common/js/jqueryupload.js"></script>
+<script src="{$domain}public/common/js/newclassification.js"></script>
 <script src="{$domain}public/common/js/modifyclassification.js"></script>
 {include file="index/footer" /}

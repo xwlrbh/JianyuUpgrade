@@ -1428,6 +1428,11 @@ class CatfishCMS
                 ->select();
             $modules = [];
             if(is_array($module) && count($module) > 0){
+                foreach($module as $key => $val){
+                    if(!empty($val['image'])){
+                        $module[$key]['image'] = Catfish::domain() . $val['image'];
+                    }
+                }
                 $module = Catfish::treeForHtml($module);
                 $mlen = count($module);
                 foreach($module as $key => $val){

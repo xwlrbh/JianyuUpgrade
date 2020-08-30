@@ -444,6 +444,20 @@ class Index extends CatfishCMS
                     echo Catfish::lang('The name of the section cannot contain a comma');
                     exit();
                 }
+                $image = '';
+                $file = request()->file('image');
+                if($file){
+                    $validate = [
+                        'ext' => 'jpg,png,gif,jpeg'
+                    ];
+                    $info = $file->validate($validate)->move(ROOT_PATH . 'data' . DS . 'uploads');
+                    if($info){
+                        $image = 'data/uploads/'.str_replace('\\','/',$info->getSaveName());
+                    }else{
+                        echo Catfish::lang('Section image upload failed') . ': ' . $file->getError();
+                        exit();
+                    }
+                }
                 $ismenu = Catfish::getPost('ismenu') == 'on' ? 1 : 0;
                 $ismodule = Catfish::getPost('ismodule') == 'on' ? 1 : 0;
                 $subclasses = Catfish::getPost('subclasses') == 'on' ? 1 : 0;
@@ -456,6 +470,7 @@ class Index extends CatfishCMS
                     'ismenu' => $ismenu,
                     'virtual' => $virtual,
                     'icon' => Catfish::getPost('icon', false),
+                    'image' => $image,
                     'ismodule' => $ismodule,
                     'subclasses' => $subclasses,
                     'parentid' => Catfish::getPost('parentid')
@@ -552,7 +567,16 @@ class Index extends CatfishCMS
     public function modifyclassification()
     {
         $this->checkUser();
-        $sid = Catfish::getGet('c');
+        if(Catfish::hasPost('c')){
+            $sid = Catfish::getGet('c');
+        }
+        elseif(Catfish::hasGet('c')){
+            $sid = Catfish::getGet('c');
+        }
+        else{
+            echo Catfish::lang('Your operation is illegal');
+            exit();
+        }
         if(Catfish::isPost(3)){
             $data = $this->newclassificationPost();
             if(!is_array($data)){
@@ -560,6 +584,32 @@ class Index extends CatfishCMS
                 exit();
             }
             else{
+                $oimage = Catfish::db('msort')->where('id',$sid)->field('image')->find();
+                $oimage = $oimage['image'];
+                $image = '';
+                $file = request()->file('image');
+                if($file){
+                    $validate = [
+                        'ext' => 'jpg,png,gif,jpeg'
+                    ];
+                    $info = $file->validate($validate)->move(ROOT_PATH . 'data' . DS . 'uploads');
+                    if($info){
+                        $image = 'data/uploads/'.str_replace('\\','/',$info->getSaveName());
+                    }else{
+                        echo Catfish::lang('Section image upload failed') . ': ' . $file->getError();
+                        exit();
+                    }
+                }
+                if(!empty($image)){
+                    if($image != $oimage){
+                        if(!empty($oimage) && Catfish::isDataPath($oimage)){
+                            @unlink(ROOT_PATH . str_replace('/', DS, $oimage));
+                        }
+                    }
+                }
+                else{
+                    $image = $oimage;
+                }
                 $ismenu = Catfish::getPost('ismenu') == 'on' ? 1 : 0;
                 $ismodule = Catfish::getPost('ismodule') == 'on' ? 1 : 0;
                 $subclasses = Catfish::getPost('subclasses') == 'on' ? 1 : 0;
@@ -572,6 +622,7 @@ class Index extends CatfishCMS
                     'ismenu' => $ismenu,
                     'virtual' => $virtual,
                     'icon' => Catfish::getPost('icon', false),
+                    'image' => $image,
                     'ismodule' => $ismodule,
                     'subclasses' => $subclasses,
                     'parentid' => Catfish::getPost('parentid')
@@ -2278,5 +2329,26 @@ class Index extends CatfishCMS
         }
         Catfish::allot('qiandao', $qiandao);
         return $this->show(Catfish::lang('Check-in settings'), 3, 'checkinsettings');
+    }
+    public function delimage()
+    {
+        if(Catfish::isPost(3)){
+            $id = Catfish::getPost('id');
+            $tmp = Catfish::db('msort')->where('id',$id)->field('image')->find();
+            Catfish::db('msort')
+                ->where('id', $id)
+                ->update([
+                    'image' => ''
+                ]);
+            if(Catfish::isDataPath($tmp['image'])){
+                @unlink(ROOT_PATH . str_replace('/', DS, $tmp['image']));
+            }
+            echo 'ok';
+            exit();
+        }
+        else{
+            echo Catfish::lang('Your operation is illegal');
+            exit();
+        }
     }
 }

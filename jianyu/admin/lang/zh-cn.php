@@ -393,4 +393,8 @@ return [
     'Check in for one consecutive year to get extra points' => '连续一年签到可获得额外积分',
     'Extension type name' => '扩展类型名',
     'You can extend a post type' => '您可以扩展一个发帖类型',
+    'Image of the section' => '版块图',
+    'Choose a picture' => '选择一个图片',
+    'In order to ensure the front-end display effect, the width and height ratio of the pictures uploaded in each section should be as consistent as possible' => '为了保证前端显示效果，各个版块上传的图片宽高比例尽量保持一致',
+    'Section image upload failed' => '版块图上传失败',
 ];
