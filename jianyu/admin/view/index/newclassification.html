@@ -40,46 +40,61 @@
         <input name="icon" type="text" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" placeholder="{:lang('Please enter ')}{:lang('Icon')}">
         <small class="form-text text-muted">{:lang('The icon can be displayed on the menu item, please enter the HTML code of the icon')}</small>
     </div>
-    <div class="form-group">
-        <label>{:lang('Image of the section')}</label>
-        <div class="custom-file">
-            <input type="file" class="custom-file-input" id="image" name="image">
-            <label class="custom-file-label" for="image" data-browse="{:lang('Browse')}">{:lang('Choose a picture')}</label>
-        </div>
-        <small class="form-text text-muted">{:lang('In order to ensure the front-end display effect, the width and height ratio of the pictures uploaded in each section should be as consistent as possible')}</small>
-    </div>
     <div class="form-group mt-4">
-        <label>{:lang('Whether it is used for modules')}</label>
+        <label>{:lang('Whether to use link')}</label>
         <div class="custom-control custom-checkbox">
-            <input name="ismodule" type="checkbox" class="custom-control-input" id="formodules">
-            <label class="custom-control-label" for="formodules">{:lang('Used for modules')}</label>
+            <input name="islink" type="checkbox" class="custom-control-input" id="islink">
+            <label class="custom-control-label" for="islink">{:lang('Use link')}</label>
         </div>
-        <small class="form-text text-muted">{:lang('Checked to be used for module generation')}</small>
+        <small class="form-text text-muted">{:lang('When checked, it will only serve as an external link to the menu')}</small>
     </div>
-    <div class="form-group mt-4">
-        <label>{:lang('Whether to include sub-blocks when used in a module')}</label>
-        <div class="custom-control custom-checkbox">
-            <input name="subclasses" type="checkbox" class="custom-control-input" id="subclasses">
-            <label class="custom-control-label" for="subclasses">{:lang('Include sub-blocks')}</label>
+    <div class="form-group mt-4 d-none" id="linkurl">
+        <label>{:lang('Link address')}</label>
+        <input name="linkurl" type="text" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" placeholder="{:lang('Please enter ')}{:lang('Link address')}">
+        <small class="form-text text-muted">{:lang('The link address starts with http:// or https://')}</small>
+    </div>
+    <div id="modulediv">
+        <div class="form-group">
+            <label>{:lang('Image of the section')}</label>
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="image" name="image">
+                <label class="custom-file-label" for="image" data-browse="{:lang('Browse')}">{:lang('Choose a picture')}</label>
+            </div>
+            <small class="form-text text-muted">{:lang('In order to ensure the front-end display effect, the width and height ratio of the pictures uploaded in each section should be as consistent as possible')}</small>
         </div>
-        <small class="form-text text-muted">{:lang('Checked to be used for module generation')}</small>
-    </div>
-    <div class="form-group mt-4">
-        <label>{:lang('Is it set to virtual block?')}</label>
-        <div class="custom-control custom-checkbox">
-            <input name="virtual" type="checkbox" class="custom-control-input" id="virtualblock">
-            <label class="custom-control-label" for="virtualblock">{:lang('Set to virtual block')}</label>
+        <div class="form-group mt-4">
+            <label>{:lang('Whether it is used for modules')}</label>
+            <div class="custom-control custom-checkbox">
+                <input name="ismodule" type="checkbox" class="custom-control-input" id="formodules">
+                <label class="custom-control-label" for="formodules">{:lang('Used for modules')}</label>
+            </div>
+            <small class="form-text text-muted">{:lang('Checked to be used for module generation')}</small>
         </div>
-        <small class="form-text text-muted">{:lang('Virtual section does not store posts')}</small>
-    </div>
-    <div class="form-group mt-4">
-        <label>{:lang('Keyword settings')}</label>
-        <input name="guanjianzi" type="text" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" placeholder="{:lang('Please enter ')}{:lang('Keyword')}">
-        <small class="form-text text-muted">{:lang('Separate keywords with commas')}</small>
-    </div>
-    <div class="form-group mt-4">
-        <label>{:lang('Section description')}</label>
-        <textarea name="description" class="form-control" rows="3"></textarea>
+        <div class="form-group mt-4">
+            <label>{:lang('Whether to include sub-blocks when used in a module')}</label>
+            <div class="custom-control custom-checkbox">
+                <input name="subclasses" type="checkbox" class="custom-control-input" id="subclasses">
+                <label class="custom-control-label" for="subclasses">{:lang('Include sub-blocks')}</label>
+            </div>
+            <small class="form-text text-muted">{:lang('Checked to be used for module generation')}</small>
+        </div>
+        <div class="form-group mt-4">
+            <label>{:lang('Is it set to virtual block?')}</label>
+            <div class="custom-control custom-checkbox">
+                <input name="virtual" type="checkbox" class="custom-control-input" id="virtualblock">
+                <label class="custom-control-label" for="virtualblock">{:lang('Set to virtual block')}</label>
+            </div>
+            <small class="form-text text-muted">{:lang('Virtual section does not store posts')}</small>
+        </div>
+        <div class="form-group mt-4">
+            <label>{:lang('Keyword settings')}</label>
+            <input name="guanjianzi" type="text" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" placeholder="{:lang('Please enter ')}{:lang('Keyword')}">
+            <small class="form-text text-muted">{:lang('Separate keywords with commas')}</small>
+        </div>
+        <div class="form-group mt-4">
+            <label>{:lang('Section description')}</label>
+            <textarea name="description" class="form-control" rows="3"></textarea>
+        </div>
     </div>
     <div class="text-center mb-5">
         <input type="hidden" name="verification" value="{$verification}">

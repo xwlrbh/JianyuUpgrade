@@ -170,7 +170,7 @@ class Index extends CatfishCMS
         $this->getTieType();
         $fenlei = Catfish::getCache('sort_id_sname_virtual_parentid');
         if($fenlei === false){
-            $fenlei = Catfish::getSort('msort', 'id,sname,virtual,parentid');
+            $fenlei = Catfish::getSort('msort', 'id,sname,virtual,parentid', '&nbsp;&nbsp;&nbsp;&nbsp;', ['islink', 0]);
             Catfish::setCache('sort_id_sname_virtual_parentid',$fenlei,3600);
         }
         $this->adddisabled($fenlei);
@@ -416,12 +416,17 @@ class Index extends CatfishCMS
         $this->getTieType();
         $fenlei = Catfish::getCache('sort_id_sname_virtual_parentid');
         if($fenlei === false){
-            $fenlei = Catfish::getSort('msort', 'id,sname,virtual,parentid');
+            $fenlei = Catfish::getSort('msort', 'id,sname,virtual,parentid', '&nbsp;&nbsp;&nbsp;&nbsp;', ['islink', 0]);
             Catfish::setCache('sort_id_sname_virtual_parentid',$fenlei,3600);
         }
         $this->adddisabled($fenlei);
         Catfish::allot('fenlei', $fenlei);
         Catfish::allot('forum', $forum);
+        $jumpto = '';
+        if(Catfish::hasGet('jumpto')){
+            $jumpto = Catfish::getGet('jumpto');
+        }
+        Catfish::allot('jumpto', $jumpto);
         return $this->show(Catfish::lang('Modify the main post'), 'mymainpost', true);
     }
     public function delannex()

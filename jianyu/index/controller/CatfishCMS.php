@@ -233,7 +233,7 @@ class CatfishCMS
         $caidan = Catfish::getCache('caidan_'.$sort);
         if($caidan === false){
             $caidan = Catfish::db('msort')
-                ->field('id,sname,bieming,ismenu,icon,parentid')
+                ->field('id,sname,bieming,ismenu,icon,islink,linkurl,parentid')
                 ->order('listorder asc,id asc')
                 ->select();
             if(is_array($caidan) && count($caidan) > 0){
@@ -249,7 +249,12 @@ class CatfishCMS
                             $caidan[$key]['parentid'] = $tmparr[$val['parentid']];
                         }
                         $caidan[$key]['name'] = empty($val['bieming']) ? $val['sname'] : $val['bieming'];
-                        $caidan[$key]['href'] = Catfish::url('index/Index/column',['find'=>$val['id']]);
+                        if($val['islink'] == 1){
+                            $caidan[$key]['href'] = $val['linkurl'];
+                        }
+                        else{
+                            $caidan[$key]['href'] = Catfish::url('index/Index/column',['find'=>$val['id']]);
+                        }
                         if($sort == $val['id']){
                             $caidan[$key]['active'] = 1;
                         }
@@ -259,6 +264,7 @@ class CatfishCMS
                         unset($caidan[$key]['sname']);
                         unset($caidan[$key]['bieming']);
                         unset($caidan[$key]['ismenu']);
+                        unset($caidan[$key]['linkurl']);
                         unset($caidan[$key]['level']);
                     }
                 }
@@ -487,7 +493,7 @@ class CatfishCMS
         if(!empty($post)){
             $modify = '';
             if(Catfish::hasSession('user_id') && Catfish::getSession('user_id') == $post['uid']){
-                $modify = Catfish::url('user/Index/modifymainpost') . '?c=' . $post['id'];
+                $modify = Catfish::url('user/Index/modifymainpost') . '?c=' . $post['id'] . '&jumpto=' . urlencode(Catfish::url('index/Index/post', ['find' => $find]));
             }
             $post['xiugai'] = $modify;
         }
@@ -1088,7 +1094,7 @@ class CatfishCMS
     {
         $getSortCache = Catfish::getCache('getsortcache_'.$field);
         if($getSortCache === false){
-            $getSortCache = Catfish::getSort('msort',$field);
+            $getSortCache = Catfish::getSort('msort',$field, '&nbsp;&nbsp;&nbsp;&nbsp;', ['islink', 0]);
             Catfish::tagCache('sortcache')->set('getsortcache_'.$field, $getSortCache, $this->time * 10);
         }
         return $getSortCache;

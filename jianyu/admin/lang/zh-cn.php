@@ -397,4 +397,12 @@ return [
     'Choose a picture' => '选择一个图片',
     'In order to ensure the front-end display effect, the width and height ratio of the pictures uploaded in each section should be as consistent as possible' => '为了保证前端显示效果，各个版块上传的图片宽高比例尽量保持一致',
     'Section image upload failed' => '版块图上传失败',
+    'Whether to use link' => '是否用于链接',
+    'Use link' => '用于链接',
+    'When checked, it will only serve as an external link to the menu' => '勾选后将只作为菜单的外部链接',
+    'The link address starts with http:// or https://' => '链接地址以http://或者https://开头',
+    'Link address must be filled' => '链接地址必须填写',
+    'Link address format error' => '链接地址格式错误',
+    'Can\'t change already used section to link' => '不能把已经使用的版块变更为链接',
+    'Link' => '链接',
 ];

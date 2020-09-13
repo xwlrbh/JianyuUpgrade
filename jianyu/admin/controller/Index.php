@@ -444,6 +444,20 @@ class Index extends CatfishCMS
                     echo Catfish::lang('The name of the section cannot contain a comma');
                     exit();
                 }
+                $ismodule = Catfish::getPost('ismodule') == 'on' ? 1 : 0;
+                $islink = Catfish::getPost('islink') == 'on' ? 1 : 0;
+                $linkurl = trim(Catfish::getPost('linkurl'));
+                if($islink == 1){
+                    if(empty($linkurl)){
+                        echo Catfish::lang('Link address must be filled');
+                        exit();
+                    }
+                    elseif(substr($linkurl, 0, 4) != 'http'){
+                        echo Catfish::lang('Link address format error');
+                        exit();
+                    }
+                    $ismodule = 0;
+                }
                 $image = '';
                 $file = request()->file('image');
                 if($file){
@@ -459,7 +473,6 @@ class Index extends CatfishCMS
                     }
                 }
                 $ismenu = Catfish::getPost('ismenu') == 'on' ? 1 : 0;
-                $ismodule = Catfish::getPost('ismodule') == 'on' ? 1 : 0;
                 $subclasses = Catfish::getPost('subclasses') == 'on' ? 1 : 0;
                 $virtual = Catfish::getPost('virtual') == 'on' ? 1 : 0;
                 $re = Catfish::db('msort')->insert([
@@ -471,6 +484,8 @@ class Index extends CatfishCMS
                     'virtual' => $virtual,
                     'icon' => Catfish::getPost('icon', false),
                     'image' => $image,
+                    'islink' => $islink,
+                    'linkurl' => $linkurl,
                     'ismodule' => $ismodule,
                     'subclasses' => $subclasses,
                     'parentid' => Catfish::getPost('parentid')
@@ -487,7 +502,7 @@ class Index extends CatfishCMS
                 exit();
             }
         }
-        Catfish::allot('fenlei', Catfish::getSort('msort'));
+        Catfish::allot('fenlei', Catfish::getSort('msort', 'id,sname,parentid', '&nbsp;&nbsp;&nbsp;&nbsp;', ['islink', 0]));
         return $this->show(Catfish::lang('New section'), 3, 'newclassification', '', true);
     }
     public function createdclassification()
@@ -499,7 +514,7 @@ class Index extends CatfishCMS
             echo 'ok';
             exit();
         }
-        $fenlei = Catfish::getSort('msort','id,sname,bieming,ismenu,ismodule,parentid,listorder','&#12288;', '', 'listorder asc');
+        $fenlei = Catfish::getSort('msort','id,sname,bieming,ismenu,islink,linkurl,ismodule,parentid,listorder','&#12288;', '', 'listorder asc');
         Catfish::allot('fenlei', $fenlei);
         return $this->show(Catfish::lang('Existing section'), 3, 'createdclassification');
     }
@@ -584,6 +599,33 @@ class Index extends CatfishCMS
                 exit();
             }
             else{
+                $ismodule = Catfish::getPost('ismodule') == 'on' ? 1 : 0;
+                $islink = Catfish::getPost('islink') == 'on' ? 1 : 0;
+                $linkurl = trim(Catfish::getPost('linkurl'));
+                if($islink == 1){
+                    if(empty($linkurl)){
+                        echo Catfish::lang('Link address must be filled');
+                        exit();
+                    }
+                    elseif(substr($linkurl, 0, 4) != 'http'){
+                        echo Catfish::lang('Link address format error');
+                        exit();
+                    }
+                    $hasplink = Catfish::db('msort')->where('parentid',$sid)->field('id')->find();
+                    if(!empty($hasplink)){
+                        echo Catfish::lang('Can\'t change already used section to link');
+                        exit();
+                    }
+                    $hastie = Catfish::db('tie')->where('sid',$sid)->field('id')->find();
+                    if(!empty($hastie)){
+                        echo Catfish::lang('Can\'t change already used section to link');
+                        exit();
+                    }
+                    $ismodule = 0;
+                }
+                else{
+                    $linkurl = '';
+                }
                 $oimage = Catfish::db('msort')->where('id',$sid)->field('image')->find();
                 $oimage = $oimage['image'];
                 $image = '';
@@ -611,7 +653,6 @@ class Index extends CatfishCMS
                     $image = $oimage;
                 }
                 $ismenu = Catfish::getPost('ismenu') == 'on' ? 1 : 0;
-                $ismodule = Catfish::getPost('ismodule') == 'on' ? 1 : 0;
                 $subclasses = Catfish::getPost('subclasses') == 'on' ? 1 : 0;
                 $virtual = Catfish::getPost('virtual') == 'on' ? 1 : 0;
                 $re = Catfish::db('msort')->where('id', $sid)->update([
@@ -623,6 +664,8 @@ class Index extends CatfishCMS
                     'virtual' => $virtual,
                     'icon' => Catfish::getPost('icon', false),
                     'image' => $image,
+                    'islink' => $islink,
+                    'linkurl' => $linkurl,
                     'ismodule' => $ismodule,
                     'subclasses' => $subclasses,
                     'parentid' => Catfish::getPost('parentid')
@@ -641,7 +684,7 @@ class Index extends CatfishCMS
         }
         $re = Catfish::db('msort')->where('id',$sid)->find();
         Catfish::allot('sort', $re);
-        Catfish::allot('fenlei', Catfish::getSortNoSelf('msort', $sid));
+        Catfish::allot('fenlei', Catfish::getSortNoSelf('msort', $sid, 'id,sname,parentid', '&nbsp;&nbsp;&nbsp;&nbsp;', ['islink', 0]));
         return $this->show(Catfish::lang('Modify section'), 3, 'createdclassification', '', true);
     }
     public function transferclassification()
@@ -707,7 +750,7 @@ class Index extends CatfishCMS
                 exit();
             }
         }
-        $fenlei = Catfish::getSort('msort');
+        $fenlei = Catfish::getSort('msort', 'id,sname,parentid', '&nbsp;&nbsp;&nbsp;&nbsp;', ['islink', 0]);
         Catfish::allot('fenlei', $fenlei);
         return $this->show(Catfish::lang('Transfer section'), 3, 'transferclassification');
     }
@@ -873,7 +916,7 @@ class Index extends CatfishCMS
         }
         Catfish::allot('catfishcms', $catfish);
         Catfish::allot('dengji', Catfish::getSession('user_type'));
-        $fenlei = Catfish::getSort('msort');
+        $fenlei = Catfish::getSort('msort', 'id,sname,parentid', '&nbsp;&nbsp;&nbsp;&nbsp;', ['islink', 0]);
         Catfish::allot('fenlei', $fenlei);
         return $this->show(Catfish::lang('Moderator'), 5, 'moderator');
     }

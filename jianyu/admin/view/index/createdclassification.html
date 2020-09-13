@@ -32,9 +32,13 @@
             </div>
         </td>
         <td class="text-center">
+            {if $vo.islink == 1}
+            <div><i class="fa fa-link text-secondary" data-container="body" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="{:lang('Link')}: {$vo.linkurl}" aria-hidden="true"></i></div>
+            {else /}
             <div class="custom-control custom-switch">
-                <input type="checkbox" id="ismodule_{$vo.id}" class="custom-control-input"{if $vo.ismodule == 1} checked{/if}><label class="custom-control-label" for="ismodule_{$vo.id}"></label>
+                <input type="checkbox" id="ismodule_{$vo.id}" class="custom-control-input"{if $vo.ismodule == 1} checked{/if}{if $vo.islink == 1} disabled{/if}><label class="custom-control-label" for="ismodule_{$vo.id}"></label>
             </div>
+            {/if}
         </td>
         <td class="text-center">
             <a class="text-info" href="{:Url('admin/Index/modifyclassification')}?c={$vo.id}"><i class="fa fa-edit"></i></a>
