@@ -294,6 +294,7 @@ class Index extends CatfishCMS
             $tid = intval(Catfish::getPost('tid'));
             $nicheng = Catfish::getPost('nicheng');
             $content = Catfish::getPost('content');
+            $content = str_replace(['&lt;', '&gt;'], ['<', '>'], $content);
             $createtime = Catfish::getPost('createtime');
             $chk = intval(Catfish::getPost('chk'));
             if($chk > 1){
