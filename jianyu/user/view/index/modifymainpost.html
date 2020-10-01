@@ -49,7 +49,7 @@
     {if condition="$forum.fujian eq 1"}
     <div class="form-group">
         <label>{:lang('Annex')}</label>
-        <div>{if condition="$tie.annex eq 1"}<i class="fa fa-paperclip text-info"></i>&nbsp;{$tie.fujian}&nbsp;<a href="#!" class="text-muted" id="delfujian" data-container="body" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="{:lang('Delete')}" data-id="{$tie.id}"><i class="fa fa-trash"></i><i class="fa fa-refresh fa-spin ml-2 d-none"></i></a>{/if}</div>
+        <div>{if condition="$tie.annex eq 1"}<i class="fa fa-paperclip text-info"></i>&nbsp;{$tie.fujianming}&nbsp;<a href="#!" class="text-muted" id="delfujian" data-container="body" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="{:lang('Delete')}" data-id="{$tie.id}"><i class="fa fa-trash"></i><i class="fa fa-refresh fa-spin ml-2 d-none"></i></a>{/if}</div>
         <div class="custom-file">
             <input type="file" class="custom-file-input" id="fujian" name="fujian">
             <label class="custom-file-label" for="fujian" data-browse="{:lang('Browse')}">{:lang('Select a file')}</label>

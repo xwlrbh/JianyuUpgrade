@@ -465,7 +465,7 @@ class CatfishCMS
         $post = Catfish::getCache($cachename);
         if($post === false){
             $post = Catfish::view('tie','id,uid,sid,guanjianzi,fabushijian,biaoti,zhaiyao,closecomment as guanbipinglun,isclose as jietie,lastvisit as zuijinfangwen,pinglunshu as gentieliang,yuedu,zan,cai,shoucang,cangtime as zuijinshoucang,istop as zhiding,recommended as tuijian,jingpin,tietype as leixing,annex as daifujian,jifenleixing,jifen')
-                ->view('tienr','laiyuan,zhengwen,fujian,fjsize as daxiao','tienr.tid=tie.id')
+                ->view('tienr','laiyuan,zhengwen,fujian,fujianming,fjsize as daxiao','tienr.tid=tie.id')
                 ->view('users','nicheng,touxiang,qianming,createtime as jiaru,lastlogin as zuijindenglu,lastonline as zuijinzaixian,dengji,fatie as uzhutie,pinglun as ugentie,jingpin as jingpinliang,chengzhang','users.id=tie.uid')
                 ->where('tie.id','=',$find)
                 ->where('tie.status','=',1)
@@ -935,11 +935,9 @@ class CatfishCMS
             $fjurl = Catfish::domain().$post['fujian'];
             $fjnm = end($tmpfj);
             $post['fujian'] = $fjurl;
-            $post['fujianming'] = $fjnm;
-            $post['fujianurl'] = '<a href="'.$fjurl.'" download="'.$fjnm.'">'.$fjnm.'</a>';
+            $post['fujianurl'] = '<a href="'.$fjurl.'" download="'.$fjnm.'">'.$post['fujianming'].'</a>';
         }
         else{
-            $post['fujianming'] = '';
             $post['fujianurl'] = '';
         }
         if($post['daxiao'] > 0){

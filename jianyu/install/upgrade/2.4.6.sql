@@ -1,0 +1,1 @@
+ALTER TABLE `jianyu_tienr` ADD `fujianming` VARCHAR( 200 ) NOT NULL DEFAULT '' AFTER `fujian` ;

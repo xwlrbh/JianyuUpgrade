@@ -64,6 +64,7 @@ class Index extends CatfishCMS
                     }
                 }
                 $fujian = '';
+                $name = '';
                 $annex = 0;
                 $size = 0;
                 $file = request()->file('fujian');
@@ -74,6 +75,7 @@ class Index extends CatfishCMS
                     $info = $file->validate($validate)->move(ROOT_PATH . 'data' . DS . 'annex');
                     if($info){
                         $size = $file->getInfo('size');
+                        $name = $file->getInfo('name');
                         $fujian = 'data/annex/'.str_replace('\\','/',$info->getSaveName());
                     }else{
                         echo Catfish::lang('Attachment upload failed') . ': ' . $file->getError();
@@ -115,6 +117,7 @@ class Index extends CatfishCMS
                         'tid' => $reid,
                         'zhengwen' => $zhengwen,
                         'fujian' => $fujian,
+                        'fujianming' => $name,
                         'fjsize' => $size
                     ]);
                     Catfish::db('users')
@@ -270,11 +273,14 @@ class Index extends CatfishCMS
                     }
                 }
                 $ofujian = '';
+                $oname = '';
                 if($tie['annex'] == 1){
-                    $tfj = Catfish::db('tienr')->where('tid',$tid)->field('fujian')->find();
+                    $tfj = Catfish::db('tienr')->where('tid',$tid)->field('fujian,fujianming')->find();
                     $ofujian = $tfj['fujian'];
+                    $oname = $tfj['fujianming'];
                 }
                 $fujian = '';
+                $name = '';
                 $annex = $tie['annex'];
                 $size = 0;
                 $file = request()->file('fujian');
@@ -285,6 +291,7 @@ class Index extends CatfishCMS
                     $info = $file->validate($validate)->move(ROOT_PATH . 'data' . DS . 'annex');
                     if($info){
                         $size = $file->getInfo('size');
+                        $name = $file->getInfo('name');
                         $fujian = 'data/annex/'.str_replace('\\','/',$info->getSaveName());
                     }else{
                         echo Catfish::lang('Attachment upload failed') . ': ' . $file->getError();
@@ -304,6 +311,7 @@ class Index extends CatfishCMS
                 }
                 else{
                     $fujian = $ofujian;
+                    $name = $oname;
                 }
                 $tieyptb = Catfish::db('tietype')->field('id, bieming')->select();
                 $nttname = '';
@@ -340,6 +348,7 @@ class Index extends CatfishCMS
                         Catfish::db('tienr')->where('tid', $tid)->update([
                             'zhengwen' => $zhengwen,
                             'fujian' => $fujian,
+                            'fujianming' => $name,
                             'fjsize' => $size
                         ]);
                         if($tie['tietype'] != $tietype){
@@ -406,7 +415,7 @@ class Index extends CatfishCMS
             Catfish::allot('illegal', Catfish::lang('Your operation is illegal'));
             return $this->show(Catfish::lang('Modify the main post'), 'mymainpost', false, 'illegal');
         }
-        $tienr = Catfish::db('tienr')->where('tid',$tid)->field('zhengwen,fujian')->find();
+        $tienr = Catfish::db('tienr')->where('tid',$tid)->field('zhengwen,fujian,fujianming')->find();
         $tienr['zhengwen'] = str_replace('&','&amp;',$tienr['zhengwen']);
         if(!empty($tienr['fujian'])){
             $tmparr = explode('/', $tienr['fujian']);
