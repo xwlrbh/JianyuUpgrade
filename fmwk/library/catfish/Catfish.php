@@ -1159,4 +1159,28 @@ class Catfish
     {
         return Request::instance()->has($name, 'post');
     }
+    public static function addIndex($path, $newdir = false)
+    {
+        $index = '<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>404</title>
+</head>
+<body>
+</body>
+</html>';
+        $file = str_replace(['\\', '/'], DS, $path);
+        if(stripos($file, ROOT_PATH) === false){
+            $file = ROOT_PATH . trim($file, DS);
+        }
+        else{
+            $file = rtrim($file, DS);
+        }
+        if($newdir && !is_dir($file)){
+            mkdir($file, 0777, true);
+        }
+        $file = $file . DS . 'index.html';
+        file_put_contents($file, $index);
+    }
 }

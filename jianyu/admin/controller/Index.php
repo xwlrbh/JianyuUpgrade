@@ -1779,10 +1779,10 @@ class Index extends CatfishCMS
             $bkstr = '-- 剑鱼论坛数据库备份' . PHP_EOL . '-- 生成日期：' . date('Y-m-d H: i: s') . PHP_EOL . '-- Table prefix: ' . $dbPrefix . PHP_EOL . $bkstr;
             $bkpath = date('Ymd');
             $bkname = date('Y-m-d_H-i-s') . '_' . md5(Catfish::getRandom() . ' ' . time() . ' ' . rand());
-            $bk = ROOT_PATH . 'data' . DS . 'dbbackup' . DS . $bkpath;
-            if(!is_dir($bk)){
-                mkdir($bk, 0777, true);
-            }
+            $bk = ROOT_PATH . 'data' . DS . 'dbbackup';
+            Catfish::addIndex($bk, true);
+            $bk = $bk . DS . $bkpath;
+            Catfish::addIndex($bk, true);
             $sqlf = $bkname.'.jyb';
             file_put_contents($bk.DS.$sqlf, gzcompress($bkstr));
             $dbrec = Catfish::get('dbbackup');
