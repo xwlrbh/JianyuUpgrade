@@ -78,6 +78,10 @@
         <a href="{:Url('admin/Index/checkinsettings')}" class="nav-link{if $option == 'checkinsettings'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Check-in settings')}</a>
         <a href="{:Url('admin/Index/smtpsettings')}" class="nav-link{if $option == 'smtpsettings'} bg-secondary text-white{else /} text-dark{/if}">{:lang('SMTP settings')}</a>
         <a href="{:Url('admin/Index/themeswitching')}" class="nav-link{if $option == 'themeswitching'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Theme switching')}</a>
+        {if condition="$themesetting == 1"}
+        <a href="{:Url('admin/Index/themesetting')}" class="nav-link{if $option == 'themesetting'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Theme setting')}</a>
+        {/if}
+        <a href="{:Url('admin/Index/pluginlist')}" class="nav-link{if $option == 'pluginlist'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Plugin list')}</a>
     </nav>
 </div>
 {/if}
@@ -93,6 +97,22 @@
     <nav class="nav flex-column">
         <a href="{:Url('admin/Index/alipay')}" class="nav-link{if $option == 'alipay'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Alipay')}</a>
         <a href="{:Url('admin/Index/wechat')}" class="nav-link{if $option == 'wechat'} bg-secondary text-white{else /} text-dark{/if}">{:lang('WeChat')}</a>
+    </nav>
+</div>
+{/if}
+{if condition="$hasPlugin > 0"}
+<div class="text-secondary pt-3 clearfix">
+    <h6 class="float-left">
+        <i class="fa fa-plug"></i>
+        {:lang('Plug-in')}
+    </h6>
+    <i class="fa fa-minus-square-o float-right"></i>
+</div>
+<div>
+    <nav class="nav flex-column">
+        {volist name="pluginItem" id="vo"}
+        <a href="{$vo.url}" class="nav-link{if $option == $vo.name} bg-secondary text-white{else /} text-dark{/if}">{$vo.alias}</a>
+        {/volist}
     </nav>
 </div>
 {/if}

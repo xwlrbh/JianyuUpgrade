@@ -96,6 +96,25 @@ class Index extends CatfishCMS
                 }
                 $tus = $this->extractPics($zhengwen);
                 $uid = Catfish::getSession('user_id');
+                $params = [
+                    'biaoti' => $data['biaoti'],
+                    'zhengwen' => $zhengwen,
+                    'tu' => $tus,
+                    'fujian' => $fujian
+                ];
+                $this->plantHook('publish', $params);
+                if(isset($params['biaoti'])){
+                    $data['biaoti'] = $params['biaoti'];
+                }
+                if(isset($params['zhengwen'])){
+                    $zhengwen = $params['zhengwen'];
+                }
+                if(isset($params['tu'])){
+                    $tus = $params['tu'];
+                }
+                if(isset($params['fujian'])){
+                    $fujian = $params['fujian'];
+                }
                 Catfish::dbStartTrans();
                 try{
                     $reid = Catfish::db('tie')->insertGetId([
@@ -332,6 +351,25 @@ class Index extends CatfishCMS
                         $review = 0;
                     }
                     $tus = $this->extractPics($zhengwen);
+                    $params = [
+                        'biaoti' => $data['biaoti'],
+                        'zhengwen' => $zhengwen,
+                        'tu' => $tus,
+                        'fujian' => $fujian
+                    ];
+                    $this->plantHook('publish', $params);
+                    if(isset($params['biaoti'])){
+                        $data['biaoti'] = $params['biaoti'];
+                    }
+                    if(isset($params['zhengwen'])){
+                        $zhengwen = $params['zhengwen'];
+                    }
+                    if(isset($params['tu'])){
+                        $tus = $params['tu'];
+                    }
+                    if(isset($params['fujian'])){
+                        $fujian = $params['fujian'];
+                    }
                     Catfish::dbStartTrans();
                     try{
                         Catfish::db('tie')->where('id', $tid)->update([
@@ -796,14 +834,14 @@ class Index extends CatfishCMS
             else{
                 $re = Catfish::db('users')->where('email',$data['email'])->where('id', '<>',$uid)->field('id')->find();
                 if(!empty($re)){
-                    Catfish::lang('Email has been used');
+                    echo Catfish::lang('Email has been used');
                     exit();
                 }
                 $shouji = Catfish::getPost('shouji');
                 if(!empty($shouji)){
                     $re = Catfish::db('users')->where('shouji',$shouji)->where('id', '<>',$uid)->field('id')->find();
                     if(!empty($re)){
-                        Catfish::lang('Mobile number is already in use');
+                        echo Catfish::lang('Mobile number is already in use');
                         exit();
                     }
                 }
@@ -1959,5 +1997,38 @@ class Index extends CatfishCMS
         $catfish = $catfish->items();
         Catfish::allot('catfishcms', $catfish);
         return $this->show(Catfish::lang('Posts visited'), 'postsvisited');
+    }
+    public function plugin()
+    {
+        $this->checkUser();
+        $name = $this->untoup(Catfish::getParam('name'));
+        $func = $this->untoup(Catfish::getParam('func'));
+        $plugin = $this->untoup(Catfish::getParam('plugin'));
+        $alias = urldecode(Catfish::getParam('alias'));
+        $params = [
+            'plugin' => $plugin,
+            'name' => $name,
+            'alias' => $alias,
+            'function' => $func,
+        ];
+        $ufplugin = ucfirst($plugin);
+        $html = '';
+        if(Catfish::isPost(20)){
+            $post = Catfish::getPost();
+            if(isset($post['verification'])){
+                unset($post['verification']);
+            }
+            Catfish::execHook('plugin\\' . $plugin . '\\' . $ufplugin, $func . 'Post', $post);
+            if(isset($post['result'])){
+                echo $post['result'];
+                exit();
+            }
+        }
+        Catfish::execHook('plugin\\' . $plugin . '\\' . $ufplugin, $func, $params);
+        if(isset($params['html'])){
+            $html = $params['html'];
+        }
+        Catfish::allot('plugin', $html);
+        return $this->show($alias, $name);
     }
 }

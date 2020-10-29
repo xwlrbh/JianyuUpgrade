@@ -7,7 +7,7 @@
  * Copyright: http://jianyuluntan.com All rights reserved.
  */
 return [
-    'version' => '2.4.12',
+    'version' => '2.5.0',
     'name' => '剑鱼论坛',
     'description' => 'Catfish(鲶鱼) CMS官方发布的轻论坛程序',
     'official' => 'jianyuluntan.com'

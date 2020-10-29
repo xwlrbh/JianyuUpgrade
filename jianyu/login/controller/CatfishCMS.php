@@ -11,6 +11,7 @@ use catfishcms\Catfish;
 class CatfishCMS
 {
     protected $captcha;
+    protected $template = 'default';
     protected function checkUser()
     {
         if(!is_file(APP_PATH . 'database.php')){
@@ -41,6 +42,10 @@ class CatfishCMS
             if($val['name'] == 'copyright' || $val['name'] == 'statistics')
             {
                 Catfish::allot($val['name'], unserialize($val['value']));
+            }
+            elseif($val['name'] == 'template'){
+                $this->template = $val['value'];
+                Catfish::allot($val['name'], $val['value']);
             }
             elseif($val['name'] == 'captcha'){
                 $this->captcha = $val['value'];
@@ -227,5 +232,29 @@ class CatfishCMS
             $isMobile = 1;
         }
         return $isMobile;
+    }
+    protected function plantHook($hook, &$params = [], $theme = '')
+    {
+        if(empty($theme) && isset($this->template)){
+            $theme = $this->template;
+        }
+        $uftheme = ucfirst($theme);
+        $execArr = [];
+        if(is_file(ROOT_PATH.'public' . DS . 'theme' . DS . $theme . DS . $uftheme .'.php')){
+            $execArr[] = 'theme\\' . $theme . '\\' . $uftheme;
+        }
+        $pluginsOpened = Catfish::get('plugins_opened');
+        if(!empty($pluginsOpened)){
+            $pluginsOpened = unserialize($pluginsOpened);
+            foreach($pluginsOpened as $key => $val){
+                $ufval = ucfirst($val);
+                $execArr[] = 'plugin\\' . $val . '\\' . $ufval;
+            }
+        }
+        if(count($execArr) > 0){
+            Catfish::addHook($hook, $execArr);
+            return Catfish::listen($hook, $params);
+        }
+        return false;
     }
 }

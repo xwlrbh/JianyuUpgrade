@@ -1,0 +1,77 @@
+{include file="index/header" /}
+{notempty name="prompt"}
+<div class="text-center text-danger">{$prompt}</div>
+{/notempty}
+<div class="row">
+    <div class="col-sm">
+    </div>
+    <div class="col-sm">
+        <div class="clearfix">
+            <button class="btn btn-light btn-sm float-sm-right" type="button" data-toggle="collapse" data-target="#multiCollapseExample2">{:lang('Upload plugin')}</button>
+        </div>
+        <div class="row my-2">
+            <div class="col">
+                <div class="collapse multi-collapse" id="multiCollapseExample2">
+                    <form method="post" id="upreform" enctype="multipart/form-data" action="">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="file" name="file">
+                            <label class="custom-file-label col-form-label-sm" for="file" data-browse="{:lang('Browse')}">{:lang('Select a file')}</label>
+                        </div>
+                        <input type="hidden" name="verification" value="{$verification}">
+                        <button type="button" id="submitupreform" class="btn btn-info btn-sm my-2">{:lang('Upload plugin')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<form>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th scope="col">{:lang('Plug-in')}</th>
+            <th scope="col">{:lang('Plug-in name')}</th>
+            <th scope="col">{:lang('Author')}</th>
+            <th scope="col">{:lang('Version')}</th>
+            <th scope="col">{:lang('Plugin description')}</th>
+            <th scope="col" class="text-center">{:lang('Open plugin')}</th>
+            <th scope="col" class="text-center">{:lang('Remove plugin')}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name="jianyuluntan" id="vo"}
+        <tr>
+            <td>{$vo.plugin}</td>
+            <td>{$vo.name}</td>
+            <td>{$vo.author}</td>
+            <td>{$vo.version}</td>
+            <td>{$vo.description}</td>
+            <td class="text-center">
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" id="id_{$vo.plugin}" data-plugin="{$vo.plugin}" class="custom-control-input"{if $vo.open == 1} checked{/if}><label class="custom-control-label" for="id_{$vo.plugin}"></label>
+                </div>
+            </td>
+            <td class="text-center">
+                <a class="confirm text-info" href="#!" data-plugin="{$vo.plugin}"><i class="fa fa-trash-o"></i><i class="fa fa-refresh fa-spin ml-2 d-none"></i></a>
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+</form>
+<div class="modal fade bd-example-modal-sm" id="uploadpluginModal" tabindex="-1">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content p-3">
+            <div>
+                <i class="fa fa-refresh fa-spin text-info mr-2"></i> {:lang('Uploading, please wait...')}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="d-none" id="quedingshanchu">{:lang('Confirm to delete?')}</div>
+<div class="d-none" id="bukehuifu">{:lang('Are you sure you want to delete it? It cannot be recovered after deletion!')}</div>
+<div class="d-none" id="quedingshangchuan">{:lang('Are you sure you want to upload the plugin?')}</div>
+<div class="d-none" id="notselected">{:lang('File not selected')}</div>
+<script src="{$domain}public/common/js/list.js"></script>
+<script src="{$domain}public/common/js/pluginlist.js"></script>
+{include file="index/footer" /}

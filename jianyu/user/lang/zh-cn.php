@@ -199,4 +199,5 @@ return [
     'Payment time' => '支付时间',
     'Posts visited' => '访问过的帖子',
     'Browse time' => '浏览时间',
+    'Other' => '其他',
 ];

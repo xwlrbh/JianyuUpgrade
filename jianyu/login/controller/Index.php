@@ -43,8 +43,20 @@ class Index extends CatfishCMS
                     echo Catfish::lang('Your account has not been activated. Please log in to your email to activate your account.').'<br>'.Catfish::lang('If you have not received your activation email, please click the link below to resend the activation email').'<br><small><a id="resend" href="'.Catfish::url('login/Index/resend').'">'.Catfish::lang('Resend activation email').'</a></small>';
                     exit();
                 }
-                $this->logined($user, $data);
-                echo 'ok';
+                $params = [
+                    'logined' => true,
+                    'user' => $data['user'],
+                    'password' => $data['pwd'],
+                    'result' => ''
+                ];
+                $this->plantHook('login', $params);
+                if($params['logined']){
+                    $this->logined($user, $data);
+                    echo 'ok';
+                }
+                else{
+                    echo $params['result'];
+                }
                 exit();
             }
         }
@@ -99,8 +111,20 @@ class Index extends CatfishCMS
                     echo Catfish::lang('Account has been disabled, please contact the administrator');
                     exit();
                 }
-                $this->logined($user, $data);
-                echo 'ok';
+                $params = [
+                    'logined' => true,
+                    'user' => $data['user'],
+                    'password' => $data['pwd'],
+                    'result' => ''
+                ];
+                $this->plantHook('login', $params);
+                if($params['logined']){
+                    $this->logined($user, $data);
+                    echo 'ok';
+                }
+                else{
+                    echo $params['result'];
+                }
                 exit();
             }
         }

@@ -44,11 +44,20 @@ class CatfishCMS
         $isicon = 0;
         $crtm = date("Y");
         $title = '';
+        $notfollow = 0;
         foreach($data_options as $key => $val)
         {
             if($val['name'] == 'statistics')
             {
-                Catfish::allot($val['name'], unserialize($val['value']));
+                $statistics = unserialize($val['value']);
+                $params = [
+                    'statistics' => $statistics
+                ];
+                $this->plantHook('statistics', $params);
+                if(isset($params['statistics'])){
+                    $statistics = $params['statistics'];
+                }
+                Catfish::allot($val['name'], $statistics);
             }
             elseif($val['name'] == 'title'){
                 $title = $val['value'];
@@ -98,11 +107,18 @@ class CatfishCMS
                 $isicon = empty($val['value']) ? 0 : 1;
                 Catfish::allot($val['name'], $val['value']);
             }
+            elseif($val['name'] == 'spare'){
+                if(!empty($val['value'])){
+                    $spare = unserialize($val['value']);
+                    $notfollow = $spare['notfollow'];
+                }
+            }
             else
             {
                 Catfish::allot($val['name'], $val['value']);
             }
         }
+        Catfish::allot('notfollow', $notfollow);
         if($islogo == 0){
             Catfish::allot('logo', $this->domain.'public/common/images/jianyu.png');
         }
@@ -192,6 +208,10 @@ class CatfishCMS
         Catfish::allot('myid', Catfish::getSession('user_id'));
         Catfish::allot('touxiang', Catfish::getSession('touxiang'));
         Catfish::allot(Catfish::bd('amlhbnl1bHVudGFu'), $this->push());
+        $params = [
+            'template' => $this->template
+        ];
+        $this->plantHook('all', $params);
         $tempath = ROOT_PATH.$this->tempPath.$this->template;
         if(!Catfish::cj($tempath) && $template != '404.html'){
             Catfish::toError();
@@ -346,10 +366,19 @@ class CatfishCMS
                     ]
                 ]);
             $shouye['tie'] = $this->filterResults($data->items());
-            $shouye['pages'] = $data->render();
+            $pages= $data->render();
+            if(empty($pages)){
+                $pages = '';
+            }
+            $shouye['pages'] = $pages;
             Catfish::tagCache('shouye')->set($cachename,$shouye,$this->time);
         }
-        Catfish::allot('jianyu', $shouye);
+        $params = [
+            'template' => $this->template,
+            'shouye' => $shouye
+        ];
+        $this->plantHook('index', $params);
+        Catfish::allot('jianyu', $params['shouye']);
     }
     protected function getcolumn($find)
     {
@@ -435,12 +464,13 @@ class CatfishCMS
                     ]
                 ]);
             $column['tie'] = $this->filterResults($data->items());
-            $column['pages'] = $data->render();
+            $pages= $data->render();
+            if(empty($pages)){
+                $pages = '';
+            }
+            $column['pages'] = $pages;
             Catfish::tagCache('column')->set($cachename,$column,$this->time);
         }
-        Catfish::allot('biaoti', $biaoti);
-        Catfish::allot('keyword', $keyword);
-        Catfish::allot('description', $description);
         $daohang[] = [
             'label' => Catfish::lang('Home'),
             'href' => Catfish::url('index/Index/index'),
@@ -455,8 +485,20 @@ class CatfishCMS
                 'active' => 0
             ];
         }
-        Catfish::allot('daohang', $daohang);
-        Catfish::allot('jianyu', $column);
+        $params = [
+            'template' => $this->template,
+            'biaoti' => $biaoti,
+            'keyword' => $keyword,
+            'description' => $description,
+            'daohang' => $daohang,
+            'jianyu' => $column
+        ];
+        $this->plantHook('column', $params);
+        Catfish::allot('biaoti', $params['biaoti']);
+        Catfish::allot('keyword', $params['keyword']);
+        Catfish::allot('description', $params['description']);
+        Catfish::allot('daohang', $params['daohang']);
+        Catfish::allot('jianyu', $params['jianyu']);
     }
     protected function getpost($find)
     {
@@ -591,7 +633,11 @@ class CatfishCMS
             $gentie['dangqianye'] = intval($currentPage);
             $gentie['zuidalou'] = intval($total + 1);
             $gentie['subcname'] = base64_encode($subcachename);
-            $gentie['pages'] = $cdata->render();
+            $pages= $cdata->render();
+            if(empty($pages)){
+                $pages = '';
+            }
+            $gentie['pages'] = $pages;
             Catfish::tagCache('postgentie_'.$find)->set($cachename,$gentie,$this->time);
         }
         $quanxian = [];
@@ -667,10 +713,6 @@ class CatfishCMS
         $jianyu['zhutie'] = $post;
         $jianyu['gentie'] = $gentie;
         $jianyu['quanxian'] = $this->myforumpost();
-        Catfish::allot('biaoti', isset($post['biaoti']) ? $post['biaoti'] : '');
-        Catfish::allot('keyword', isset($post['guanjianzi']) ? $post['guanjianzi'] : '');
-        Catfish::allot('description', isset($post['zhaiyao']) ? $post['zhaiyao'] : '');
-        Catfish::allot('jianyu', $jianyu);
         $daohang[] = [
             'label' => Catfish::lang('Home'),
             'href' => Catfish::url('index/Index/index'),
@@ -693,7 +735,20 @@ class CatfishCMS
                 'active' => 0
             ];
         }
-        Catfish::allot('daohang', $daohang);
+        $params = [
+            'template' => $this->template,
+            'biaoti' => isset($post['biaoti']) ? $post['biaoti'] : '',
+            'keyword' => isset($post['guanjianzi']) ? $post['guanjianzi'] : '',
+            'description' => isset($post['zhaiyao']) ? $post['zhaiyao'] : '',
+            'daohang' => $daohang,
+            'jianyu' => $jianyu
+        ];
+        $this->plantHook('post', $params);
+        Catfish::allot('biaoti', $params['biaoti']);
+        Catfish::allot('keyword', $params['keyword']);
+        Catfish::allot('description', $params['description']);
+        Catfish::allot('jianyu', $params['jianyu']);
+        Catfish::allot('daohang', $params['daohang']);
         Catfish::allot('needvcode', $this->needvcode());
         if(isset($post['path'])){
             $pfl = end($post['path']);
@@ -1333,10 +1388,19 @@ class CatfishCMS
                     ]
                 ]);
             $column['tie'] = $this->filterResults($data->items());
-            $column['pages'] = $data->render();
+            $pages= $data->render();
+            if(empty($pages)){
+                $pages = '';
+            }
+            $column['pages'] = $pages;
             Catfish::tagCache('search')->set($cachename,$column,$this->time);
         }
-        Catfish::allot('jianyu', $column);
+        $params = [
+            'template' => $this->template,
+            'jianyu' => $column
+        ];
+        $this->plantHook('search', $params);
+        Catfish::allot('jianyu', $params['jianyu']);
     }
     protected function gettype($find)
     {
@@ -1377,7 +1441,11 @@ class CatfishCMS
                     ]
                 ]);
             $column['tie'] = $this->filterResults($data->items());
-            $column['pages'] = $data->render();
+            $pages= $data->render();
+            if(empty($pages)){
+                $pages = '';
+            }
+            $column['pages'] = $pages;
             Catfish::tagCache('type')->set($cachename,$column,$this->time);
         }
         Catfish::allot('daohang', [
@@ -1394,8 +1462,14 @@ class CatfishCMS
                 'active' => 0
             ]
         ]);
-        Catfish::allot('biaoti',$column['leixing']);
-        Catfish::allot('jianyu', $column);
+        $params = [
+            'template' => $this->template,
+            'biaoti' => $column['leixing'],
+            'jianyu' => $column
+        ];
+        $this->plantHook('type', $params);
+        Catfish::allot('biaoti', $params['biaoti']);
+        Catfish::allot('jianyu', $params['jianyu']);
     }
     private function quanxian($tid)
     {
@@ -1545,5 +1619,29 @@ class CatfishCMS
             }
         }
         return $needvcode;
+    }
+    protected function plantHook($hook, &$params = [], $theme = '')
+    {
+        if(empty($theme) && isset($this->template)){
+            $theme = $this->template;
+        }
+        $uftheme = ucfirst($theme);
+        $execArr = [];
+        if(is_file(ROOT_PATH.'public' . DS . 'theme' . DS . $theme . DS . $uftheme .'.php')){
+            $execArr[] = 'theme\\' . $theme . '\\' . $uftheme;
+        }
+        $pluginsOpened = Catfish::get('plugins_opened');
+        if(!empty($pluginsOpened)){
+            $pluginsOpened = unserialize($pluginsOpened);
+            foreach($pluginsOpened as $key => $val){
+                $ufval = ucfirst($val);
+                $execArr[] = 'plugin\\' . $val . '\\' . $ufval;
+            }
+        }
+        if(count($execArr) > 0){
+            Catfish::addHook($hook, $execArr);
+            return Catfish::listen($hook, $params);
+        }
+        return false;
     }
 }

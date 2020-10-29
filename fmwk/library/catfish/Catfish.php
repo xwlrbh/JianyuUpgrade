@@ -7,6 +7,7 @@
  * Copyright: http://jianyujishu.com All rights reserved.
  */
 namespace catfishcms;
+use think\Hook;
 use think\Request;
 use think\Session;
 use think\Cookie;
@@ -964,7 +965,7 @@ class Catfish
         }
         return $remind;
     }
-	public static function ccpm()
+    public static function ccpm()
     {
         $ccpm = self::getCache('jianyuccpm');
         if($ccpm === false){
@@ -1182,5 +1183,118 @@ class Catfish
         }
         $file = $file . DS . 'index.html';
         file_put_contents($file, $index);
+    }
+    public static function execHook($class, $tag = '', &$params = null, $extra = null)
+    {
+        return Hook::exec($class, $tag, $params, $extra);
+    }
+    public static function addHook($tag, $behavior, $first = false)
+    {
+        Hook::add($tag, $behavior, $first);
+    }
+    public static function listen($tag, &$params = null, $extra = null, $once = false)
+    {
+        return Hook::listen($tag, $params, $extra, $once);
+    }
+    public static function themeOutput($templateName, $templateFile)
+    {
+        if(substr($templateFile, -5) != '.html'){
+            $templateFile .= '.html';
+        }
+        return self::output(ROOT_PATH . 'public/theme/' . $templateName . '/theme/' . $templateFile);
+    }
+    public static function themeAssign($name, $value = '')
+    {
+        return self::allot('t_' . $name, $value);
+    }
+    public static function getParam($name = '')
+    {
+        if(empty($name)){
+            return Request::instance()->param();
+        }
+        else{
+            return Request::instance()->param($name);
+        }
+    }
+    public static function addPlugin(&$params, $name, $alias = '', $func = '', $way = 'append')
+    {
+        $calltrace = debug_backtrace();
+        $call = basename(dirname($calltrace[0]['file']));
+        if(is_array($name)){
+            foreach($name as $key => $val){
+                $params['item'][] = [
+                    'plugin' => $call,
+                    'name' => $val['name'],
+                    'alias' => $val['alias'],
+                    'function' => $val['function'],
+                    'way' => $way
+                ];
+            }
+        }
+        else{
+            $params['item'][] = [
+                'plugin' => $call,
+                'name' => $name,
+                'alias' => $alias,
+                'function' => $func,
+                'way' => $way
+            ];
+        }
+    }
+    public static function pluginOutput($templateFile)
+    {
+        $calltrace = debug_backtrace();
+        $call = basename(dirname($calltrace[0]['file']));
+        if(substr($templateFile, -5) != '.html'){
+            $templateFile .= '.html';
+        }
+        $templateFile = ltrim(ltrim($templateFile, '/'), '\\');
+        return self::output(ROOT_PATH . 'plugins/' . $call . '/' . $templateFile);
+    }
+    public static function pluginCss($cssFile)
+    {
+        $calltrace = debug_backtrace();
+        $call = basename(dirname($calltrace[0]['file']));
+        $recss = '';
+        if(is_array($cssFile)){
+            foreach($cssFile as $key => $val){
+                if(substr($val, -4) != '.css'){
+                    $val .= '.css';
+                }
+                $recss .= file_get_contents(ROOT_PATH . 'plugins/' . $call . '/' . $val);
+            }
+        }
+        else{
+            if(substr($cssFile, -4) != '.css'){
+                $cssFile .= '.css';
+            }
+            $recss .= file_get_contents(ROOT_PATH . 'plugins/' . $call . '/' . $cssFile);
+        }
+        return '<style>' . $recss . '</style>';
+    }
+    public static function pluginJs($jsFile)
+    {
+        $calltrace = debug_backtrace();
+        $call = basename(dirname($calltrace[0]['file']));
+        $rejs = '';
+        if(is_array($jsFile)){
+            foreach($jsFile as $key => $val){
+                if(substr($val, -3) != '.js'){
+                    $val .= '.js';
+                }
+                $rejs .= file_get_contents(ROOT_PATH . 'plugins/' . $call . '/' . $val);
+            }
+        }
+        else{
+            if(substr($jsFile, -3) != '.js'){
+                $jsFile .= '.js';
+            }
+            $rejs .= file_get_contents(ROOT_PATH . 'plugins/' . $call . '/' . $jsFile);
+        }
+        return '<script>' . $rejs . '</script>';
+    }
+    public static function pluginAssign($name, $value = '')
+    {
+        return self::allot('p_' . $name, $value);
     }
 }

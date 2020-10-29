@@ -71,6 +71,22 @@
         <a href="{:Url('user/Index/pointsbill')}" class="nav-link{if $current == 'pointsbill'} bg-info text-white{else /} text-dark{/if}">{:lang('Points bill')}</a>
     </nav>
 </div>
+{if condition="$hasPlugin > 0"}
+<div class="text-secondary pt-3 clearfix">
+    <h6 class="float-left">
+        <i class="fa fa-wrench"></i>
+        {:lang('Other')}
+    </h6>
+    <i class="fa fa-minus-square-o float-right"></i>
+</div>
+<div>
+    <nav class="nav flex-column">
+        {volist name="pluginItem" id="vo"}
+        <a href="{$vo.url}" class="nav-link{if $current == $vo.name} bg-info text-white{else /} text-dark{/if}">{$vo.alias}</a>
+        {/volist}
+    </nav>
+</div>
+{/if}
 {if condition="$isModerator == 1"}
 <div class="text-secondary pt-3 clearfix">
     <h6 class="float-left">
