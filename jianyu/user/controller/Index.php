@@ -2004,13 +2004,26 @@ class Index extends CatfishCMS
         $name = $this->untoup(Catfish::getParam('name'));
         $func = $this->untoup(Catfish::getParam('func'));
         $plugin = $this->untoup(Catfish::getParam('plugin'));
+        $theme = $this->untoup(Catfish::getParam('theme'));
         $alias = urldecode(Catfish::getParam('alias'));
+        $theme = ($theme == '_theme') ? '' : $theme;
         $params = [
             'plugin' => $plugin,
             'name' => $name,
             'alias' => $alias,
             'function' => $func,
+            'template' => $theme,
         ];
+        $lang = Catfish::detectLang();
+        if(empty($theme)){
+            $langPath = ROOT_PATH.'plugins/'.$plugin.'/lang/'.$lang.'.php';
+        }
+        else{
+            $langPath = ROOT_PATH.'public/theme/'.$plugin.'/theme/lang/'.$lang.'.php';
+        }
+        if(is_file($langPath)){
+            Catfish::loadLang($langPath);
+        }
         $ufplugin = ucfirst($plugin);
         $html = '';
         if(Catfish::isPost(20)){
@@ -2018,13 +2031,23 @@ class Index extends CatfishCMS
             if(isset($post['verification'])){
                 unset($post['verification']);
             }
-            Catfish::execHook('plugin\\' . $plugin . '\\' . $ufplugin, $func . 'Post', $post);
+            if(empty($theme)){
+                Catfish::execHook('plugin\\' . $plugin . '\\' . $ufplugin, $func . 'Post', $post);
+            }
+            else{
+                Catfish::execHook('theme\\' . $plugin . '\\' . $ufplugin, $func . 'Post', $post);
+            }
             if(isset($post['result'])){
                 echo $post['result'];
                 exit();
             }
         }
-        Catfish::execHook('plugin\\' . $plugin . '\\' . $ufplugin, $func, $params);
+        if(empty($theme)){
+            Catfish::execHook('plugin\\' . $plugin . '\\' . $ufplugin, $func, $params);
+        }
+        else{
+            Catfish::execHook('theme\\' . $plugin . '\\' . $ufplugin, $func, $params);
+        }
         if(isset($params['html'])){
             $html = $params['html'];
         }

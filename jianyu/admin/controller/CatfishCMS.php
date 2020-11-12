@@ -120,19 +120,18 @@ class CatfishCMS
                 ];
                 $this->openCloseHook($val, 'addAdminPlugin', $params);
                 if(isset($params['item'])){
-                    foreach($params['item'] as $ikey => $ival){
-                        $ival['alias'] = Catfish::lang($ival['alias']);
-                        $ival['url'] = Catfish::url('admin/Index/plugin', ['name' => strtolower(preg_replace('/([A-Z])/', '-${1}', $ival['name'])), 'func' => strtolower(preg_replace('/([A-Z])/', '-${1}', $ival['function'])), 'plugin' => strtolower(preg_replace('/([A-Z])/', '-${1}', $ival['plugin'])), 'alias' => urlencode($ival['alias'])]);
-                        if($ival['way'] == 'top'){
-                            unset($ival['way']);
-                            array_unshift($pluginItem,$ival);
-                        }
-                        else{
-                            unset($ival['way']);
-                            $pluginItem[] = $ival;
-                        }
-                    }
+                    $this->getext($params['item'], $pluginItem);
                 }
+            }
+        }
+        $uftheme = ucfirst($this->template);
+        if(is_file(ROOT_PATH.'public' . DS . 'theme' . DS . $this->template . DS . $uftheme .'.php')){
+            $params = [
+                'pluginName' => ''
+            ];
+            $this->themeHook('addAdminPlugin', $params, $this->template);
+            if(isset($params['item'])){
+                $this->getext($params['item'], $pluginItem, $this->template);
             }
         }
         $hasPlugin = count($pluginItem);
@@ -692,5 +691,20 @@ class CatfishCMS
             return Catfish::listen($hook, $params);
         }
         return false;
+    }
+    private function getext($itemArr, &$pluginItem, $theme = '_theme')
+    {
+        foreach($itemArr as $ikey => $ival){
+            $ival['alias'] = Catfish::lang($ival['alias']);
+            $ival['url'] = Catfish::url('admin/Index/plugin', ['name' => strtolower(preg_replace('/([A-Z])/', '-${1}', $ival['name'])), 'func' => strtolower(preg_replace('/([A-Z])/', '-${1}', $ival['function'])), 'plugin' => strtolower(preg_replace('/([A-Z])/', '-${1}', $ival['plugin'])), 'theme' => strtolower(preg_replace('/([A-Z])/', '-${1}', $theme)), 'alias' => urlencode($ival['alias'])]);
+            if($ival['way'] == 'top'){
+                unset($ival['way']);
+                array_unshift($pluginItem,$ival);
+            }
+            else{
+                unset($ival['way']);
+                $pluginItem[] = $ival;
+            }
+        }
     }
 }

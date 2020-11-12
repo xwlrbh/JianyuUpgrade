@@ -1480,9 +1480,11 @@ class Index extends CatfishCMS
         if(Catfish::isPost(1)){
             $file = request()->file('file');
             if($file->checkExt('zip') === true){
-                $info = $file->move(ROOT_PATH . 'data' . DS . 'plugin', false);
+                $tempdatadir = ROOT_PATH . 'data' . DS . 'plugin';
+                $this->delFolder($tempdatadir);
+                $info = $file->move($tempdatadir, false);
                 if($info){
-                    $pluginFile = ROOT_PATH . 'data' . DS . 'plugin' . DS . $info->getSaveName();
+                    $pluginFile = $tempdatadir . DS . $info->getSaveName();
                     $tempdir = ROOT_PATH . 'data' . DS . 'temp' . DS . 'plugin';
                     if(!is_dir($tempdir)){
                         mkdir($tempdir, 0777, true);
@@ -1639,17 +1641,35 @@ class Index extends CatfishCMS
         $name = $this->untoup(Catfish::getParam('name'));
         $func = $this->untoup(Catfish::getParam('func'));
         $plugin = $this->untoup(Catfish::getParam('plugin'));
+        $theme = $this->untoup(Catfish::getParam('theme'));
         $alias = urldecode(Catfish::getParam('alias'));
+        $theme = ($theme == '_theme') ? '' : $theme;
         $params = [
             'plugin' => $plugin,
             'name' => $name,
             'alias' => $alias,
             'function' => $func,
+            'template' => $theme,
         ];
+        $lang = Catfish::detectLang();
+        if(empty($theme)){
+            $langPath = ROOT_PATH.'plugins/'.$plugin.'/lang/'.$lang.'.php';
+        }
+        else{
+            $langPath = ROOT_PATH.'public/theme/'.$plugin.'/theme/lang/'.$lang.'.php';
+        }
+        if(is_file($langPath)){
+            Catfish::loadLang($langPath);
+        }
         $ufplugin = ucfirst($plugin);
         $html = '';
         $authority = 100;
-        $pluginFile = ROOT_PATH.'plugins'.DS.$plugin.DS.ucfirst($ufplugin).'.php';
+        if(empty($theme)){
+            $pluginFile = ROOT_PATH.'plugins'.DS.$plugin.DS.ucfirst($ufplugin).'.php';
+        }
+        else{
+            $pluginFile = ROOT_PATH.'public' . DS . 'theme' . DS . $plugin . DS . ucfirst($ufplugin) .'.php';
+        }
         if(is_file($pluginFile)){
             $pluginContent = file_get_contents($pluginFile);
             if(preg_match("/(权限|Authority)\s*(：|:)(.*)/i", $pluginContent ,$matches)){
@@ -1673,13 +1693,23 @@ class Index extends CatfishCMS
                 if(isset($post['verification'])){
                     unset($post['verification']);
                 }
-                Catfish::execHook('plugin\\' . $plugin . '\\' . $ufplugin, $func . 'Post', $post);
+                if(empty($theme)){
+                    Catfish::execHook('plugin\\' . $plugin . '\\' . $ufplugin, $func . 'Post', $post);
+                }
+                else{
+                    Catfish::execHook('theme\\' . $plugin . '\\' . $ufplugin, $func . 'Post', $post);
+                }
                 if(isset($post['result'])){
                     echo $post['result'];
                     exit();
                 }
             }
-            Catfish::execHook('plugin\\' . $plugin . '\\' . $ufplugin, $func, $params);
+            if(empty($theme)){
+                Catfish::execHook('plugin\\' . $plugin . '\\' . $ufplugin, $func, $params);
+            }
+            else{
+                Catfish::execHook('theme\\' . $plugin . '\\' . $ufplugin, $func, $params);
+            }
             if(isset($params['html'])){
                 $html = $params['html'];
             }
@@ -2320,11 +2350,15 @@ class Index extends CatfishCMS
         if(Catfish::isPost(1)){
             ini_set('max_execution_time', 0);
             ini_set('memory_limit', -1);
+            $package = ROOT_PATH . 'data' . DS . 'package';
+            if(is_dir($package)){
+                $this->delFolder($package);
+            }
             $file = request()->file('file');
             $validate = [
                 'ext' => 'zip'
             ];
-            $info = $file->validate($validate)->move(ROOT_PATH . 'data' . DS . 'package', false);
+            $info = $file->validate($validate)->move($package, false);
             if($info){
                 Catfish::set('upgradepackagefilename', $info->getSaveName());
                 echo 'ok';
@@ -2434,6 +2468,9 @@ class Index extends CatfishCMS
                 $directly = $directlyarr[$key];
             }
             $path = ROOT_PATH . 'data' . DS . 'package';
+            if(is_dir($path)){
+                $this->delFolder($path);
+            }
             if(!is_dir($path)){
                 mkdir($path, 0777, true);
             }
