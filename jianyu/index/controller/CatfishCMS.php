@@ -27,8 +27,9 @@ class CatfishCMS
         Catfish::setAllowLangList(['zh-cn']);
         if($loadoptions){
             $this->options();
-            if(is_file(ROOT_PATH.'public/theme/'.$this->template.'/lang/'.Catfish::detectLang().'.php')){
-                Catfish::loadLang(ROOT_PATH.'public/theme/'.$this->template.'/lang/'.Catfish::detectLang().'.php');
+            $lang = Catfish::detectLang();
+            if(is_file(ROOT_PATH.'public/theme/'.$this->template.'/lang/'.$lang.'.php')){
+                Catfish::loadLang(ROOT_PATH.'public/theme/'.$this->template.'/lang/'.$lang.'.php');
             }
         }
         $this->autologin();

@@ -114,7 +114,12 @@ class CatfishCMS
         $pluginItem = [];
         if(!empty($pluginsOpened)){
             $pluginsOpened = unserialize($pluginsOpened);
+            $lang = Catfish::detectLang();
             foreach($pluginsOpened as $key => $val){
+                $langPath = ROOT_PATH.'plugins' . DS . $val . DS . 'lang' . DS . $lang .'.php';
+                if(is_file($langPath)){
+                    Catfish::loadLang($langPath);
+                }
                 $params = [
                     'pluginName' => $val
                 ];
@@ -126,6 +131,11 @@ class CatfishCMS
         }
         $uftheme = ucfirst($this->template);
         if(is_file(ROOT_PATH.'public' . DS . 'theme' . DS . $this->template . DS . $uftheme .'.php')){
+            $lang = Catfish::detectLang();
+            $langPath = ROOT_PATH.'public' . DS . 'theme' . DS . $this->template . DS . 'lang' . DS . $lang .'.php';
+            if(is_file($langPath)){
+                Catfish::loadLang($langPath);
+            }
             $params = [
                 'pluginName' => ''
             ];
@@ -649,10 +659,14 @@ class CatfishCMS
             }
         }
         $pluginName = basename($folder);
-        $pluginPath = ROOT_PATH . DS . 'plugins' . DS . $pluginName;
+        $pluginDir = ROOT_PATH . DS . 'plugins';
+        $pluginPath = $pluginDir . DS . $pluginName;
         if(!is_dir($pluginPath)){
             mkdir($pluginPath, 0777, true);
             $this->recurseCopy($folder, $pluginPath);
+            if(!is_file($pluginDir . DS . 'index.html')){
+                Catfish::addIndex($pluginDir);
+            }
             return true;
         }
         else{
