@@ -721,4 +721,17 @@ class CatfishCMS
             }
         }
     }
+    protected function geticons()
+    {
+        $icons = glob(ROOT_PATH.'public/common/bootstrap-icons/*.svg');
+        foreach($icons as $key => $val){
+            $icon = basename($val);
+            $name =substr($icon, 0, -4);
+            $icons[$key] = [
+                'name' => $name,
+                'icon' => $icon
+            ];
+        }
+        return $icons;
+    }
 }

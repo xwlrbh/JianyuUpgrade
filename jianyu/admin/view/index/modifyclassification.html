@@ -36,10 +36,30 @@
         <small class="form-text text-muted">{:lang('Checked will be used as an item in the menu')}</small>
     </div>
     <div class="form-group mt-4">
-        <label>{:lang('Icon')}</label>
-        <input name="icon" type="text" value="" id="iconinput" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" placeholder="{:lang('Please enter ')}{:lang('Icon')}">
-        <div class="d-none" id="iconid">{$sort.icon}</div>
-        <small class="form-text text-muted">{:lang('The icon can be displayed on the menu item, please enter the HTML code of the icon')}</small>
+        <label>{:lang('Icon')}&nbsp;<small>[&nbsp;<a class="text-secondary" href="#!" data-toggle="modal" data-target="#iconsModal">{:lang('Select icon')}</a>&nbsp;]</small></label>
+        <div id="iconselect" class="d-none">
+            <div class="container">
+                <div class="row">
+                    <div class="col-5 col-md-3 p-2 border border-info rounded text-center">
+                        <button type="button" id="closeicon" title="{:lang('Cancel')}" class="close float-right" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <div id="selectedicon">{$sort.icons}</div>
+                    </div>
+                    <div class="col-7 col-md-5">
+                        <label>{:lang('Adjust size')} (<span id="iconsize"></span>)</label>
+                        <input id="changeicon" type="range" class="custom-range" min="3" max="150" step="1" value="32">
+                    </div>
+                </div>
+            </div>
+            <input name="icons" id="icons" value="" type="hidden">
+            <div class="clearfix"></div>
+        </div>
+        <div id="iconinputdiv">
+            <input name="icon" type="text" value="" id="iconinput" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" placeholder="{:lang('Please enter ')}{:lang('Icon')}">
+            <div class="d-none" id="iconid">{$sort.icon}</div>
+            <small class="form-text text-muted">{:lang('The icon can be displayed on the menu item, please enter the HTML code of the icon')}</small>
+        </div>
     </div>
     <div class="form-group mt-4">
         <label>{:lang('Whether to use link')}</label>
@@ -104,6 +124,30 @@
         <button type="button" id="formsubmit" class="btn btn-info">{:lang('Submit')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
     </div>
 </form>
+<div class="modal fade" id="iconsModal" tabindex="-1" aria-labelledby="iconsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">{:lang('Select icon')}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row" id="iconlist">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="d-none" id="currenticon"></div>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{:lang('Cancel')}</button>
+                <button type="button" class="btn btn-info" id="iconok">{:lang('Ok')}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="d-none" id="currenticonempty">{:lang('You did not select any icons')}</div>
 <div class="d-none" id="quedingshanchu">{:lang('Confirm to delete?')}</div>
 <div class="d-none" id="bukehuifu">{:lang('Are you sure you want to delete it? It cannot be recovered after deletion!')}</div>
 <script src="{$domain}public/common/js/jqueryupload.js"></script>

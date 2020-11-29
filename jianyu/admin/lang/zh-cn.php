@@ -425,4 +425,7 @@ return [
     'Uploading, please wait...' => '正在上传，请稍候...',
     'You have insufficient permissions' => '您的权限不足',
     'The plugin file is missing' => '插件文件丢失',
+    'Select icon' => '选择图标',
+    'You did not select any icons' => '您没有选择任何图标',
+    'Adjust size' => '调整大小',
 ];

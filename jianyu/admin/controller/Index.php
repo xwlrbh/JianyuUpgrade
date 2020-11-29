@@ -484,6 +484,7 @@ class Index extends CatfishCMS
                     'ismenu' => $ismenu,
                     'virtual' => $virtual,
                     'icon' => Catfish::getPost('icon', false),
+                    'icons' => Catfish::getPost('icons', false),
                     'image' => $image,
                     'islink' => $islink,
                     'linkurl' => $linkurl,
@@ -494,6 +495,8 @@ class Index extends CatfishCMS
                 if($re == 1){
                     Catfish::clearCache('fenlei_id_name');
                     Catfish::clearCache('sortcache');
+                    Catfish::clearCache('caidan');
+                    Catfish::clearCache('modules');
                     Catfish::removeCache('sort_id_sname_virtual_parentid');
                     echo 'ok';
                 }
@@ -572,6 +575,8 @@ class Index extends CatfishCMS
             }
             Catfish::clearCache('fenlei_id_name');
             Catfish::clearCache('sortcache');
+            Catfish::clearCache('caidan');
+            Catfish::clearCache('modules');
             echo 'ok';
             exit();
         }
@@ -664,6 +669,7 @@ class Index extends CatfishCMS
                     'ismenu' => $ismenu,
                     'virtual' => $virtual,
                     'icon' => Catfish::getPost('icon', false),
+                    'icons' => Catfish::getPost('icons', false),
                     'image' => $image,
                     'islink' => $islink,
                     'linkurl' => $linkurl,
@@ -674,6 +680,8 @@ class Index extends CatfishCMS
                 if($re == 1){
                     Catfish::clearCache('fenlei_id_name');
                     Catfish::clearCache('sortcache');
+                    Catfish::clearCache('caidan');
+                    Catfish::clearCache('modules');
                     Catfish::removeCache('sort_id_sname_virtual_parentid');
                     echo 'ok';
                 }
@@ -2697,6 +2705,15 @@ class Index extends CatfishCMS
         else{
             echo Catfish::lang('Your operation is illegal');
             exit();
+        }
+    }
+    public function geticonlist()
+    {
+        if(Catfish::isPost(3)){
+            return json($this->geticons());
+        }
+        else{
+            return json([]);
         }
     }
 }

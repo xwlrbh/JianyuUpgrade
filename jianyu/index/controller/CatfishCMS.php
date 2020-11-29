@@ -254,7 +254,7 @@ class CatfishCMS
         $caidan = Catfish::getCache('caidan_'.$sort);
         if($caidan === false){
             $caidan = Catfish::db('msort')
-                ->field('id,sname,bieming,ismenu,icon,islink,linkurl,parentid')
+                ->field('id,sname,bieming,ismenu,icon,icons,islink,linkurl,parentid')
                 ->order('listorder asc,id asc')
                 ->select();
             if(is_array($caidan) && count($caidan) > 0){
@@ -282,6 +282,10 @@ class CatfishCMS
                         else{
                             $caidan[$key]['active'] = 0;
                         }
+                        if(!empty($val['icons'])){
+                            $caidan[$key]['icon'] = $val['icons'];
+                        }
+                        unset($caidan[$key]['icons']);
                         unset($caidan[$key]['sname']);
                         unset($caidan[$key]['bieming']);
                         unset($caidan[$key]['ismenu']);
@@ -1519,7 +1523,7 @@ class CatfishCMS
         $modules = Catfish::getCache('module_'.$order);
         if($modules === false){
             $module = Catfish::db('msort')
-                ->field('id,sname,bieming,urlbm,guanjianzi,description as miaoshu,icon,image,ismodule,subclasses,parentid,zhutie,gentie')
+                ->field('id,sname,bieming,urlbm,guanjianzi,description as miaoshu,icon,icons,image,ismodule,subclasses,parentid,zhutie,gentie')
                 ->order('listorder asc,id asc')
                 ->select();
             $modules = [];
@@ -1528,6 +1532,10 @@ class CatfishCMS
                     if(!empty($val['image'])){
                         $module[$key]['image'] = Catfish::domain() . $val['image'];
                     }
+                    if(!empty($val['icons'])){
+                        $module[$key]['icon'] = $val['icons'];
+                    }
+                    unset($module[$key]['icons']);
                 }
                 $module = Catfish::treeForHtml($module);
                 $mlen = count($module);
