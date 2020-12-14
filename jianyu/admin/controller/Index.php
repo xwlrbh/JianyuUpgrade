@@ -160,7 +160,7 @@ class Index extends CatfishCMS
     {
         if(Catfish::isPost(5)){
             $id = Catfish::getPost('id');
-            $tmp = Catfish::db('tie')->where('id',$id)->field('uid,sid,fabushijian,tietype')->find();
+            $tmp = Catfish::db('tie')->where('id',$id)->field('uid,sid,fabushijian,tietype,tu')->find();
             $ttname = Catfish::db('tietype')->where('id',$tmp['tietype'])->field('bieming')->find();
             $ttname = 'tj' . $ttname['bieming'];
             $yue = date('Ym', strtotime($tmp['fabushijian']));
@@ -244,6 +244,12 @@ class Index extends CatfishCMS
                 echo Catfish::lang('The operation failed, please try again later');
                 exit();
             }
+            $params = [
+                'id' => $id,
+                'uid' => $tmp['uid'],
+                'tu' => $tmp['tu']
+            ];
+            $this->plantHook('deleteMainPost', $params);
             Catfish::removeCache('post_'.$id);
             Catfish::clearCache('postgentie_'.$id);
             echo 'ok';

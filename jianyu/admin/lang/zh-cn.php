@@ -428,4 +428,5 @@ return [
     'Select icon' => '选择图标',
     'You did not select any icons' => '您没有选择任何图标',
     'Adjust size' => '调整大小',
+    'Online payment requires third-party payment, and third-party payment currently requires merchant qualification. For individual users, please add points manually through the "User Points" page' => '在线支付需要第三方支付，第三方支付目前都需要商户资格，个人用户请通过“用户积分”页手动增加积分',
 ];

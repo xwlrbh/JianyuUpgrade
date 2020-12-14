@@ -171,6 +171,13 @@ class CatfishCMS
         }
         $urlarr = Catfish::getCache('urlarr_'.$order);
         if($urlarr === false){
+            $faceUrl = [];
+            $faces = glob(ROOT_PATH.$this->tempPath.$this->template.DS.'face'.DS.'*.html');
+            foreach($faces as $key => $val){
+                $find = basename($val);
+                $find = substr($find, 0, strrpos($find, '.'));
+                $faceUrl[$find] = Catfish::url('index/Index/face', ['find' => $find]);
+            }
             $urlarr = [
                 'default' => empty($order) ? '?order=default' : '?'.$order.'&order=default',
                 'reply' => empty($order) ? '?order=reply' : '?'.$order.'&order=reply',
@@ -194,7 +201,8 @@ class CatfishCMS
                 'huifu' => Catfish::url('index/Index/huifu'),
                 'fatie' => Catfish::url('user/Index/index'),
                 'feedback' => Catfish::url('index/Index/feedback'),
-                'qiandao' => Catfish::url('index/Index/qiandao')
+                'qiandao' => Catfish::url('index/Index/qiandao'),
+                'face' => $faceUrl
             ];
             Catfish::setCache('urlarr_'.$order,$urlarr,$this->time);
         }

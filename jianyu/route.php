@@ -43,5 +43,6 @@ return [
     'payinstall' => 'pay/Index/payinstall',
     'wechat' => 'pay/Index/wechat',
     'payqrcode' => 'pay/Index/payqrcode',
-    'wxnotify' => 'pay/Index/wxnotify'
+    'wxnotify' => 'pay/Index/wxnotify',
+    'face/:find' => 'index/Index/face',
 ];

@@ -560,7 +560,7 @@ class Index extends CatfishCMS
     {
         if(Catfish::isPost(20)){
             $id = Catfish::getPost('id');
-            $tmp = Catfish::db('tie')->where('id',$id)->field('uid,sid,fabushijian,tietype')->find();
+            $tmp = Catfish::db('tie')->where('id',$id)->field('uid,sid,fabushijian,tietype,tu')->find();
             if($tmp['uid'] != Catfish::getSession('user_id')){
                 echo Catfish::lang('Your operation is illegal');
                 exit();
@@ -648,6 +648,12 @@ class Index extends CatfishCMS
                 echo Catfish::lang('The operation failed, please try again later');
                 exit();
             }
+            $params = [
+                'id' => $id,
+                'uid' => $tmp['uid'],
+                'tu' => $tmp['tu']
+            ];
+            $this->plantHook('deleteMainPost', $params);
             Catfish::removeCache('post_'.$id);
             Catfish::clearCache('postgentie_'.$id);
             echo 'ok';
@@ -667,7 +673,12 @@ class Index extends CatfishCMS
         $file->validate($validate);
         $info = $file->move(ROOT_PATH . 'data' . DS . 'uploads');
         if($info){
-            echo Catfish::domain().'data/uploads/'.str_replace('\\','/',$info->getSaveName());
+            $position = 'data/uploads/'.str_replace('\\','/',$info->getSaveName());
+            $params = [
+                'address' => $position
+            ];
+            $this->plantHook('editorUpload', $params);
+            echo Catfish::domain().$position;
         }else{
             echo $file->getError();
         }
@@ -975,7 +986,7 @@ class Index extends CatfishCMS
         if(Catfish::isPost(20)){
             $id = intval(Catfish::getPost('id'));
             $uid = Catfish::getSession('user_id');
-            $tmp = Catfish::db('tie')->where('id',$id)->field('uid,sid,fabushijian,tietype')->find();
+            $tmp = Catfish::db('tie')->where('id',$id)->field('uid,sid,fabushijian,tietype,tu')->find();
             $fumt = Catfish::db('mod_sec_ontact')->where('sid',$tmp['sid'])->where('uid',$uid)->field('mtype')->find();
             if(empty($fumt) || $fumt['mtype'] < 15){
                 echo Catfish::lang('Your operation is illegal');
@@ -1069,6 +1080,12 @@ class Index extends CatfishCMS
                 echo Catfish::lang('The operation failed, please try again later');
                 exit();
             }
+            $params = [
+                'id' => $id,
+                'uid' => $tmp['uid'],
+                'tu' => $tmp['tu']
+            ];
+            $this->plantHook('deleteMainPost', $params);
             Catfish::removeCache('post_'.$id);
             Catfish::clearCache('postgentie_'.$id);
             echo 'ok';

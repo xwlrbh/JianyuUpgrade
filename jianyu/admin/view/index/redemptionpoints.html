@@ -12,7 +12,8 @@
 </form>
 {if condition="$openpay != 1"}
 <div class="alert alert-light" role="alert">
-    {:lang('Redemption of points is used for online payment, additional purchase is required to use the online payment function, please contact the official email of the swordfish forum: ')}804644245@qq.com
+    <p>{:lang('Redemption of points is used for online payment, additional purchase is required to use the online payment function, please contact the official email of the swordfish forum: ')}804644245@qq.com</p>
+    <p>{:lang('Online payment requires third-party payment, and third-party payment currently requires merchant qualification. For individual users, please add points manually through the "User Points" page')}</p>
 </div>
 {/if}
 {include file="index/footer" /}

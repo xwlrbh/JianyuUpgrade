@@ -156,6 +156,40 @@ class Index extends CatfishCMS
         }
         return $htmls;
     }
+    public function face($find = '')
+    {
+        $this->readydisplay();
+        $title = Catfish::lang('Column');
+        $tempath = ROOT_PATH.$this->tempPath.$this->template.DS.'face'.DS.$find.'.html';
+        if(is_file($tempath)){
+            $file = file($tempath);
+            $first = trim($file[0]);
+            if(substr($first, 0, 4) == '<!--' && substr($first, -3) == '-->'){
+                $title = substr($first, 4, strlen($first)-7);
+                $title = Catfish::lang($title);
+            }
+        }
+        else{
+            Catfish::toError();
+        }
+        Catfish::allot('daohang', [
+            [
+                'label' => Catfish::lang('Home'),
+                'href' => Catfish::url('index/Index/index'),
+                'icon' => '',
+                'active' => 0
+            ],
+            [
+                'label' => $title,
+                'href' => Catfish::url('index/Index/face', ['find' => $find]),
+                'icon' => '',
+                'active' => 0
+            ]
+        ]);
+        Catfish::allot('biaoti',$title);
+        $htmls = $this->show('face/'.$find);
+        return $htmls;
+    }
     public function gentie()
     {
         if(Catfish::isLogin()){
