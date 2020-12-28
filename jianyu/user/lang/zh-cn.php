@@ -200,4 +200,12 @@ return [
     'Posts visited' => '访问过的帖子',
     'Browse time' => '浏览时间',
     'Other' => '其他',
+    'Video' => '视频',
+    'Uploading video, please wait...' => '正在上传视频，请稍等...',
+    'No uploaded files' => '没有上传的文件',
+    'Upload failed' => '上传失败',
+    'Maximum uploadable file size allowed by the server' => '服务器允许的最大可上传文件大小',
+    'Video has been uploaded' => '视频已经上传',
+    'Points are required to watch video' => '看视频需要积分',
+    'No points required' => '不需要积分',
 ];

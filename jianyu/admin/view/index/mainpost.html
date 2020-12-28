@@ -42,7 +42,7 @@
         <tbody>
         {volist name="catfishcms" id="vo"}
         <tr>
-            <td><a class="text-info" href="{:Url('index/Index/post',['find'=>$vo.id])}" target="_blank">{$vo.biaoti}</a>{if condition="$vo.annex eq 1"}&nbsp;<i class="fa fa-paperclip text-info"></i>{/if}<i class="fa fa-eye ml-2 text-info viewpost" aria-hidden="true" data-toggle="modal" data-target="#postModal" title="{:lang('View post')}" data-pid="{$vo.id}" style="cursor: pointer"></i></td>
+            <td><a class="text-info" href="{:Url('index/Index/post',['find'=>$vo.id])}" target="_blank">{$vo.biaoti}</a>{if condition="$vo.annex eq 1"}&nbsp;<i class="fa fa-paperclip text-info"></i>{/if}{if condition="$vo.video eq 1"}&nbsp;<i class="fa fa-film text-info"></i>{/if}<i class="fa fa-eye ml-2 text-info viewpost" aria-hidden="true" data-toggle="modal" data-target="#postModal" title="{:lang('View post')}" data-pid="{$vo.id}" style="cursor: pointer"></i></td>
             <td class="text-center">{$vo.tietype}</td>
             <td>{$vo.yonghu}</td>
             <td>{$vo.nicheng}</td>

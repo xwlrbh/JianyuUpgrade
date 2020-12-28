@@ -69,7 +69,7 @@ class Index extends CatfishCMS
             $yonghuming = '';
         }
         $query = [];
-        $catfish = Catfish::view('tie','id,fabushijian,biaoti,review,yuedu,fstop,fsrecommended,jingpin,tietype,annex')
+        $catfish = Catfish::view('tie','id,fabushijian,biaoti,review,yuedu,fstop,fsrecommended,jingpin,tietype,annex,video')
             ->view('users','yonghu,nicheng,touxiang','users.id=tie.uid');
         if($guanjianzi != ''){
             $catfish = $catfish->where('tie.biaoti','like','%'.$guanjianzi.'%');
@@ -160,7 +160,7 @@ class Index extends CatfishCMS
     {
         if(Catfish::isPost(5)){
             $id = Catfish::getPost('id');
-            $tmp = Catfish::db('tie')->where('id',$id)->field('uid,sid,fabushijian,tietype,tu')->find();
+            $tmp = Catfish::db('tie')->where('id',$id)->field('uid,sid,fabushijian,tietype,shipin,tu')->find();
             $ttname = Catfish::db('tietype')->where('id',$tmp['tietype'])->field('bieming')->find();
             $ttname = 'tj' . $ttname['bieming'];
             $yue = date('Ym', strtotime($tmp['fabushijian']));
@@ -247,7 +247,8 @@ class Index extends CatfishCMS
             $params = [
                 'id' => $id,
                 'uid' => $tmp['uid'],
-                'tu' => $tmp['tu']
+                'tu' => $tmp['tu'],
+                'shipin' => $tmp['shipin']
             ];
             $this->plantHook('deleteMainPost', $params);
             Catfish::removeCache('post_'.$id);
@@ -1229,7 +1230,10 @@ class Index extends CatfishCMS
                     'fpreaudit' => Catfish::getPost('fpreaudit'),
                     'jifen' => Catfish::getPost('jifen'),
                     'jifendj' => Catfish::getPost('jifendj'),
-                    'kzleixing' => $kzleixing
+                    'kzleixing' => $kzleixing,
+                    'shipin' => Catfish::getPost('shipin'),
+                    'shipindj' => Catfish::getPost('shipindj'),
+                    'shipinkan' => Catfish::getPost('shipinkan')
                 ]);
             $tietype = Catfish::db('tietype')->where('id',3)->field('id')->find();
             if(empty($tietype) && $kzleixing != ''){
@@ -1252,7 +1256,7 @@ class Index extends CatfishCMS
             echo 'ok';
             exit();
         }
-        $forum = Catfish::db('forum')->where('id',1)->field('fujian,fujiandj,fujiandwn,tiezi,tupian,tupiandj,lianjie,lianjiedj,yanzhengzt,yanzhenggt,shichangzt,shichanggt,geshi,mingan,preaudit,fpreaudit,jifen,jifendj,kzleixing')->find();
+        $forum = Catfish::db('forum')->where('id',1)->field('fujian,fujiandj,fujiandwn,tiezi,tupian,tupiandj,lianjie,lianjiedj,yanzhengzt,yanzhenggt,shichangzt,shichanggt,geshi,mingan,preaudit,fpreaudit,jifen,jifendj,kzleixing,shipin,shipindj,shipinkan')->find();
         Catfish::allot('forum', $forum);
         $extend = Catfish::iszero(Catfish::remind()) ? 0 : 1;
         Catfish::allot('extend', $extend);

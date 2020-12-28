@@ -79,6 +79,35 @@
         <small class="form-text text-muted">{:lang('This level setting is only valid when allowing normal users to send links')}</small>
     </div>
     <div class="form-group">
+        <label>{:lang('Video')}</label>
+        <select class="form-control" name="shipin">
+            <option value="0"{if condition="$forum.shipin eq 0"} selected{/if}>{:lang('Allow regular users to post video')}</option>
+            <option value="5"{if condition="$forum.shipin eq 5"} selected{/if}>{:lang('Allow internship moderators and above to post video')}</option>
+            <option value="10"{if condition="$forum.shipin eq 10"} selected{/if}>{:lang('Allow sub-moderators and above to post video')}</option>
+            <option value="15"{if condition="$forum.shipin eq 15"} selected{/if}>{:lang('Allow moderators and above to post video')}</option>
+            <option value="20"{if condition="$forum.shipin eq 20"} selected{/if}>{:lang('Allow ordinary administrators and above to post video')}</option>
+            <option value="25"{if condition="$forum.shipin eq 25"} selected{/if}>{:lang('Allow advanced administrators and above to post video')}</option>
+            <option value="30"{if condition="$forum.shipin eq 30"} selected{/if}>{:lang('Only allow founders to post video')}</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>{:lang('Minimum user level allowed to post video')}</label>
+        <select class="form-control" name="shipindj">
+            {volist name="dengji" id="vo"}
+            <option value="{$vo.jibie}"{if condition="$forum.shipindj eq $vo.jibie"} selected{/if}>{$vo.djname}</option>
+            {/volist}
+        </select>
+        <small class="form-text text-muted">{:lang('This level setting is only valid when allowing ordinary users to post video')}</small>
+    </div>
+    <div class="form-group">
+        <label>{:lang('Watch the video')}</label>
+        <select class="form-control" name="shipinkan">
+            <option value="0"{if condition="$forum.shipinkan eq 0"} selected{/if}>{:lang('Allow everyone to watch')}</option>
+            <option value="5"{if condition="$forum.shipinkan eq 5"} selected{/if}>{:lang('Only allow you to watch after login')}</option>
+            <option value="10"{if condition="$forum.shipinkan eq 10"} selected{/if}>{:lang('Only allow responses to watch')}</option>
+        </select>
+    </div>
+    <div class="form-group">
         <label>{:lang('Integral')}</label>
         <select class="form-control" name="jifen">
             <option value="0"{if condition="$forum.jifen eq 0"} selected{/if}>{:lang('Allow ordinary users to set integral value')}</option>

@@ -387,6 +387,29 @@ class CatfishCMS
                 $myforum['jifen'] = ($utype == 1) ? 1 : 0;
                 break;
         }
+        switch($forum['shipin']){
+            case 0:
+                $myforum['shipin'] = ($forum['shipindj'] <= $dengji || $utype < 20 || $mtype > 0) ? 1 : 0;
+                break;
+            case 5:
+                $myforum['shipin'] = ($mtype >= 5 || $utype <= 5) ? 1 : 0;
+                break;
+            case 10:
+                $myforum['shipin'] = ($mtype >= 10 || $utype <= 5) ? 1 : 0;
+                break;
+            case 15:
+                $myforum['shipin'] = ($mtype >= 15 || $utype <= 5) ? 1 : 0;
+                break;
+            case 20:
+                $myforum['shipin'] = ($utype <= 5) ? 1 : 0;
+                break;
+            case 25:
+                $myforum['shipin'] = ($utype <= 3) ? 1 : 0;
+                break;
+            case 30:
+                $myforum['shipin'] = ($utype == 1) ? 1 : 0;
+                break;
+        }
         return $myforum;
     }
     protected function checkIllegal($str, $rule)

@@ -948,7 +948,7 @@ class Catfish
     {
         $forum = self::getCache('forumsettings');
         if($forum === false){
-            $forum = self::db('forum')->where('id',1)->field('fujian,fujiandj,fujiandwn,tiezi,tupian,tupiandj,lianjie,lianjiedj,yanzhengzt,yanzhenggt,shichangzt,shichanggt,geshi,mingan,preaudit,fpreaudit,jifen,jifendj')->find();
+            $forum = self::db('forum')->where('id',1)->field('fujian,fujiandj,fujiandwn,tiezi,tupian,tupiandj,lianjie,lianjiedj,yanzhengzt,yanzhenggt,shichangzt,shichanggt,geshi,mingan,preaudit,fpreaudit,jifen,jifendj,shipin,shipindj,shipinkan')->find();
             self::setCache('forumsettings',$forum,86400);
         }
         return $forum;

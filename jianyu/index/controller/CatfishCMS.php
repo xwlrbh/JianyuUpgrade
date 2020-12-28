@@ -359,7 +359,7 @@ class CatfishCMS
         $shouye = Catfish::getCache($cachename);
         if($shouye === false){
             $subQuery = $this->getfstop();
-            $zhiding = Catfish::view('tie','id,uid,sid,fabushijian,biaoti,zhaiyao,isclose as jietie,lastvisit as zuijinfangwen,commentime as zuijinpinglun,luid,pinglunshu as gentieliang,yuedu,zan,cai,shoucang,cangtime as zuijinshoucang,fstop as zhiding,fsrecommended as tuijian,jingpin,tietype as leixing,annex as daifujian,tu,pinglun')
+            $zhiding = Catfish::view('tie','id,uid,sid,fabushijian,biaoti,zhaiyao,isclose as jietie,lastvisit as zuijinfangwen,commentime as zuijinpinglun,luid,pinglunshu as gentieliang,yuedu,zan,cai,shoucang,cangtime as zuijinshoucang,fstop as zhiding,fsrecommended as tuijian,jingpin,tietype as leixing,annex as daifujian,video as daishipin,shipin,tu,pinglun,jifenleixing')
                 ->view('users','nicheng,touxiang,createtime as jiaru,lastlogin as zuijindenglu,lastonline as zuijinzaixian,dengji,fatie as uzhutie,pinglun as ugentie','users.id=tie.uid')
                 ->where('tie.id','in',$subQuery)
                 ->where('tie.status','=',1)
@@ -367,7 +367,7 @@ class CatfishCMS
                 ->order($orderstr.'tie.id desc')
                 ->select();
             $shouye['zhiding'] = $this->filterResults($zhiding);
-            $data = Catfish::view('tie','id,uid,sid,fabushijian,biaoti,zhaiyao,isclose as jietie,lastvisit as zuijinfangwen,commentime as zuijinpinglun,luid,pinglunshu as gentieliang,yuedu,zan,cai,shoucang,cangtime as zuijinshoucang,fstop as zhiding,fsrecommended as tuijian,jingpin,tietype as leixing,annex as daifujian,tu,pinglun')
+            $data = Catfish::view('tie','id,uid,sid,fabushijian,biaoti,zhaiyao,isclose as jietie,lastvisit as zuijinfangwen,commentime as zuijinpinglun,luid,pinglunshu as gentieliang,yuedu,zan,cai,shoucang,cangtime as zuijinshoucang,fstop as zhiding,fsrecommended as tuijian,jingpin,tietype as leixing,annex as daifujian,video as daishipin,shipin,tu,pinglun,jifenleixing')
                 ->view('users','nicheng,touxiang,createtime as jiaru,lastlogin as zuijindenglu,lastonline as zuijinzaixian,dengji,fatie as uzhutie,pinglun as ugentie','users.id=tie.uid')
                 ->where('tie.status','=',1)
                 ->where('tie.review','=',1)
@@ -456,7 +456,7 @@ class CatfishCMS
         $column = Catfish::getCache($cachename);
         if($column === false){
             $subQuery = $this->gettop($find, $subSort['idstr']);
-            $zhiding = Catfish::view('tie','id,uid,sid,fabushijian,biaoti,zhaiyao,isclose as jietie,lastvisit as zuijinfangwen,commentime as zuijinpinglun,luid,pinglunshu as gentieliang,yuedu,zan,cai,shoucang,cangtime as zuijinshoucang,istop as zhiding,recommended as tuijian,jingpin,tietype as leixing,annex as daifujian,tu,pinglun')
+            $zhiding = Catfish::view('tie','id,uid,sid,fabushijian,biaoti,zhaiyao,isclose as jietie,lastvisit as zuijinfangwen,commentime as zuijinpinglun,luid,pinglunshu as gentieliang,yuedu,zan,cai,shoucang,cangtime as zuijinshoucang,istop as zhiding,recommended as tuijian,jingpin,tietype as leixing,annex as daifujian,video as daishipin,shipin,tu,pinglun,jifenleixing')
                 ->view('users','nicheng,touxiang,createtime as jiaru,lastlogin as zuijindenglu,lastonline as zuijinzaixian,dengji,fatie as uzhutie,pinglun as ugentie','users.id=tie.uid')
                 ->where('tie.id','in',$subQuery)
                 ->where('tie.status','=',1)
@@ -464,7 +464,7 @@ class CatfishCMS
                 ->order($orderstr.'tie.id desc')
                 ->select();
             $column['zhiding'] = $this->filterResults($zhiding);
-            $data = Catfish::view('tie','id,uid,sid,fabushijian,biaoti,zhaiyao,isclose as jietie,lastvisit as zuijinfangwen,commentime as zuijinpinglun,luid,pinglunshu as gentieliang,yuedu,zan,cai,shoucang,cangtime as zuijinshoucang,istop as zhiding,recommended as tuijian,jingpin,tietype as leixing,annex as daifujian,tu,pinglun')
+            $data = Catfish::view('tie','id,uid,sid,fabushijian,biaoti,zhaiyao,isclose as jietie,lastvisit as zuijinfangwen,commentime as zuijinpinglun,luid,pinglunshu as gentieliang,yuedu,zan,cai,shoucang,cangtime as zuijinshoucang,istop as zhiding,recommended as tuijian,jingpin,tietype as leixing,annex as daifujian,video as daishipin,shipin,tu,pinglun,jifenleixing')
                 ->view('users','nicheng,touxiang,createtime as jiaru,lastlogin as zuijindenglu,lastonline as zuijinzaixian,dengji,fatie as uzhutie,pinglun as ugentie','users.id=tie.uid')
                 ->where('tie.sid','in',$subSort['idstr'])
                 ->where('tie.status','=',1)
@@ -519,7 +519,7 @@ class CatfishCMS
         $cachename = 'post_'.$find;
         $post = Catfish::getCache($cachename);
         if($post === false){
-            $post = Catfish::view('tie','id,uid,sid,guanjianzi,fabushijian,biaoti,zhaiyao,closecomment as guanbipinglun,isclose as jietie,lastvisit as zuijinfangwen,pinglunshu as gentieliang,yuedu,zan,cai,shoucang,cangtime as zuijinshoucang,istop as zhiding,recommended as tuijian,jingpin,tietype as leixing,annex as daifujian,jifenleixing,jifen')
+            $post = Catfish::view('tie','id,uid,sid,guanjianzi,fabushijian,biaoti,zhaiyao,closecomment as guanbipinglun,isclose as jietie,lastvisit as zuijinfangwen,pinglunshu as gentieliang,yuedu,zan,cai,shoucang,cangtime as zuijinshoucang,istop as zhiding,recommended as tuijian,jingpin,tietype as leixing,annex as daifujian,video as daishipin,shipin,jifenleixing,jifen')
                 ->view('tienr','laiyuan,zhengwen,fujian,fujianming,fjsize as daxiao','tienr.tid=tie.id')
                 ->view('users','nicheng,touxiang,qianming,createtime as jiaru,lastlogin as zuijindenglu,lastonline as zuijinzaixian,dengji,fatie as uzhutie,pinglun as ugentie,jingpin as jingpinliang,chengzhang','users.id=tie.uid')
                 ->where('tie.id','=',$find)
@@ -653,7 +653,6 @@ class CatfishCMS
             $gentie['pages'] = $pages;
             Catfish::tagCache('postgentie_'.$find)->set($cachename,$gentie,$this->time);
         }
-        $quanxian = [];
         if(!empty($post)){
             $ispaid = 0;
             if($post['jifenleixing'] == 1 && $post['jifen'] > 0){
@@ -688,40 +687,82 @@ class CatfishCMS
             if($quanxian['liulan'] == 1){
                 $post['zhengwen'] = Catfish::lang('Log in to view posts');
             }
-        }
-        if(isset($post['daifujian']) && $post['daifujian'] == 1){
-            $ispaidown = 1;
-            if($quanxian['fujian'] == 1){
-                $post['fujianurl'] = Catfish::lang('You can download attachments after logging in');
-            }
-            elseif($quanxian['fujian'] == 2){
-                $post['fujianurl'] = Catfish::lang('After replying, you can download attachments');
-            }
-            elseif($post['jifenleixing'] == 2 && $post['jifen'] > 0){
-                $ispaidown = 0;
-                if(Catfish::hasSession('user_id')){
-                    $uid = Catfish::getSession('user_id');
-                    if($uid == $post['uid']){
-                        $ispaidown = 1;
-                    }
-                    else{
-                        $paid = Catfish::db('tie_jifen')->where('uid', $uid)->where('tid', $post['id'])->field('id')->limit(1)->find();
-                        if(!empty($paid)){
+            if(isset($post['daifujian']) && $post['daifujian'] == 1){
+                $ispaidown = 1;
+                if($ispaid == 0){
+                    $ispaidown = 0;
+                    $post['fujianurl'] = '';
+                }
+                elseif($quanxian['fujian'] == 1){
+                    $post['fujianurl'] = Catfish::lang('You can download attachments after logging in');
+                }
+                elseif($quanxian['fujian'] == 2){
+                    $post['fujianurl'] = Catfish::lang('After replying, you can download attachments');
+                }
+                elseif($post['jifenleixing'] == 2 && $post['jifen'] > 0){
+                    $ispaidown = 0;
+                    if(Catfish::hasSession('user_id')){
+                        $uid = Catfish::getSession('user_id');
+                        if($uid == $post['uid']){
                             $ispaidown = 1;
+                        }
+                        else{
+                            $paid = Catfish::db('tie_jifen')->where('uid', $uid)->where('tid', $post['id'])->field('id')->limit(1)->find();
+                            if(!empty($paid)){
+                                $ispaidown = 1;
+                            }
+                        }
+                    }
+                    if($ispaidown == 0){
+                        $post['fujianurl'] = Catfish::lang('You need to pay ') . $post['jifen'] . Catfish::lang(' points to download the attachment');
+                        if(!Catfish::hasSession('user_id')){
+                            $post['fujianurl'] .= ' <a href="' . Catfish::url('login/Index/index') . '?jumpto=' . urlencode(Catfish::url('index/Index/post', ['find' => $post['id']])) . '">' . Catfish::lang('Please log in first') . '</a>';
+                        }
+                        else{
+                            $post['fujianurl'] .= ' <button type="button" id="paypoints" class="btn btn-light">' . Catfish::lang('Pay immediately') . '<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button><span id="paypointsresult" style="color:#dd0000;margin-left:10px"></span><script src="' . Catfish::domain() . 'public/common/js/paypoints.js"></script>';
                         }
                     }
                 }
-                if($ispaidown == 0){
-                    $post['fujianurl'] = Catfish::lang('You need to pay ') . $post['jifen'] . Catfish::lang(' points to download the attachment');
-                    if(!Catfish::hasSession('user_id')){
-                        $post['fujianurl'] .= ' <a href="' . Catfish::url('login/Index/index') . '?jumpto=' . urlencode(Catfish::url('index/Index/post', ['find' => $post['id']])) . '">' . Catfish::lang('Please log in first') . '</a>';
+                $post['xiazaiyifujifen'] = $ispaidown;
+            }
+            if(isset($post['daishipin']) && $post['daishipin'] == 1){
+                $ispaidsp = 1;
+                if($ispaid == 0){
+                    $ispaidsp = 0;
+                    $post['shipin'] = '';
+                }
+                elseif($quanxian['shipin'] == 1){
+                    $post['shipin'] = Catfish::lang('You can view the video after logging in');
+                }
+                elseif($quanxian['shipin'] == 2){
+                    $post['shipin'] = Catfish::lang('You can view the video after replying');
+                }
+                elseif($post['jifenleixing'] == 3 && $post['jifen'] > 0){
+                    $ispaidsp = 0;
+                    if(Catfish::hasSession('user_id')){
+                        $uid = Catfish::getSession('user_id');
+                        if($uid == $post['uid']){
+                            $ispaidsp = 1;
+                        }
+                        else{
+                            $paid = Catfish::db('tie_jifen')->where('uid', $uid)->where('tid', $post['id'])->field('id')->limit(1)->find();
+                            if(!empty($paid)){
+                                $ispaidsp = 1;
+                            }
+                        }
                     }
-                    else{
-                        $post['fujianurl'] .= ' <button type="button" id="paypoints" class="btn btn-light">' . Catfish::lang('Pay immediately') . '<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button><span id="paypointsresult" style="color:#dd0000;margin-left:10px"></span><script src="' . Catfish::domain() . 'public/common/js/paypoints.js"></script>';
+                    if($ispaidsp == 0){
+                        $post['shipin'] = Catfish::lang('You need to pay ') . $post['jifen'] . Catfish::lang(' points to watch the video');
+                        if(!Catfish::hasSession('user_id')){
+                            $post['shipin'] .= ' <a href="' . Catfish::url('login/Index/index') . '?jumpto=' . urlencode(Catfish::url('index/Index/post', ['find' => $post['id']])) . '">' . Catfish::lang('Please log in first') . '</a>';
+                        }
+                        else{
+                            $post['shipin'] .= ' <button type="button" id="paypoints" class="btn btn-light">' . Catfish::lang('Pay immediately') . '<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button><span id="paypointsresult" style="color:#dd0000;margin-left:10px"></span><script src="' . Catfish::domain() . 'public/common/js/paypoints.js"></script>';
+                        }
                     }
                 }
+                $post['shipinyifujifen'] = $ispaidsp;
             }
-            $post['xiazaiyifujifen'] = $ispaidown;
         }
         $jianyu['zhutie'] = $post;
         $jianyu['gentie'] = $gentie;
@@ -801,6 +842,7 @@ class CatfishCMS
             $leixing = $this->gettypeidname();
             $dengji = $this->getdjidname();
             $domain = Catfish::domain();
+            $forum = Catfish::getForum();
             foreach($results as $key => $val){
                 if(!empty($val['touxiang'])){
                     $results[$key]['touxiang'] = $domain . 'data/avatar/' . $val['touxiang'];
@@ -872,6 +914,24 @@ class CatfishCMS
                         $results[$key]['shoutu'] = '';
                     }
                 }
+                if(!empty($val['shipin']) && !in_array($val['jifenleixing'], [1,3]) && $forum['shipinkan'] == 0){
+                    $shipindz = $val['shipin'];
+                    $results[$key]['shipinkuozhanming'] = pathinfo($shipindz, PATHINFO_EXTENSION);
+                    if(substr($shipindz, 0, 5) == 'data/'){
+                        $shipindz = $domain . $shipindz;
+                    }
+                    $results[$key]['shipindizhi'] = $shipindz;
+                    $results[$key]['shipin'] = '<video src="'.$shipindz.'" controls="controls">
+'.Catfish::lang('Your browser does not support the video tag').'
+</video>';
+                }
+                else{
+                    $results[$key]['daishipin'] = 0;
+                    $results[$key]['shipinkuozhanming'] = '';
+                    $results[$key]['shipindizhi'] = '';
+                    $results[$key]['shipin'] = '';
+                }
+                unset($results[$key]['jifenleixing']);
                 if(isset($val['pinglun'])){
                     if(!empty($val['pinglun'])){
                         $tmpl = unserialize($val['pinglun']);
@@ -952,8 +1012,9 @@ class CatfishCMS
     private function filterPost(&$post)
     {
         $now = time();
+        $domain = Catfish::domain();
         if(!empty($post['touxiang'])){
-            $post['touxiang'] = Catfish::domain() . 'data/avatar/' . $post['touxiang'];
+            $post['touxiang'] = $domain . 'data/avatar/' . $post['touxiang'];
         }
         $post['shicha']['fabushijian'] = $this->timedif($post['fabushijian'], $now);
         $post['shicha']['jiaru'] = $this->timedif($post['jiaru'], $now);
@@ -996,11 +1057,11 @@ class CatfishCMS
         $post['leixing'] = $leixing[$post['leixing']];
         $post['dengjiming'] = $dengji[$post['dengji']];
         if(empty($post['touxiang'])){
-            $post['touxiang'] = Catfish::domain().'public/common/images/avatar.png';
+            $post['touxiang'] = $domain.'public/common/images/avatar.png';
         }
         if(!empty($post['fujian'])){
             $tmpfj = explode('/', $post['fujian']);
-            $fjurl = Catfish::domain().$post['fujian'];
+            $fjurl = $domain.$post['fujian'];
             $fjnm = end($tmpfj);
             $post['fujian'] = $fjurl;
             $post['fujianurl'] = '<a href="'.$fjurl.'" download="'.$fjnm.'">'.$post['fujianming'].'</a>';
@@ -1020,6 +1081,22 @@ class CatfishCMS
             else{
                 $post['daxiao'] = $post['daxiao'] . 'B';
             }
+        }
+        if(!empty($post['shipin'])){
+            $shipindz = $post['shipin'];
+            $post['shipinkuozhanming'] = pathinfo($shipindz, PATHINFO_EXTENSION);
+            if(substr($shipindz, 0, 5) == 'data/'){
+                $shipindz = $domain . $shipindz;
+            }
+            $post['shipindizhi'] = $shipindz;
+            $post['shipin'] = '<video src="'.$shipindz.'" controls="controls">
+'.Catfish::lang('Your browser does not support the video tag').'
+</video>';
+        }
+        else{
+            $post['shipinkuozhanming'] = '';
+            $post['shipindizhi'] = '';
+            $post['shipin'] = '';
         }
     }
     private function gettop($find, $subSort)
@@ -1079,7 +1156,12 @@ class CatfishCMS
                 ->field('id,tpname')
                 ->select();
             foreach($leixingarr as $key => $val){
-                $leixing[$val['id']] = Catfish::lang(ucfirst($val['tpname']));
+                if(!empty($val['tpname'])){
+                    $leixing[$val['id']] = Catfish::lang(ucfirst($val['tpname']));
+                }
+                else{
+                    $leixing[$val['id']] = $val['tpname'];
+                }
             }
             Catfish::setCache('leixing_id_name', $leixing, $this->time);
         }
@@ -1388,7 +1470,7 @@ class CatfishCMS
         $column = Catfish::getCache($cachename);
         if($column === false){
             $column['zhiding'] = [];
-            $data = Catfish::view('tie','id,uid,sid,fabushijian,biaoti,zhaiyao,isclose as jietie,lastvisit as zuijinfangwen,commentime as zuijinpinglun,luid,pinglunshu as gentieliang,yuedu,zan,cai,shoucang,cangtime as zuijinshoucang,fstop as zhiding,fsrecommended as tuijian,jingpin,tietype as leixing,annex as daifujian,tu,pinglun')
+            $data = Catfish::view('tie','id,uid,sid,fabushijian,biaoti,zhaiyao,isclose as jietie,lastvisit as zuijinfangwen,commentime as zuijinpinglun,luid,pinglunshu as gentieliang,yuedu,zan,cai,shoucang,cangtime as zuijinshoucang,fstop as zhiding,fsrecommended as tuijian,jingpin,tietype as leixing,annex as daifujian,video as daishipin,shipin,tu,pinglun,jifenleixing')
                 ->view('users','nicheng,touxiang,createtime as jiaru,lastlogin as zuijindenglu,lastonline as zuijinzaixian,dengji,fatie as uzhutie,pinglun as ugentie','users.id=tie.uid')
                 ->where('tie.biaoti|tie.zhaiyao','like','%'.$find.'%')
                 ->where('tie.status','=',1)
@@ -1441,7 +1523,7 @@ class CatfishCMS
             $tparr = Catfish::db('tietype')->where('id', $find)->field('tpname')->find();
             $tpname = Catfish::lang($tparr['tpname']);
             $column['leixing'] = $tpname;
-            $data = Catfish::view('tie','id,uid,sid,fabushijian,biaoti,zhaiyao,isclose as jietie,lastvisit as zuijinfangwen,commentime as zuijinpinglun,luid,pinglunshu as gentieliang,yuedu,zan,cai,shoucang,cangtime as zuijinshoucang,fstop as zhiding,fsrecommended as tuijian,jingpin,tietype as leixing,annex as daifujian,tu,pinglun')
+            $data = Catfish::view('tie','id,uid,sid,fabushijian,biaoti,zhaiyao,isclose as jietie,lastvisit as zuijinfangwen,commentime as zuijinpinglun,luid,pinglunshu as gentieliang,yuedu,zan,cai,shoucang,cangtime as zuijinshoucang,fstop as zhiding,fsrecommended as tuijian,jingpin,tietype as leixing,annex as daifujian,video as daishipin,shipin,tu,pinglun,jifenleixing')
                 ->view('users','nicheng,touxiang,createtime as jiaru,lastlogin as zuijindenglu,lastonline as zuijinzaixian,dengji,fatie as uzhutie,pinglun as ugentie','users.id=tie.uid')
                 ->where('tie.tietype','=',$find)
                 ->where('tie.status','=',1)
@@ -1511,6 +1593,26 @@ class CatfishCMS
                 }
             }
         }
+        $quanxian['shipin'] = 0;
+        if($forum['shipinkan'] == 5 && !Catfish::isLogin()){
+            $quanxian['shipin'] = 1;
+        }
+        if($forum['shipinkan'] == 10){
+            if(!Catfish::isLogin()){
+                $quanxian['shipin'] = 2;
+            }
+            else{
+                $uid = Catfish::getSession('user_id');
+                $shipinkan = Catfish::getCache('shipinkan_'.$tid.'_'.$uid);
+                if($shipinkan === false){
+                    $shipinkan = Catfish::db('tie_comm_ontact')->where('tid', $tid)->where('uid', Catfish::getSession('user_id'))->field('id')->find();
+                    Catfish::tagCache('shipinkan')->set('shipinkan_'.$tid.'_'.$uid,$shipinkan,$this->time);
+                }
+                if(empty($shipinkan)){
+                    $quanxian['fujian'] = 2;
+                }
+            }
+        }
         return $quanxian;
     }
     private function getModule()
@@ -1576,7 +1678,7 @@ class CatfishCMS
                         if($val['parentid'] != 0 && isset($tmparr[$val['parentid']])){
                             $module[$key]['parentid'] = $tmparr[$val['parentid']];
                         }
-                        $mod = Catfish::view('tie','id,uid,sid,fabushijian,biaoti,zhaiyao,isclose as jietie,lastvisit as zuijinfangwen,commentime as zuijinpinglun,luid,pinglunshu as gentieliang,yuedu,zan,cai,shoucang,cangtime as zuijinshoucang,fstop as zhiding,fsrecommended as tuijian,jingpin,tietype as leixing,annex as daifujian,tu,pinglun')
+                        $mod = Catfish::view('tie','id,uid,sid,fabushijian,biaoti,zhaiyao,isclose as jietie,lastvisit as zuijinfangwen,commentime as zuijinpinglun,luid,pinglunshu as gentieliang,yuedu,zan,cai,shoucang,cangtime as zuijinshoucang,fstop as zhiding,fsrecommended as tuijian,jingpin,tietype as leixing,annex as daifujian,video as daishipin,shipin,tu,pinglun,jifenleixing')
                             ->view('users','nicheng,touxiang,createtime as jiaru,lastlogin as zuijindenglu,lastonline as zuijinzaixian,dengji,fatie as uzhutie,pinglun as ugentie','users.id=tie.uid')
                             ->where('tie.sid','in',$val['idstr'])
                             ->where('tie.status','=',1)

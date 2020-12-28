@@ -56,13 +56,39 @@
         </div>
     </div>
     {/if}
+    {if condition="$forum.shipin eq 1"}
+    <div class="form-group">
+        <label>{:lang('Video')}</label>
+        <div id="shipindiv"{if condition="$tie.video neq 1"} class="d-none"{/if}>
+            <div class="float-left">
+                <span class="mr-2 text-info"><i class="fa fa-film" aria-hidden="true"></i></span>
+                <span id="shipinnameshow">{$tie.shipinming}</span>
+                <i class="fa fa-refresh fa-spin ml-2 text-info d-none" id="deleting"></i>
+                <button type="button" id="shipinclose" class="close ml-2" title="{:lang('Delete')}" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+        <div class="custom-file">
+            <input type="hidden" name="shipinname" id="shipinname" value="{$tie.shipinming}">
+            <input type="hidden" name="shipinurl" id="shipinurl" value="{$tie.shipin}">
+            <input type="file" class="custom-file-input" id="shipin" name="shipin">
+            <label class="custom-file-label" for="shipin" data-browse="{:lang('Browse')}">{:lang('Select a file')}</label>
+        </div>
+        <small class="form-text text-muted">{:lang('Maximum uploadable file size allowed by the server')}: {$maxfilesize}</small>
+    </div>
+    {/if}
     {if condition="$forum.jifen eq 1"}
     <div class="form-group">
         <label>{:lang('Points type')}</label>
         <select class="form-control" name="jifenleixing" id="jifenleixing">
+            <option value="0"{if condition="$tie.jifenleixing eq 0"} selected{/if}>{:lang('No points required')}</option>
             <option value="1"{if condition="$tie.jifenleixing eq 1"} selected{/if}>{:lang('Points are required to view posts')}</option>
             {if condition="$forum.fujian eq 1"}
             <option value="2"{if condition="$tie.jifenleixing eq 2"} selected{/if}>{:lang('Downloading attachments requires points')}</option>
+            {/if}
+            {if condition="$forum.shipin eq 1"}
+            <option value="3"{if condition="$tie.jifenleixing eq 3"} selected{/if}>{:lang('Points are required to watch video')}</option>
             {/if}
         </select>
     </div>
@@ -73,7 +99,7 @@
     </div>
     {/if}
     <div class="text-center mb-5">
-        <input type="hidden" name="tid" value="{$tie.id}">
+        <input type="hidden" id="tid" name="tid" value="{$tie.id}">
         <input type="hidden" name="verification" value="{$verification}">
         <button type="button" id="formsubmit" class="btn btn-info{if condition="$forum.fujian eq 0"} submit{/if}">{:lang('Submit')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
     </div>
@@ -83,6 +109,7 @@
 <div class="d-none" id="typeError">{:lang('Can only upload images in gif, png, jpg, jpeg format')}</div>
 <div class="d-none" id="jifenpost">{:lang('The number of points paid to the author to access this post')}</div>
 <div class="d-none" id="jifenattach">{:lang('Downloading attachments requires points paid to the author')}</div>
+<div class="d-none" id="hasuploaded">{:lang('Video has been uploaded')}</div>
 <div class="d-none" id="daitupian">{$forum.tupian}</div>
 <div class="d-none" id="dailianjie">{$forum.lianjie}</div>
 <div class="d-none" id="jumpto">{$jumpto}</div>

@@ -66,4 +66,8 @@ return [
     'Check in' => '签到',
     'Checked in' => '已签到',
     'Column' => '栏目',
+    'Your browser does not support the video tag' => '您的浏览器不支持 video 标签',
+    'You can view the video after logging in' => '登录后才能查看视频',
+    'You can view the video after replying' => '回复后才能查看视频',
+    ' points to watch the video' => '积分看视频',
 ];

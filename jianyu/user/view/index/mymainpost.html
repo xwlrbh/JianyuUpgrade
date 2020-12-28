@@ -16,7 +16,7 @@
         <tbody>
         {volist name="data" id="vo"}
         <tr>
-            <td><a class="text-info" href="{:Url('index/Index/post',['find'=>$vo.id])}" target="_blank">{$vo.biaoti}</a>{if condition="$vo.annex eq 1"}&nbsp;<i class="fa fa-paperclip text-info"></i>{/if}</td>
+            <td><a class="text-info" href="{:Url('index/Index/post',['find'=>$vo.id])}" target="_blank">{$vo.biaoti}</a>{if condition="$vo.annex eq 1"}&nbsp;<i class="fa fa-paperclip text-info"></i>{/if}{if condition="$vo.video eq 1"}&nbsp;<i class="fa fa-film text-info"></i>{/if}</td>
             <td>{$vo.fabushijian}</td>
             <td class="text-center">{$vo.yuedu}</td>
             <td class="text-center">{$vo.pinglunshu}</td>

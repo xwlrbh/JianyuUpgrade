@@ -96,11 +96,22 @@ class Index extends CatfishCMS
                 }
                 $tus = $this->extractPics($zhengwen);
                 $uid = Catfish::getSession('user_id');
+                $hasshipin = 0;
+                $shipin = '';
+                $shipinming = '';
+                if(Catfish::hasPost('shipinurl')){
+                    $shipin = Catfish::getPost('shipinurl');
+                    if(!empty($shipin)){
+                        $hasshipin = 1;
+                        $shipinming = Catfish::getPost('shipinname');
+                    }
+                }
                 $params = [
                     'biaoti' => $data['biaoti'],
                     'zhengwen' => $zhengwen,
                     'tu' => $tus,
-                    'fujian' => $fujian
+                    'fujian' => $fujian,
+                    'shipin' => $shipin
                 ];
                 $this->plantHook('publish', $params);
                 if(isset($params['biaoti'])){
@@ -128,6 +139,8 @@ class Index extends CatfishCMS
                         'ordertime' => $now,
                         'tietype' => $tietype,
                         'annex' => $annex,
+                        'video' => $hasshipin,
+                        'shipin' => $shipin,
                         'tu' => $tus,
                         'jifenleixing' => $jifenleixing,
                         'jifen' => $jifen
@@ -137,7 +150,8 @@ class Index extends CatfishCMS
                         'zhengwen' => $zhengwen,
                         'fujian' => $fujian,
                         'fujianming' => $name,
-                        'fjsize' => $size
+                        'fjsize' => $size,
+                        'shipinming' => $shipinming
                     ]);
                     Catfish::db('users')
                         ->where('id', $uid)
@@ -199,12 +213,13 @@ class Index extends CatfishCMS
         Catfish::allot('fenlei', $fenlei);
         Catfish::allot('forum', $forum);
         Catfish::allot('needvcode', $needvcode);
+        Catfish::allot('maxfilesize', ini_get('upload_max_filesize'));
         return $this->show(Catfish::lang('Send new posts'), 'sendnewposts', true);
     }
     public function mymainpost()
     {
         $this->checkUser();
-        $data = Catfish::db('tie')->where('uid', Catfish::getSession('user_id'))->where('status', 1)->field('id,fabushijian,biaoti,isclose,pinglunshu,yuedu,zan,cai,annex')->order('id desc')->paginate(20);
+        $data = Catfish::db('tie')->where('uid', Catfish::getSession('user_id'))->where('status', 1)->field('id,fabushijian,biaoti,isclose,pinglunshu,yuedu,zan,cai,annex,video')->order('id desc')->paginate(20);
         Catfish::allot('data', $data->items());
         Catfish::allot('pages', $data->render());
         return $this->show(Catfish::lang('My main post'), 'mymainpost');
@@ -448,12 +463,12 @@ class Index extends CatfishCMS
                 exit();
             }
         }
-        $tie = Catfish::db('tie')->where('id',$tid)->where('status',1)->field('id,uid,sid,biaoti,tietype,annex,jifenleixing,jifen')->find();
+        $tie = Catfish::db('tie')->where('id',$tid)->where('status',1)->field('id,uid,sid,biaoti,tietype,annex,video,shipin,jifenleixing,jifen')->find();
         if($tie['uid'] != Catfish::getSession('user_id')){
             Catfish::allot('illegal', Catfish::lang('Your operation is illegal'));
             return $this->show(Catfish::lang('Modify the main post'), 'mymainpost', false, 'illegal');
         }
-        $tienr = Catfish::db('tienr')->where('tid',$tid)->field('zhengwen,fujian,fujianming')->find();
+        $tienr = Catfish::db('tienr')->where('tid',$tid)->field('zhengwen,fujian,fujianming,shipinming')->find();
         $tienr['zhengwen'] = str_replace('&','&amp;',$tienr['zhengwen']);
         if(!empty($tienr['fujian'])){
             $tmparr = explode('/', $tienr['fujian']);
@@ -474,6 +489,7 @@ class Index extends CatfishCMS
             $jumpto = Catfish::getGet('jumpto');
         }
         Catfish::allot('jumpto', $jumpto);
+        Catfish::allot('maxfilesize', ini_get('upload_max_filesize'));
         return $this->show(Catfish::lang('Modify the main post'), 'mymainpost', true);
     }
     public function delannex()
@@ -560,7 +576,7 @@ class Index extends CatfishCMS
     {
         if(Catfish::isPost(20)){
             $id = Catfish::getPost('id');
-            $tmp = Catfish::db('tie')->where('id',$id)->field('uid,sid,fabushijian,tietype,tu')->find();
+            $tmp = Catfish::db('tie')->where('id',$id)->field('uid,sid,fabushijian,tietype,shipin,tu')->find();
             if($tmp['uid'] != Catfish::getSession('user_id')){
                 echo Catfish::lang('Your operation is illegal');
                 exit();
@@ -651,7 +667,8 @@ class Index extends CatfishCMS
             $params = [
                 'id' => $id,
                 'uid' => $tmp['uid'],
-                'tu' => $tmp['tu']
+                'tu' => $tmp['tu'],
+                'shipin' => $tmp['shipin']
             ];
             $this->plantHook('deleteMainPost', $params);
             Catfish::removeCache('post_'.$id);
@@ -986,7 +1003,7 @@ class Index extends CatfishCMS
         if(Catfish::isPost(20)){
             $id = intval(Catfish::getPost('id'));
             $uid = Catfish::getSession('user_id');
-            $tmp = Catfish::db('tie')->where('id',$id)->field('uid,sid,fabushijian,tietype,tu')->find();
+            $tmp = Catfish::db('tie')->where('id',$id)->field('uid,sid,fabushijian,tietype,shipin,tu')->find();
             $fumt = Catfish::db('mod_sec_ontact')->where('sid',$tmp['sid'])->where('uid',$uid)->field('mtype')->find();
             if(empty($fumt) || $fumt['mtype'] < 15){
                 echo Catfish::lang('Your operation is illegal');
@@ -1083,7 +1100,8 @@ class Index extends CatfishCMS
             $params = [
                 'id' => $id,
                 'uid' => $tmp['uid'],
-                'tu' => $tmp['tu']
+                'tu' => $tmp['tu'],
+                'shipin' => $tmp['shipin']
             ];
             $this->plantHook('deleteMainPost', $params);
             Catfish::removeCache('post_'.$id);
@@ -2070,5 +2088,153 @@ class Index extends CatfishCMS
         }
         Catfish::allot('plugin', $html);
         return $this->show($alias, $name);
+    }
+    public function uploadvideo()
+    {
+        if(Catfish::isPost(20)){
+            $tid = intval(Catfish::getPost('tid'));
+            $ovdo = '';
+            if($tid > 0){
+                $tmp = Catfish::db('tie')->where('id',$tid)->field('uid,video,shipin')->find();
+                if($tmp['uid'] != Catfish::getSession('user_id')){
+                    $result = [
+                        'result' => 'error',
+                        'message' => Catfish::lang('Your operation is illegal')
+                    ];
+                    return json($result);
+                }
+                if($tmp['video'] == 1){
+                    $ovdo = $tmp['shipin'];
+                }
+            }
+            $file = request()->file(Catfish::getPost('file'));
+            if($file){
+                $validate = [
+                    'ext' => 'mp4,ogg,webm'
+                ];
+                $info = $file->validate($validate)->move(ROOT_PATH . 'data' . DS . 'video');
+                if($info){
+                    $name = $file->getInfo('name');
+                    $crtname = str_replace('\\','/',$info->getSaveName());
+                    $crtpath = 'data/video/'.$crtname;
+                    if($tid > 0){
+                        Catfish::dbStartTrans();
+                        try{
+                            Catfish::db('tie')
+                                ->where('id', $tid)
+                                ->update([
+                                    'video' => 1,
+                                    'shipin' => $crtpath
+                                ]);
+                            Catfish::db('tienr')
+                                ->where('tid', $tid)
+                                ->update([
+                                    'shipinming' => $name
+                                ]);
+                            Catfish::dbCommit();
+                        } catch (\Exception $e) {
+                            Catfish::dbRollback();
+                            $result = [
+                                'result' => 'error',
+                                'message' => Catfish::lang('The operation failed, please try again later')
+                            ];
+                            return json($result);
+                        }
+                        if(!empty($ovdo) && Catfish::isDataPath($ovdo)){
+                            $path = ROOT_PATH . str_replace(['/','\\'], DS, $ovdo);
+                            if(is_file($path)){
+                                @unlink($path);
+                            }
+                        }
+                    }
+                    $params = [
+                        'shipin' => $crtpath
+                    ];
+                    $this->plantHook('uploadVideo', $params);
+                    $result = [
+                        'result' => 'ok',
+                        'name' => $name,
+                        'path' =>$crtpath,
+                        'message' => ''
+                    ];
+                    return json($result);
+                }
+                else{
+                    $result = [
+                        'result' => 'error',
+                        'message' => Catfish::lang('Upload failed') . ': ' . $file->getError()
+                    ];
+                    return json($result);
+                }
+            }
+            else{
+                $result = [
+                    'result' => 'error',
+                    'message' => Catfish::lang('No uploaded files')
+                ];
+                return json($result);
+            }
+        }
+        else{
+            $result = [
+                'result' => 'error',
+                'message' => Catfish::lang('Your operation is illegal')
+            ];
+            return json($result);
+        }
+    }
+    public function delvideo()
+    {
+        if(Catfish::isPost(20)){
+            $path = Catfish::getPost('path');
+            $tid = intval(Catfish::getPost('tid'));
+            if($tid > 0){
+                $tmp = Catfish::db('tie')->where('id',$tid)->field('uid,shipin')->find();
+                if($tmp['uid'] != Catfish::getSession('user_id') || $tmp['shipin'] != $path){
+                    echo Catfish::lang('Your operation is illegal');
+                    exit();
+                }
+                $ovdo = $tmp['shipin'];
+                Catfish::dbStartTrans();
+                try{
+                    Catfish::db('tie')
+                        ->where('id', $tid)
+                        ->update([
+                            'video' => 0,
+                            'shipin' => ''
+                        ]);
+                    Catfish::db('tienr')
+                        ->where('tid', $tid)
+                        ->update([
+                            'shipinming' => ''
+                        ]);
+                    Catfish::dbCommit();
+                } catch (\Exception $e) {
+                    Catfish::dbRollback();
+                    echo Catfish::lang('The operation failed, please try again later');
+                    exit();
+                }
+                if(!empty($ovdo) && Catfish::isDataPath($ovdo)){
+                    $path = ROOT_PATH . str_replace(['/','\\'], DS, $ovdo);
+                    if(is_file($path)){
+                        @unlink($path);
+                    }
+                }
+                $params = [
+                    'shipin' => $ovdo
+                ];
+                $this->plantHook('deleteVideo', $params);
+                echo 'ok';
+                exit();
+            }
+            else{
+                echo Catfish::lang('Your operation is illegal');
+                exit();
+            }
+        }
+        else{
+            echo Catfish::lang('Your operation is illegal');
+            exit();
+        }
     }
 }
