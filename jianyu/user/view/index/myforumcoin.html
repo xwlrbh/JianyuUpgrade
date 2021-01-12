@@ -1,0 +1,15 @@
+{include file="index/header" /}
+<div class="alert alert-warning text-center" role="alert">
+    {:lang('Forum coins you currently own')}: {$jinbi}
+</div>
+<div class="mb-5">
+    <p>{:lang('How to get forum coins')}: </p>
+    <p class="text-secondary"><i class="fa fa-angle-double-right" aria-hidden="true"></i> {:lang('Contact the administrator')}{notempty name="lianxifangshi"}: {$lianxifangshi}{/notempty}</p>
+    {if condition="$duihuan == 1"}
+    <p class="text-secondary"><i class="fa fa-angle-double-right" aria-hidden="true"></i> <a href="{:Url('user/Index/jftobi')}" class="text-info">{:lang('Exchange points into forum coins')}</a></p>
+    {/if}
+    {if condition="$openpay == 1"}
+    <p class="text-secondary"><i class="fa fa-angle-double-right" aria-hidden="true"></i> <a href="{:Url('pay/Index/index')}?type=jinbi" target="_blank" class="text-info">{:lang('Buy online')}</a> ( {:lang('One yuan exchangeable forum coins')}: {$jinbiduihuan} )</p>
+    {/if}
+</div>
+{include file="index/footer" /}

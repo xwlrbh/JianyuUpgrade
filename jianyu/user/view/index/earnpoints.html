@@ -19,10 +19,13 @@
 <div class="mb-5">
     <p><a href="{:Url('user/Index/myscores')}" class="text-info">{:lang('See how many points I have')}</a></p>
     <p>{:lang('Other ways to earn points')}: </p>
-    <p class="text-secondary">1. {:lang('Contact the administrator')}</p>
-    <p class="text-secondary">2. <a href="{:Url('user/Index/checkin')}" class="text-info">{:lang('Check in')}</a></p>
+    <p class="text-secondary"><i class="fa fa-angle-double-right" aria-hidden="true"></i> {:lang('Contact the administrator')}{notempty name="lianxifangshi"}: {$lianxifangshi}{/notempty}</p>
+    <p class="text-secondary"><i class="fa fa-angle-double-right" aria-hidden="true"></i> <a href="{:Url('user/Index/checkin')}" class="text-info">{:lang('Check in')}</a></p>
+    {if condition="$duihuan == 1"}
+    <p class="text-secondary"><i class="fa fa-angle-double-right" aria-hidden="true"></i> <a href="{:Url('user/Index/bitojf')}" class="text-info">{:lang('Exchange forum coins for points')}</a></p>
+    {/if}
     {if condition="$openpay == 1"}
-    <p class="text-secondary">3. <a href="{:Url('pay/Index/index')}?type=jifen" target="_blank" class="text-info">{:lang('Buy online')}</a> ( {:lang('One yuan redeemable points: ')}{$jifenduihuan} )</p>
+    <p class="text-secondary"><i class="fa fa-angle-double-right" aria-hidden="true"></i> <a href="{:Url('pay/Index/index')}?type=jifen" target="_blank" class="text-info">{:lang('Buy online')}</a> ( {:lang('One yuan redeemable points: ')}{$jifenduihuan} )</p>
     {/if}
 </div>
 {include file="index/footer" /}

@@ -73,24 +73,62 @@
         <small class="form-text text-muted">{:lang('Maximum uploadable file size allowed by the server')}: {$maxfilesize}</small>
     </div>
     {/if}
-    {if condition="$forum.jifen eq 1"}
+    {if condition="$forum.jifen eq 1 OR $forum.jinbi eq 1"}
     <div class="form-group">
-        <label>{:lang('Points type')}</label>
-        <select class="form-control" name="jifenleixing" id="jifenleixing">
-            <option value="0">{:lang('No points required')}</option>
-            <option value="1">{:lang('Points are required to view posts')}</option>
-            {if condition="$forum.fujian eq 1"}
-            <option value="2">{:lang('Downloading attachments requires points')}</option>
+        <label>{:lang('Payment method')}</label>
+        <select class="form-control" name="zhifufangshi" id="zhifufangshi">
+            <option value="0">{:lang('No need to pay')}</option>
+            {if condition="$forum.jifen eq 1"}
+            <option value="1">{:lang('Integral')}</option>
             {/if}
-            {if condition="$forum.shipin eq 1"}
-            <option value="3">{:lang('Points are required to watch video')}</option>
+            {if condition="$forum.jinbi eq 1"}
+            <option value="2">{:lang('Forum coin')}</option>
             {/if}
         </select>
     </div>
-    <div class="form-group">
-        <label>{:lang('Integral')}</label>
-        <input type="number" name="jifen" min="0" value="0" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" placeholder="{:lang('Please enter ')}{:lang('Integral')}">
-        <small class="form-text text-muted" id="jifentishi">{:lang('The number of points paid to the author to access this post')}</small>
+    {/if}
+    {if condition="$forum.jifen eq 1"}
+    <div id="jifenzhifu" class="d-none">
+        <div class="form-group">
+            <label>{:lang('Points type')}</label>
+            <select class="form-control" name="jifenleixing" id="jifenleixing">
+                <option value="0">{:lang('No points required')}</option>
+                <option value="1">{:lang('Points are required to view posts')}</option>
+                {if condition="$forum.fujian eq 1"}
+                <option value="2">{:lang('Downloading attachments requires points')}</option>
+                {/if}
+                {if condition="$forum.shipin eq 1"}
+                <option value="3">{:lang('Points are required to watch video')}</option>
+                {/if}
+            </select>
+        </div>
+        <div class="form-group">
+            <label>{:lang('Integral')}</label>
+            <input type="number" name="jifen" id="jifen" min="0" value="0" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" placeholder="{:lang('Please enter ')}{:lang('Integral')}">
+            <small class="form-text text-muted" id="jifentishi">{:lang('The number of points paid to the author to access this post')}</small>
+        </div>
+    </div>
+    {/if}
+    {if condition="$forum.jinbi eq 1"}
+    <div id="jinbizhifu" class="d-none">
+        <div class="form-group">
+            <label>{:lang('Do you need to pay forum coins')}</label>
+            <select class="form-control" name="jinbileixing" id="jinbileixing">
+                <option value="0">{:lang('No need to pay forum coins')}</option>
+                <option value="1">{:lang('Forum coins is required to view posts')}</option>
+                {if condition="$forum.fujian eq 1"}
+                <option value="2">{:lang('Download the attachment requires payment of forum coins')}</option>
+                {/if}
+                {if condition="$forum.shipin eq 1"}
+                <option value="3">{:lang('You need to pay forum coins to watch videos')}</option>
+                {/if}
+            </select>
+        </div>
+        <div class="form-group">
+            <label>{:lang('Forum coin')}</label>
+            <input type="number" name="jinbi" id="jinbi" min="0" value="0" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" placeholder="{:lang('Please enter ')}{:lang('Forum coin')}">
+            <small class="form-text text-muted" id="jinbitishi">{:lang('The number of forum coins paid to the author to access this post')}</small>
+        </div>
     </div>
     {/if}
     {if condition="$needvcode eq 1"}

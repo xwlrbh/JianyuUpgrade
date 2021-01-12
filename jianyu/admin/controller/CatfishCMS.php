@@ -519,14 +519,32 @@ class CatfishCMS
     protected function redemptionpointsPost()
     {
         $rule = [
-            'jifen' => 'require|integer'
+            'jifen' => 'require|integer',
+            'jinbi' => 'require|integer'
         ];
         $msg = [
             'jifen.require' => Catfish::lang('Input can not be empty'),
-            'jifen.integer' => Catfish::lang('Only integers can be entered')
+            'jifen.integer' => Catfish::lang('Only integers can be entered'),
+            'jinbi.require' => Catfish::lang('Input can not be empty'),
+            'jinbi.integer' => Catfish::lang('Only integers can be entered')
         ];
         $data = [
-            'jifen' => Catfish::getPost('jifen')
+            'jifen' => Catfish::getPost('jifen'),
+            'jinbi' => Catfish::getPost('jinbi')
+        ];
+        return $this->validatePost($rule, $msg, $data);
+    }
+    protected function forumcoinsexchangePost()
+    {
+        $rule = [
+            'jinbi' => 'require|integer'
+        ];
+        $msg = [
+            'jinbi.require' => Catfish::lang('Input can not be empty'),
+            'jinbi.integer' => Catfish::lang('Only integers can be entered')
+        ];
+        $data = [
+            'jinbi' => Catfish::getPost('jinbi')
         ];
         return $this->validatePost($rule, $msg, $data);
     }

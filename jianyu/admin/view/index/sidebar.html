@@ -61,6 +61,21 @@
     </nav>
 </div>
 {/if}
+{if condition="$ugroup <= 1"}
+<div class="text-secondary pt-3 clearfix">
+    <h6 class="float-left">
+        <i class="fa fa-database"></i>
+        {:lang('Forum coin')}
+    </h6>
+    <i class="fa fa-minus-square-o float-right"></i>
+</div>
+<div>
+    <nav class="nav flex-column">
+        <a href="{:Url('admin/Index/userforumcoin')}" class="nav-link{if $option == 'userforumcoin'} bg-secondary text-white{else /} text-dark{/if}">{:lang('User forum coin')}</a>
+        <a href="{:Url('admin/Index/forumcoinsexchange')}" class="nav-link{if $option == 'forumcoinsexchange'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Forum coins exchange')}</a>
+    </nav>
+</div>
+{/if}
 {if condition="$ugroup <= 3"}
 <div class="text-secondary pt-3 clearfix">
     <h6 class="float-left">

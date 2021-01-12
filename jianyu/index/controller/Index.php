@@ -50,51 +50,86 @@ class Index extends CatfishCMS
             if($act == 'paypoints'){
                 $tid = intval(Catfish::getPost('pid'));
                 $uid = Catfish::getSession('user_id');
-                $tie = Catfish::db('tie')->where('id', $tid)->field('uid,jifen')->limit(1)->find();
-                $user = Catfish::db('users')->where('id', $uid)->field('jifen')->limit(1)->find();
+                $tie = Catfish::db('tie')->where('id', $tid)->field('uid,jifen,jinbi,zhifufangshi')->limit(1)->find();
+                $user = Catfish::db('users')->where('id', $uid)->field('jifen,jinbi')->limit(1)->find();
                 $paid = Catfish::db('tie_jifen')->where('uid', $uid)->where('tid', $tid)->field('id')->limit(1)->find();
                 if(!empty($paid)){
-                    echo Catfish::lang('You have already paid points');
+                    echo Catfish::lang('You have already paid');
                     exit();
                 }
-                if($tie['jifen'] > $user['jifen']){
+                if($tie['zhifufangshi'] == 1 && $tie['jifen'] > $user['jifen']){
                     echo Catfish::lang('You don\'t have enough points') . '(' . Catfish::lang('Points balance') . ': ' . $user['jifen'] . ')';
+                    exit();
+                }
+                elseif($tie['zhifufangshi'] == 2 && $tie['jinbi'] > $user['jinbi']){
+                    echo Catfish::lang('You don\'t have enough forum coins') . '(' . Catfish::lang('Forum coins balance') . ': ' . $user['jinbi'] . ')';
                     exit();
                 }
                 else{
                     $now = Catfish::now();
                     $tie['jifen'] = intval($tie['jifen']);
+                    $tie['jinbi'] = intval($tie['jinbi']);
                     Catfish::dbStartTrans();
                     try{
-                        Catfish::db('users')
-                            ->where('id', $uid)
-                            ->update([
-                                'jifen' => Catfish::dbRaw('jifen-' . $tie['jifen'])
-                            ]);
-                        Catfish::db('users')
-                            ->where('id', $tie['uid'])
-                            ->update([
-                                'jifen' => Catfish::dbRaw('jifen+' . $tie['jifen'])
-                            ]);
-                        if($tie['jifen'] != 0){
-                            Catfish::db('points_book')->insert([
+                        if($tie['zhifufangshi'] == 1){
+                            Catfish::db('users')
+                                ->where('id', $uid)
+                                ->update([
+                                    'jifen' => Catfish::dbRaw('jifen-' . $tie['jifen'])
+                                ]);
+                            Catfish::db('users')
+                                ->where('id', $tie['uid'])
+                                ->update([
+                                    'jifen' => Catfish::dbRaw('jifen+' . $tie['jifen'])
+                                ]);
+                            if($tie['jifen'] != 0){
+                                Catfish::db('points_book')->insert([
+                                    'uid' => $uid,
+                                    'zengjian' => - $tie['jifen'],
+                                    'booktime' => $now,
+                                    'miaoshu' => Catfish::lang('See posts to pay points')
+                                ]);
+                                Catfish::db('points_book')->insert([
+                                    'uid' => $tie['uid'],
+                                    'zengjian' => $tie['jifen'],
+                                    'booktime' => $now,
+                                    'miaoshu' => Catfish::lang('Posts received points')
+                                ]);
+                            }
+                        }
+                        elseif($tie['zhifufangshi'] == 2){
+                            Catfish::db('users')
+                                ->where('id', $uid)
+                                ->update([
+                                    'jinbi' => Catfish::dbRaw('jinbi-' . $tie['jinbi'])
+                                ]);
+                            Catfish::db('users')
+                                ->where('id', $tie['uid'])
+                                ->update([
+                                    'jinbi' => Catfish::dbRaw('jinbi+' . $tie['jinbi'])
+                                ]);
+                            if($tie['jinbi'] != 0){
+                                Catfish::db('coin_bill')->insert([
+                                    'uid' => $uid,
+                                    'zengjian' => - $tie['jinbi'],
+                                    'booktime' => $now,
+                                    'miaoshu' => Catfish::lang('See posts to pay forum coins')
+                                ]);
+                                Catfish::db('coin_bill')->insert([
+                                    'uid' => $tie['uid'],
+                                    'zengjian' => $tie['jinbi'],
+                                    'booktime' => $now,
+                                    'miaoshu' => Catfish::lang('Posts received forum coins')
+                                ]);
+                            }
+                        }
+                        if($tie['zhifufangshi'] > 0){
+                            Catfish::db('tie_jifen')->insert([
+                                'tid' => $tid,
                                 'uid' => $uid,
-                                'zengjian' => - $tie['jifen'],
-                                'booktime' => $now,
-                                'miaoshu' => Catfish::lang('See posts to pay points')
-                            ]);
-                            Catfish::db('points_book')->insert([
-                                'uid' => $tie['uid'],
-                                'zengjian' => $tie['jifen'],
-                                'booktime' => $now,
-                                'miaoshu' => Catfish::lang('Posts received points')
+                                'paytime' => $now
                             ]);
                         }
-                        Catfish::db('tie_jifen')->insert([
-                            'tid' => $tid,
-                            'uid' => $uid,
-                            'paytime' => $now
-                        ]);
                         Catfish::dbCommit();
                         echo 'ok';
                         exit();

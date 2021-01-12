@@ -129,6 +129,27 @@
         <small class="form-text text-muted">{:lang('This level setting is only valid when allowing ordinary users to set integral value')}</small>
     </div>
     <div class="form-group">
+        <label>{:lang('Forum coin')}</label>
+        <select class="form-control" name="jinbi">
+            <option value="0"{if condition="$forum.jinbi eq 0"} selected{/if}>{:lang('Allow ordinary users to set forum coins')}</option>
+            <option value="5"{if condition="$forum.jinbi eq 5"} selected{/if}>{:lang('Allow internship moderators and above to set forum coins')}</option>
+            <option value="10"{if condition="$forum.jinbi eq 10"} selected{/if}>{:lang('Allow sub-moderators and above to set forum coins')}</option>
+            <option value="15"{if condition="$forum.jinbi eq 15"} selected{/if}>{:lang('Allow moderators and above to set forum coins')}</option>
+            <option value="20"{if condition="$forum.jinbi eq 20"} selected{/if}>{:lang('Allow ordinary administrators and above to set forum coins')}</option>
+            <option value="25"{if condition="$forum.jinbi eq 25"} selected{/if}>{:lang('Allow advanced administrators and above to set forum coins')}</option>
+            <option value="30"{if condition="$forum.jinbi eq 30"} selected{/if}>{:lang('Only allow founders to set forum coins')}</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>{:lang('Minimum user level allowed to set forum coins')}</label>
+        <select class="form-control" name="jinbidj">
+            {volist name="dengji" id="vo"}
+            <option value="{$vo.jibie}"{if condition="$forum.jinbidj eq $vo.jibie"} selected{/if}>{$vo.djname}</option>
+            {/volist}
+        </select>
+        <small class="form-text text-muted">{:lang('This level setting is only valid when allowing ordinary users to set forum coins')}</small>
+    </div>
+    <div class="form-group">
         <label>{:lang('New users need to verify the code before sending the first few posts')}</label>
         <input type="number" class="form-control" name="yanzhengzt" value="{$forum.yanzhengzt}">
     </div>
@@ -192,6 +213,15 @@
         <select class="form-control" name="fpreaudit">
             <option value="0"{if condition="$forum.fpreaudit eq 0"} selected{/if}>{:lang('No pre-audit required')}</option>
             <option value="1"{if condition="$forum.fpreaudit eq 1"} selected{/if}>{:lang('Pre-review required')}</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>{:lang('Whether to allow points and forum coins exchange')}</label>
+        <select class="form-control" name="jifenbi">
+            <option value="0"{if condition="$forum.jifenbi eq 0"} selected{/if}>{:lang('Exchange not allowed')}</option>
+            <option value="1"{if condition="$forum.jifenbi eq 1"} selected{/if}>{:lang('Only allow forum coins to be exchanged into points')}</option>
+            <option value="2"{if condition="$forum.jifenbi eq 2"} selected{/if}>{:lang('Only allow points to be exchanged into forum coins')}</option>
+            <option value="3"{if condition="$forum.jifenbi eq 3"} selected{/if}>{:lang('Allow points and forum coins swap')}</option>
         </select>
     </div>
     {if condition="$extend eq 1"}

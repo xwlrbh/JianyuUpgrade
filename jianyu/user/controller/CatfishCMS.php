@@ -387,6 +387,29 @@ class CatfishCMS
                 $myforum['jifen'] = ($utype == 1) ? 1 : 0;
                 break;
         }
+        switch($forum['jinbi']){
+            case 0:
+                $myforum['jinbi'] = ($forum['jinbidj'] <= $dengji || $utype < 20 || $mtype > 0) ? 1 : 0;
+                break;
+            case 5:
+                $myforum['jinbi'] = ($mtype >= 5 || $utype <= 5) ? 1 : 0;
+                break;
+            case 10:
+                $myforum['jinbi'] = ($mtype >= 10 || $utype <= 5) ? 1 : 0;
+                break;
+            case 15:
+                $myforum['jinbi'] = ($mtype >= 15 || $utype <= 5) ? 1 : 0;
+                break;
+            case 20:
+                $myforum['jinbi'] = ($utype <= 5) ? 1 : 0;
+                break;
+            case 25:
+                $myforum['jinbi'] = ($utype <= 3) ? 1 : 0;
+                break;
+            case 30:
+                $myforum['jinbi'] = ($utype == 1) ? 1 : 0;
+                break;
+        }
         switch($forum['shipin']){
             case 0:
                 $myforum['shipin'] = ($forum['shipindj'] <= $dengji || $utype < 20 || $mtype > 0) ? 1 : 0;
@@ -547,5 +570,21 @@ class CatfishCMS
             return Catfish::execHook('theme\\' . $theme . '\\' . $uftheme, $hook, $params);
         }
         return false;
+    }
+    protected function bitojfPost()
+    {
+        $rule = [
+            'luntanbi' => 'require',
+            'password' => 'require'
+        ];
+        $msg = [
+            'luntanbi.require' => Catfish::lang('The number of forum coins must be filled in'),
+            'password.require' => Catfish::lang('Password must be filled in')
+        ];
+        $data = [
+            'luntanbi' => Catfish::getPost('luntanbi'),
+            'password' => Catfish::getPost('password')
+        ];
+        return $this->validatePost($rule, $msg, $data);
     }
 }

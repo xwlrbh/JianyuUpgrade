@@ -53,6 +53,18 @@ class Index extends CatfishCMS
                     echo Catfish::lang('Points cannot be negative');
                     exit();
                 }
+                $jinbileixing = 0;
+                if(Catfish::hasPost('jinbileixing')){
+                    $jinbileixing = intval(Catfish::getPost('jinbileixing'));
+                }
+                $jinbi = 0;
+                if(Catfish::hasPost('jinbi')){
+                    $jinbi = intval(Catfish::getPost('jinbi'));
+                }
+                if($jinbi < 0){
+                    echo Catfish::lang('Forum coins cannot be negative');
+                    exit();
+                }
                 $zhengwen = Catfish::getPost('zhengwen', false);
                 if($forum['lianjie'] == 0){
                     $zhengwen = Catfish::removea($zhengwen);
@@ -143,7 +155,10 @@ class Index extends CatfishCMS
                         'shipin' => $shipin,
                         'tu' => $tus,
                         'jifenleixing' => $jifenleixing,
-                        'jifen' => $jifen
+                        'jifen' => $jifen,
+                        'jinbileixing' => $jinbileixing,
+                        'jinbi' => $jinbi,
+                        'zhifufangshi' => Catfish::getPost('zhifufangshi')
                     ]);
                     Catfish::db('tienr')->insert([
                         'tid' => $reid,
@@ -296,6 +311,18 @@ class Index extends CatfishCMS
                     echo Catfish::lang('Points cannot be negative');
                     exit();
                 }
+                $jinbileixing = 0;
+                if(Catfish::hasPost('jinbileixing')){
+                    $jinbileixing = intval(Catfish::getPost('jinbileixing'));
+                }
+                $jinbi = 0;
+                if(Catfish::hasPost('jinbi')){
+                    $jinbi = intval(Catfish::getPost('jinbi'));
+                }
+                if($jinbi < 0){
+                    echo Catfish::lang('Forum coins cannot be negative');
+                    exit();
+                }
                 $zhengwen = Catfish::getPost('zhengwen', false);
                 if($forum['lianjie'] == 0){
                     $zhengwen = Catfish::removea($zhengwen);
@@ -396,7 +423,10 @@ class Index extends CatfishCMS
                             'annex' => $annex,
                             'tu' => $tus,
                             'jifenleixing' => $jifenleixing,
-                            'jifen' => $jifen
+                            'jifen' => $jifen,
+                            'jinbileixing' => $jinbileixing,
+                            'jinbi' => $jinbi,
+                            'zhifufangshi' => Catfish::getPost('zhifufangshi')
                         ]);
                         Catfish::db('tienr')->where('tid', $tid)->update([
                             'zhengwen' => $zhengwen,
@@ -463,7 +493,7 @@ class Index extends CatfishCMS
                 exit();
             }
         }
-        $tie = Catfish::db('tie')->where('id',$tid)->where('status',1)->field('id,uid,sid,biaoti,tietype,annex,video,shipin,jifenleixing,jifen')->find();
+        $tie = Catfish::db('tie')->where('id',$tid)->where('status',1)->field('id,uid,sid,biaoti,tietype,annex,video,shipin,jifenleixing,jifen,jinbileixing,jinbi,zhifufangshi')->find();
         if($tie['uid'] != Catfish::getSession('user_id')){
             Catfish::allot('illegal', Catfish::lang('Your operation is illegal'));
             return $this->show(Catfish::lang('Modify the main post'), 'mymainpost', false, 'illegal');
@@ -1515,8 +1545,100 @@ class Index extends CatfishCMS
             $jifen = 0;
         }
         Catfish::allot('jifenduihuan', $jifen);
+        $lianxifangshi = Catfish::get('jifenlianxifangshi');
+        Catfish::allot('lianxifangshi', $lianxifangshi);
+        $duihuan = 0;
+        $forum = Catfish::getForum();
+        if(in_array($forum['jifenbi'], [1,3])){
+            $duihuan = 1;
+        }
+        Catfish::allot('duihuan', $duihuan);
         Catfish::allot('openpay', Catfish::get('openpay'));
         return $this->show(Catfish::lang('How to earn points'), 'earnpoints');
+    }
+    public function bitojf()
+    {
+        $this->checkUser();
+        $uid = Catfish::getSession('user_id');
+        $jinbi = Catfish::db('users')->where('id', $uid)->field('jinbi')->find();
+        if(Catfish::isPost(20)){
+            $data = $this->bitojfPost();
+            if(!is_array($data)){
+                echo $data;
+                exit();
+            }
+            else{
+                if(!preg_match("/^[1-9][0-9]*$/", $data['luntanbi'])){
+                    echo Catfish::lang('The number of forum coins must be an integer');
+                    exit();
+                }
+                $luntanbi = intval($data['luntanbi']);
+                if($luntanbi <= 0){
+                    echo Catfish::lang('The number of forum coins must be greater than 0');
+                    exit();
+                }
+                $recod = Catfish::db('users')->where('id',$uid)->field('password,randomcode')->find();
+                if($recod['password'] != md5($data['password'].$recod['randomcode']))
+                {
+                    echo Catfish::lang('Password is wrong');
+                    exit();
+                }
+                if($jinbi['jinbi'] < $luntanbi){
+                    echo Catfish::lang('You have insufficient forum coins');
+                    exit();
+                }
+                $forum = Catfish::getForum();
+                if(!in_array($forum['jifenbi'], [1,3])){
+                    echo Catfish::lang('Your operation is illegal');
+                    exit();
+                }
+                $jinbijifen = Catfish::get('jinbijifenduihuan');
+                $jifenshu = intval($luntanbi * $jinbijifen);
+                $now = Catfish::now();
+                Catfish::dbStartTrans();
+                try{
+                    Catfish::db('users')
+                        ->where('id', $uid)
+                        ->update([
+                            'jifen' => Catfish::dbRaw('jifen+' . $jifenshu),
+                            'jinbi' => Catfish::dbRaw('jinbi-' . $luntanbi)
+                        ]);
+                    if($luntanbi > 0){
+                        Catfish::db('points_book')->insert([
+                            'uid' => $uid,
+                            'zengjian' => $jifenshu,
+                            'booktime' => $now,
+                            'miaoshu' => Catfish::lang('Exchange forum coins for points')
+                        ]);
+                        Catfish::db('coin_bill')->insert([
+                            'uid' => $uid,
+                            'zengjian' => - $luntanbi,
+                            'booktime' => $now,
+                            'miaoshu' => Catfish::lang('Exchange forum coins for points')
+                        ]);
+                    }
+                    Catfish::dbCommit();
+                    echo 'ok';
+                    exit();
+                } catch (\Exception $e) {
+                    Catfish::dbRollback();
+                    echo Catfish::lang('The operation failed, please try again later');
+                    exit();
+                }
+            }
+        }
+        $duihuan = 0;
+        $forum = Catfish::getForum();
+        if(in_array($forum['jifenbi'], [1,3])){
+            $duihuan = 1;
+        }
+        Catfish::allot('duihuan', $duihuan);
+        Catfish::allot('jinbi', $jinbi['jinbi']);
+        $jinbijifen = Catfish::get('jinbijifenduihuan');
+        Catfish::allot('duihuanshu', $jinbijifen);
+        $maxjf = intval($jinbi['jinbi'] * $jinbijifen);
+        Catfish::allot('maxjf', $maxjf);
+        return $this->show(Catfish::lang('Exchange forum coins for points'), 'earnpoints');
     }
     public function pointsbill()
     {
@@ -1531,6 +1653,125 @@ class Index extends CatfishCMS
         }
         Catfish::allot('data', $datarr);
         return $this->show(Catfish::lang('Points bill'), 'pointsbill');
+    }
+    public function myforumcoin()
+    {
+        $this->checkUser();
+        $jinbi = Catfish::db('users')->where('id', Catfish::getSession('user_id'))->field('jinbi')->find();
+        Catfish::allot('jinbi', $jinbi['jinbi']);
+        $jinbiduihuan = Catfish::get('jinbiduihuan');
+        if(empty($jinbiduihuan)){
+            $jinbiduihuan = 0;
+        }
+        Catfish::allot('jinbiduihuan', $jinbiduihuan);
+        $lianxifangshi = Catfish::get('jinbilianxifangshi');
+        Catfish::allot('lianxifangshi', $lianxifangshi);
+        $duihuan = 0;
+        $forum = Catfish::getForum();
+        if(in_array($forum['jifenbi'], [2,3])){
+            $duihuan = 1;
+        }
+        Catfish::allot('duihuan', $duihuan);
+        Catfish::allot('openpay', Catfish::get('openpay'));
+        return $this->show(Catfish::lang('My forum coin'), 'myforumcoin');
+    }
+    public function jftobi()
+    {
+        $this->checkUser();
+        $uid = Catfish::getSession('user_id');
+        $jifen = Catfish::db('users')->where('id', $uid)->field('jifen')->find();
+        if(Catfish::isPost(20)){
+            $data = $this->bitojfPost();
+            if(!is_array($data)){
+                echo $data;
+                exit();
+            }
+            else{
+                if(!preg_match("/^[1-9][0-9]*$/", $data['luntanbi'])){
+                    echo Catfish::lang('The number of forum coins must be an integer');
+                    exit();
+                }
+                $luntanbi = intval($data['luntanbi']);
+                if($luntanbi <= 0){
+                    echo Catfish::lang('The number of forum coins must be greater than 0');
+                    exit();
+                }
+                $recod = Catfish::db('users')->where('id',$uid)->field('password,randomcode')->find();
+                if($recod['password'] != md5($data['password'].$recod['randomcode']))
+                {
+                    echo Catfish::lang('Password is wrong');
+                    exit();
+                }
+                $jinbijifen = Catfish::get('jinbijifenduihuan');
+                $jifenshu = intval($luntanbi * $jinbijifen);
+                if($jifen['jifen'] < $jifenshu){
+                    echo Catfish::lang('You don\'t have enough points');
+                    exit();
+                }
+                $forum = Catfish::getForum();
+                if(!in_array($forum['jifenbi'], [2,3])){
+                    echo Catfish::lang('Your operation is illegal');
+                    exit();
+                }
+                $now = Catfish::now();
+                Catfish::dbStartTrans();
+                try{
+                    Catfish::db('users')
+                        ->where('id', $uid)
+                        ->update([
+                            'jifen' => Catfish::dbRaw('jifen-' . $jifenshu),
+                            'jinbi' => Catfish::dbRaw('jinbi+' . $luntanbi)
+                        ]);
+                    if($luntanbi > 0){
+                        Catfish::db('points_book')->insert([
+                            'uid' => $uid,
+                            'zengjian' => - $jifenshu,
+                            'booktime' => $now,
+                            'miaoshu' => Catfish::lang('Exchange points into forum coins')
+                        ]);
+                        Catfish::db('coin_bill')->insert([
+                            'uid' => $uid,
+                            'zengjian' => $luntanbi,
+                            'booktime' => $now,
+                            'miaoshu' => Catfish::lang('Exchange points into forum coins')
+                        ]);
+                    }
+                    Catfish::dbCommit();
+                    echo 'ok';
+                    exit();
+                } catch (\Exception $e) {
+                    Catfish::dbRollback();
+                    echo Catfish::lang('The operation failed, please try again later');
+                    exit();
+                }
+            }
+        }
+        $duihuan = 0;
+        $forum = Catfish::getForum();
+        if(in_array($forum['jifenbi'], [2,3])){
+            $duihuan = 1;
+        }
+        Catfish::allot('duihuan', $duihuan);
+        Catfish::allot('jifen', $jifen['jifen']);
+        $jinbijifen = Catfish::get('jinbijifenduihuan');
+        Catfish::allot('duihuanshu', $jinbijifen);
+        $maxjb = floor($jifen['jifen'] / $jinbijifen);
+        Catfish::allot('maxjb', $maxjb);
+        return $this->show(Catfish::lang('Exchange points into forum coins'), 'myforumcoin');
+    }
+    public function forumcoinbill()
+    {
+        $this->checkUser();
+        $data = Catfish::db('coin_bill')->where('uid', Catfish::getSession('user_id'))->field('id,zengjian,booktime,miaoshu')->order('id desc')->paginate(20);
+        Catfish::allot('pages', $data->render());
+        $datarr = $data->items();
+        foreach($datarr as $key => $val){
+            if($val['zengjian'] > 0){
+                $datarr[$key]['zengjian'] = '+' . $val['zengjian'];
+            }
+        }
+        Catfish::allot('data', $datarr);
+        return $this->show(Catfish::lang('Forum coin bill'), 'forumcoinbill');
     }
     public function checkin()
     {
