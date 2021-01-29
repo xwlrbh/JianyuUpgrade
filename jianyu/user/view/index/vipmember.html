@@ -1,0 +1,90 @@
+{include file="index/header" /}
+{if condition="$jianyuvip.showvip eq 1"}
+<div class="alert alert-success text-center" role="alert">
+    <div>{:lang('You are now')}: {$jianyuvip.viptype}</div>
+    <div>{:lang('Expire date')}: <span class="{if condition="$jianyuvip.expired eq 1"}text-secondary{/if}">{$jianyuvip.vipend}</span></div>
+</div>
+{/if}
+{if condition="$jianyuvip.viptype neq 3"}
+    <p><i class="fa fa-angle-double-right" aria-hidden="true"></i> {:lang('Price list')}</p>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col">{:lang('VIP membership time')}</th>
+            <th scope="col">{:lang('Buy with forum coins')}</th>
+            {if condition="$catfishcms.allowpointsvip eq 1"}
+            <th scope="col">{:lang('Buy with points')}</th>
+            {/if}
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>{:lang('Per month')}</td>
+            <td>{$catfishcms.monthvipcoins}</td>
+            {if condition="$catfishcms.allowpointsvip eq 1"}
+            <td>{$catfishcms.monthvippoints}</td>
+            {/if}
+        </tr>
+        <tr>
+            <td>{:lang('Per year')}</td>
+            <td>{$catfishcms.yearvipcoins}</td>
+            {if condition="$catfishcms.allowpointsvip eq 1"}
+            <td>{$catfishcms.yearvippoints}</td>
+            {/if}
+        </tr>
+        <tr>
+            <td>{:lang('Permanent')}</td>
+            <td>{$catfishcms.permanentvipcoins}</td>
+            {if condition="$catfishcms.allowpointsvip eq 1"}
+            <td>{$catfishcms.permanentvippoints}</td>
+            {/if}
+        </tr>
+        </tbody>
+    </table>
+    {if condition="$jianyuvip.showvip eq 1"}
+    <p><i class="fa fa-angle-double-right" aria-hidden="true"></i> {:lang('Renew')}</p>
+    {else /}
+    <p><i class="fa fa-angle-double-right" aria-hidden="true"></i> {:lang('Upgrade to VIP member')}</p>
+    {/if}
+    <form>
+        <div class="form-group">
+            <label for="huiyuanleixing">{:lang('Type of membership')}</label>
+            <select class="form-control" id="huiyuanleixing" name="huiyuanleixing">
+                {if condition="$catfishcms.monthvipcoins neq '' OR $catfishcms.monthvippoints neq ''"}
+                <option value="1">{:lang('Monthly membership')}</option>
+                {/if}
+                {if condition="$catfishcms.yearvipcoins neq '' OR $catfishcms.yearvippoints neq ''"}
+                <option value="2">{:lang('Annual membership')}</option>
+                {/if}
+                {if condition="$catfishcms.permanentvipcoins neq '' OR $catfishcms.permanentvippoints neq ''"}
+                <option value="3">{:lang('Permanent member')}</option>
+                {/if}
+            </select>
+        </div>
+        <div class="form-group" id="huiyuanqixiandiv">
+            <label for="huiyuanqixian">{:lang('Membership period')}</label>
+            <input type="number" min="1" step="1" class="form-control" id="huiyuanqixian" name="huiyuanqixian">
+            <small class="form-text text-muted">{:lang('Please enter a positive integer. For example, if you choose to pay annually and you need to purchase a 2-year membership, then please enter "2". Similarly, if you choose to pay on a monthly basis and you need to purchase a 2-month membership, then please also enter "2"')}</small>
+        </div>
+        <div class="form-group">
+            <label for="huiyuanleixing">{:lang('Payment method')}</label>
+            <select class="form-control" id="zhifufangshi" name="zhifufangshi">
+                <option value="1">{:lang('Buy with forum coins')}</option>
+                {if condition="$catfishcms.allowpointsvip eq 1"}
+                <option value="2">{:lang('Buy with points')}</option>
+                {/if}
+            </select>
+            <small class="form-text text-muted">{:lang('You currently own forum coins')}: {$jianyuvip.jinbi}</small>
+            {if condition="$catfishcms.allowpointsvip eq 1"}
+            <small class="form-text text-muted">{:lang('You currently have points')}: {$jianyuvip.jifen}</small>
+            {/if}
+        </div>
+        <div class="text-center mb-5">
+            <input type="hidden" name="verification" value="{$verification}">
+            <button type="button" id="formsubmit" class="btn btn-info submit">{:lang('Submit')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+        </div>
+    </form>
+    <div class="d-none" id="jumpto">{$jumpto}</div>
+    <script src="{$domain}public/common/js/user/vipmember.js"></script>
+{/if}
+{include file="index/footer" /}

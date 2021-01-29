@@ -65,6 +65,10 @@ class Index extends CatfishCMS
                     echo Catfish::lang('Forum coins cannot be negative');
                     exit();
                 }
+                $huiyuanleixing = 0;
+                if(Catfish::hasPost('huiyuanleixing')){
+                    $huiyuanleixing = intval(Catfish::getPost('huiyuanleixing'));
+                }
                 $zhengwen = Catfish::getPost('zhengwen', false);
                 if($forum['lianjie'] == 0){
                     $zhengwen = Catfish::removea($zhengwen);
@@ -158,6 +162,7 @@ class Index extends CatfishCMS
                         'jifen' => $jifen,
                         'jinbileixing' => $jinbileixing,
                         'jinbi' => $jinbi,
+                        'huiyuanleixing' => $huiyuanleixing,
                         'zhifufangshi' => Catfish::getPost('zhifufangshi')
                     ]);
                     Catfish::db('tienr')->insert([
@@ -323,6 +328,10 @@ class Index extends CatfishCMS
                     echo Catfish::lang('Forum coins cannot be negative');
                     exit();
                 }
+                $huiyuanleixing = 0;
+                if(Catfish::hasPost('huiyuanleixing')){
+                    $huiyuanleixing = intval(Catfish::getPost('huiyuanleixing'));
+                }
                 $zhengwen = Catfish::getPost('zhengwen', false);
                 if($forum['lianjie'] == 0){
                     $zhengwen = Catfish::removea($zhengwen);
@@ -426,6 +435,7 @@ class Index extends CatfishCMS
                             'jifen' => $jifen,
                             'jinbileixing' => $jinbileixing,
                             'jinbi' => $jinbi,
+                            'huiyuanleixing' => $huiyuanleixing,
                             'zhifufangshi' => Catfish::getPost('zhifufangshi')
                         ]);
                         Catfish::db('tienr')->where('tid', $tid)->update([
@@ -493,7 +503,7 @@ class Index extends CatfishCMS
                 exit();
             }
         }
-        $tie = Catfish::db('tie')->where('id',$tid)->where('status',1)->field('id,uid,sid,biaoti,tietype,annex,video,shipin,jifenleixing,jifen,jinbileixing,jinbi,zhifufangshi')->find();
+        $tie = Catfish::db('tie')->where('id',$tid)->where('status',1)->field('id,uid,sid,biaoti,tietype,annex,video,shipin,jifenleixing,jifen,jinbileixing,jinbi,huiyuanleixing,zhifufangshi')->find();
         if($tie['uid'] != Catfish::getSession('user_id')){
             Catfish::allot('illegal', Catfish::lang('Your operation is illegal'));
             return $this->show(Catfish::lang('Modify the main post'), 'mymainpost', false, 'illegal');
@@ -567,7 +577,7 @@ class Index extends CatfishCMS
     public function recyclebin()
     {
         $this->checkUser();
-        $data = Catfish::db('tie')->where('uid', Catfish::getSession('user_id'))->where('status', 0)->field('id,fabushijian,biaoti,pinglunshu,yuedu,zan,cai,annex')->order('recoverytime desc')->paginate(20);
+        $data = Catfish::db('tie')->where('uid', Catfish::getSession('user_id'))->where('status', 0)->field('id,fabushijian,biaoti,pinglunshu,yuedu,zan,cai,annex,video')->order('recoverytime desc')->paginate(20);
         Catfish::allot('data', $data->items());
         Catfish::allot('pages', $data->render());
         return $this->show(Catfish::lang('Recycle bin'), 'recyclebin');
@@ -623,6 +633,7 @@ class Index extends CatfishCMS
                 $tcstr .= empty($tcstr) ? $val['cid'] : ',' . $val['cid'];
                 $gentieshu ++;
             }
+            $nrtmp = Catfish::db('tienr')->where('tid',$id)->field('zhengwen,fujian')->find();
             Catfish::dbStartTrans();
             try{
                 Catfish::db('tie')
@@ -698,7 +709,8 @@ class Index extends CatfishCMS
                 'id' => $id,
                 'uid' => $tmp['uid'],
                 'tu' => $tmp['tu'],
-                'shipin' => $tmp['shipin']
+                'shipin' => $tmp['shipin'],
+                'fujian' => $nrtmp['fujian']
             ];
             $this->plantHook('deleteMainPost', $params);
             Catfish::removeCache('post_'.$id);
@@ -984,6 +996,236 @@ class Index extends CatfishCMS
         }
         return $this->show(Catfish::lang('Change Password'), 'changepassword');
     }
+    public function vipmember()
+    {
+        $this->checkUser();
+        if(Catfish::isPost(20)){
+            $huiyuanleixing = Catfish::getPost('huiyuanleixing');
+            if(empty($huiyuanleixing)){
+                echo Catfish::lang('You must select the membership type');
+                exit();
+            }
+            $huiyuanqixian = Catfish::getPost('huiyuanqixian');
+            if($huiyuanleixing != 3 && !preg_match("/^[1-9][0-9]*$/", $huiyuanqixian)){
+                echo Catfish::lang('The membership period must be an integer greater than 0');
+                exit();
+            }
+            $zhifufangshi = Catfish::getPost('zhifufangshi');
+            if(empty($zhifufangshi)){
+                echo Catfish::lang('Payment method must be selected');
+                exit();
+            }
+            $vipsetting = Catfish::get('vipsettings');
+            if(!empty($vipsetting)){
+                $vipsetting = unserialize($vipsetting);
+            }
+            else{
+                echo Catfish::lang('It is not currently allowed to purchase VIP members');
+                exit();
+            }
+            $uid = Catfish::getSession('user_id');
+            $user = Catfish::db('users')->where('id',$uid)->field('utype,vipend,viptype,jifen,jinbi')->find();
+            if($user['utype'] == 15 && $user['viptype'] == 3){
+                echo Catfish::lang('You are already a permanent VIP member, no need to renew');
+                exit();
+            }
+            if($user['utype'] < 6){
+                echo Catfish::lang('The administrator cannot be changed to a VIP member');
+                exit();
+            }
+            $nowtime = time();
+            $viped = strtotime($user['vipend']);
+            if($viped > $nowtime){
+                $start = $viped;
+            }
+            else{
+                $start = $nowtime;
+            }
+            $end = $start;
+            if($zhifufangshi == 1){
+                $xuyaoluntanbi = 0;
+                if($huiyuanleixing == 1){
+                    $per = intval($vipsetting['monthvipcoins']);
+                    if($per <= 0){
+                        echo Catfish::lang('It is not currently allowed to purchase VIP members');
+                        exit();
+                    }
+                    $xuyaoluntanbi = $per * $huiyuanqixian;
+                    $end = strtotime("+{$huiyuanqixian} months", $start);
+                }
+                elseif($huiyuanleixing == 2){
+                    $per = intval($vipsetting['yearvipcoins']);
+                    if($per <= 0){
+                        echo Catfish::lang('It is not currently allowed to purchase VIP members');
+                        exit();
+                    }
+                    $xuyaoluntanbi = $per * $huiyuanqixian;
+                    $end = strtotime("+{$huiyuanqixian} years", $start);
+                }
+                elseif($huiyuanleixing == 3){
+                    $per = intval($vipsetting['permanentvipcoins']);
+                    if($per <= 0){
+                        echo Catfish::lang('It is not currently allowed to purchase VIP members');
+                        exit();
+                    }
+                    $xuyaoluntanbi = $per;
+                }
+                if($xuyaoluntanbi > 0){
+                    if($user['jinbi'] < $xuyaoluntanbi){
+                        echo Catfish::lang('You have insufficient forum coins');
+                        exit();
+                    }
+                    else{
+                        $vipend = date("Y-m-d H:i:s", $end);
+                        Catfish::dbStartTrans();
+                        try{
+                            Catfish::db('users')->where('id',$uid)->update([
+                                'utype' => 15,
+                                'vipend' => $vipend,
+                                'viptype' => $huiyuanleixing,
+                                'jinbi' => Catfish::dbRaw('jinbi-'.$xuyaoluntanbi)
+                            ]);
+                            Catfish::db('coin_bill')->insert([
+                                'uid' => $uid,
+                                'zengjian' => - $xuyaoluntanbi,
+                                'booktime' => Catfish::now(),
+                                'miaoshu' => Catfish::lang('Pay VIP membership fee')
+                            ]);
+                            Catfish::dbCommit();
+                            Catfish::setSession('user_type',15);
+                            echo 'ok';
+                            exit();
+                        } catch (\Exception $e) {
+                            Catfish::dbRollback();
+                            Catfish::setSession('user_type',20);
+                            echo Catfish::lang('The operation failed, please try again later');
+                            exit();
+                        }
+                    }
+                }
+                else{
+                    echo Catfish::lang('It is not currently allowed to purchase VIP members');
+                    exit();
+                }
+            }
+            elseif($zhifufangshi == 2){
+                $xuyaojifen = 0;
+                if($huiyuanleixing == 1){
+                    $per = intval($vipsetting['monthvippoints']);
+                    if($per <= 0){
+                        echo Catfish::lang('It is not currently allowed to purchase VIP members');
+                        exit();
+                    }
+                    $xuyaojifen = $per * $huiyuanqixian;
+                    $end = strtotime("+{$huiyuanqixian} months", $start);
+                }
+                elseif($huiyuanleixing == 2){
+                    $per = intval($vipsetting['yearvippoints']);
+                    if($per <= 0){
+                        echo Catfish::lang('It is not currently allowed to purchase VIP members');
+                        exit();
+                    }
+                    $xuyaojifen = $per * $huiyuanqixian;
+                    $end = strtotime("+{$huiyuanqixian} years", $start);
+                }
+                elseif($huiyuanleixing == 3){
+                    $per = intval($vipsetting['permanentvippoints']);
+                    if($per <= 0){
+                        echo Catfish::lang('It is not currently allowed to purchase VIP members');
+                        exit();
+                    }
+                    $xuyaojifen = $per;
+                }
+                if($xuyaojifen > 0){
+                    if($user['jifen'] < $xuyaojifen){
+                        echo Catfish::lang('You don\'t have enough points');
+                        exit();
+                    }
+                    else{
+                        $vipend = date("Y-m-d H:i:s", $end);
+                        Catfish::dbStartTrans();
+                        try{
+                            Catfish::db('users')->where('id',$uid)->update([
+                                'utype' => 15,
+                                'vipend' => $vipend,
+                                'viptype' => $huiyuanleixing,
+                                'jifen' => Catfish::dbRaw('jifen-'.$xuyaojifen)
+                            ]);
+                            Catfish::db('points_book')->insert([
+                                'uid' => $uid,
+                                'zengjian' => - $xuyaojifen,
+                                'booktime' => Catfish::now(),
+                                'miaoshu' => Catfish::lang('Pay VIP membership fee')
+                            ]);
+                            Catfish::dbCommit();
+                            Catfish::setSession('user_type',15);
+                            echo 'ok';
+                            exit();
+                        } catch (\Exception $e) {
+                            Catfish::dbRollback();
+                            Catfish::setSession('user_type',20);
+                            echo Catfish::lang('The operation failed, please try again later');
+                            exit();
+                        }
+                    }
+                }
+                else{
+                    echo Catfish::lang('It is not currently allowed to purchase VIP members');
+                    exit();
+                }
+            }
+            else{
+                echo Catfish::lang('Payment method must be selected');
+                exit();
+            }
+        }
+        $jianyuuser = Catfish::db('users')->where('id',Catfish::getSession('user_id'))->field('utype,vipend,viptype,jifen,jinbi')->find();
+        if($jianyuuser['utype'] == 15){
+            $jianyuuser['showvip'] = 1;
+            if($jianyuuser['viptype'] == 3){
+                $jianyuuser['vipend'] = Catfish::lang('Permanent');
+                $jianyuuser['viptype'] = Catfish::lang('Permanent member');
+            }
+            else{
+                $jianyuuser['viptype'] = Catfish::lang('Term membership');
+            }
+            if(strtotime($jianyuuser['vipend']) > time()){
+                $jianyuuser['expired'] = 0;
+            }
+            else{
+                $jianyuuser['expired'] = 1;
+            }
+        }
+        else{
+            $jianyuuser['showvip'] = 0;
+            $jianyuuser['expired'] = 0;
+            $jianyuuser['vipend'] = Catfish::lang('Permanent');
+            $jianyuuser['viptype'] = Catfish::lang('General user');
+        }
+        Catfish::allot('jianyuvip', $jianyuuser);
+        $vipsetting = Catfish::get('vipsettings');
+        if(!empty($vipsetting)){
+            $vipsetting = unserialize($vipsetting);
+        }
+        else{
+            $vipsetting = [
+                'monthvipcoins' => '',
+                'yearvipcoins' => '',
+                'permanentvipcoins' => '',
+                'allowpointsvip' => 0,
+                'monthvippoints' => '',
+                'yearvippoints' => '',
+                'permanentvippoints' => '',
+            ];
+        }
+        Catfish::allot('catfishcms', $vipsetting);
+        $jumpto = '';
+        if(Catfish::hasGet('jumpto')){
+            $jumpto = Catfish::getGet('jumpto');
+        }
+        Catfish::allot('jumpto', $jumpto);
+        return $this->show(Catfish::lang('VIP member'), 'vipmember');
+    }
     public function _empty()
     {
         Catfish::toError();
@@ -1056,6 +1298,7 @@ class Index extends CatfishCMS
                 $tcstr .= empty($tcstr) ? $val['cid'] : ',' . $val['cid'];
                 $gentieshu ++;
             }
+            $nrtmp = Catfish::db('tienr')->where('tid',$id)->field('zhengwen,fujian')->find();
             Catfish::dbStartTrans();
             try{
                 Catfish::db('tie')
@@ -1131,7 +1374,8 @@ class Index extends CatfishCMS
                 'id' => $id,
                 'uid' => $tmp['uid'],
                 'tu' => $tmp['tu'],
-                'shipin' => $tmp['shipin']
+                'shipin' => $tmp['shipin'],
+                'fujian' => $nrtmp['fujian']
             ];
             $this->plantHook('deleteMainPost', $params);
             Catfish::removeCache('post_'.$id);

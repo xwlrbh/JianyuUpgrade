@@ -77,4 +77,8 @@ return [
     'Forum coins balance' => '论坛币余额',
     'See posts to pay forum coins' => '看帖支付论坛币',
     'Posts received forum coins' => '帖子收到论坛币',
+    'VIP members can access' => 'VIP会员才可以访问',
+    'Upgrade to VIP member immediately' => '立即升级为VIP会员',
+    'Only VIP members can download attachments' => 'VIP会员才可以下载附件',
+    'VIP members can watch the video' => 'VIP会员才可以看视频',
 ];

@@ -14,7 +14,7 @@
         <tbody>
         {volist name="data" id="vo"}
         <tr>
-            <td>{$vo.biaoti}{if condition="$vo.annex eq 1"}&nbsp;<i class="fa fa-paperclip text-muted"></i>{/if}</td>
+            <td>{$vo.biaoti}{if condition="$vo.annex eq 1"}&nbsp;<i class="fa fa-paperclip text-muted"></i>{/if}{if condition="$vo.video eq 1"}&nbsp;<i class="fa fa-film text-muted"></i>{/if}</td>
             <td>{$vo.fabushijian}</td>
             <td>{$vo.yuedu}</td>
             <td>{$vo.pinglunshu}</td>

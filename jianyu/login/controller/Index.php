@@ -22,7 +22,7 @@ class Index extends CatfishCMS
                 exit();
             }
             else{
-                $user = Catfish::db('users')->where('yonghu',$data['user'])->field('id,password,touxiang,lastlogin,randomcode,status,utype,mtype,dengji,jifen,chengzhang')->find();
+                $user = Catfish::db('users')->where('yonghu',$data['user'])->field('id,password,touxiang,lastlogin,randomcode,status,utype,vipend,viptype,mtype,dengji,jifen,chengzhang')->find();
                 if(empty($user))
                 {
                     echo Catfish::lang('Username error');
@@ -42,6 +42,9 @@ class Index extends CatfishCMS
                     Catfish::setSession('resend',$data['user']);
                     echo Catfish::lang('Your account has not been activated. Please log in to your email to activate your account.').'<br>'.Catfish::lang('If you have not received your activation email, please click the link below to resend the activation email').'<br><small><a id="resend" href="'.Catfish::url('login/Index/resend').'">'.Catfish::lang('Resend activation email').'</a></small>';
                     exit();
+                }
+                if($user['utype'] == 15 && $user['viptype'] != 3 && strtotime($user['vipend']) < time()){
+                    $user['utype'] = 20;
                 }
                 $params = [
                     'logined' => true,
@@ -77,6 +80,12 @@ class Index extends CatfishCMS
         else{
             Catfish::allot('jumpto', '');
         }
+        if(Catfish::hasGet('finalto')){
+            Catfish::allot('finalto', Catfish::getGet('finalto'));
+        }
+        else{
+            Catfish::allot('finalto', '');
+        }
         Catfish::allot('shouji', $this->mobile());
         $view = Catfish::output();
         return $view;
@@ -95,7 +104,7 @@ class Index extends CatfishCMS
                 exit();
             }
             else{
-                $user = Catfish::db('users')->where('yonghu',$data['user'])->field('id,password,touxiang,lastlogin,randomcode,status,utype,mtype,dengji,jifen,chengzhang')->find();
+                $user = Catfish::db('users')->where('yonghu',$data['user'])->field('id,password,touxiang,lastlogin,randomcode,status,utype,vipend,viptype,mtype,dengji,jifen,chengzhang')->find();
                 if(empty($user))
                 {
                     echo Catfish::lang('Username error');
@@ -110,6 +119,9 @@ class Index extends CatfishCMS
                 {
                     echo Catfish::lang('Account has been disabled, please contact the administrator');
                     exit();
+                }
+                if($user['utype'] == 15 && $user['viptype'] != 3 && strtotime($user['vipend']) < time()){
+                    $user['utype'] = 20;
                 }
                 $params = [
                     'logined' => true,

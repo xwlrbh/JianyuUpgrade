@@ -150,6 +150,27 @@
         <small class="form-text text-muted">{:lang('This level setting is only valid when allowing ordinary users to set forum coins')}</small>
     </div>
     <div class="form-group">
+        <label>{:lang('VIP member')}</label>
+        <select class="form-control" name="huiyuan">
+            <option value="0"{if condition="$forum.huiyuan eq 0"} selected{/if}>{:lang('Allow ordinary users to set VIP members to view posts')}</option>
+            <option value="5"{if condition="$forum.huiyuan eq 5"} selected{/if}>{:lang('Allow internship moderators and above to set VIP members to view posts')}</option>
+            <option value="10"{if condition="$forum.huiyuan eq 10"} selected{/if}>{:lang('Allow sub-moderators and above to set VIP members to view posts')}</option>
+            <option value="15"{if condition="$forum.huiyuan eq 15"} selected{/if}>{:lang('Allow moderators and above to set VIP members to view posts')}</option>
+            <option value="20"{if condition="$forum.huiyuan eq 20"} selected{/if}>{:lang('Allow ordinary administrators and above to set VIP members to view posts')}</option>
+            <option value="25"{if condition="$forum.huiyuan eq 25"} selected{/if}>{:lang('Allow advanced administrators and above to set VIP members to view posts')}</option>
+            <option value="30"{if condition="$forum.huiyuan eq 30"} selected{/if}>{:lang('Only allow founders to set VIP members to view posts')}</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>{:lang('Minimum user level allowed to set VIP members to view posts')}</label>
+        <select class="form-control" name="huiyuandj">
+            {volist name="dengji" id="vo"}
+            <option value="{$vo.jibie}"{if condition="$forum.huiyuandj eq $vo.jibie"} selected{/if}>{$vo.djname}</option>
+            {/volist}
+        </select>
+        <small class="form-text text-muted">{:lang('This level setting is only valid when allowing ordinary users to set VIP members to view posts')}</small>
+    </div>
+    <div class="form-group">
         <label>{:lang('New users need to verify the code before sending the first few posts')}</label>
         <input type="number" class="form-control" name="yanzhengzt" value="{$forum.yanzhengzt}">
     </div>
@@ -223,6 +244,14 @@
             <option value="2"{if condition="$forum.jifenbi eq 2"} selected{/if}>{:lang('Only allow points to be exchanged into forum coins')}</option>
             <option value="3"{if condition="$forum.jifenbi eq 3"} selected{/if}>{:lang('Allow points and forum coins swap')}</option>
         </select>
+    </div>
+    <div class="form-group">
+        <label>{:lang('VIP members free of payment')}</label>
+        <select class="form-control" name="huiyuanmianfu">
+            <option value="0"{if condition="$forum.huiyuanmianfu eq 0"} selected{/if}>{:lang('Need to pay')}</option>
+            <option value="1"{if condition="$forum.huiyuanmianfu eq 1"} selected{/if}>{:lang('No payment')}</option>
+        </select>
+        <small class="form-text text-muted">{:lang('Set whether VIP members can access posts that require payment of points or forum coins for free')}</small>
     </div>
     {if condition="$extend eq 1"}
     <div class="form-group">

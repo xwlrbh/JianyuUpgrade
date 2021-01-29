@@ -1,0 +1,1 @@
+/*** Created by A.J on 2020/9/30.*/$(document).ready(function(){$("#allowpointsvip").on("change", function(){if($(this).val() == 1){$("#jifendiv").removeClass("d-none");}else{$("#jifendiv").addClass("d-none");}});});

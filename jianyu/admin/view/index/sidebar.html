@@ -40,6 +40,9 @@
 <div>
     <nav class="nav flex-column">
         <a href="{:Url('admin/Index/generaluser')}" class="nav-link{if $option == 'generaluser'} bg-secondary text-white{else /} text-dark{/if}">{:lang('All users')}</a>
+        {if condition="$ugroup <= 3"}
+        <a href="{:Url('admin/Index/vipmember')}" class="nav-link{if $option == 'vipmember'} bg-secondary text-white{else /} text-dark{/if}">{:lang('VIP member')}</a>
+        {/if}
         <a href="{:Url('admin/Index/moderator')}" class="nav-link{if $option == 'moderator'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Moderator')}</a>
         {if condition="$ugroup <= 3"}
         <a href="{:Url('admin/Index/administrator')}" class="nav-link{if $option == 'administrator'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Administrator')}</a>
@@ -91,6 +94,7 @@
         <a href="{:Url('admin/Index/levelsetting')}" class="nav-link{if $option == 'levelsetting'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Level setting')}</a>
         <a href="{:Url('admin/Index/growthsetting')}" class="nav-link{if $option == 'growthsetting'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Growth setting')}</a>
         <a href="{:Url('admin/Index/checkinsettings')}" class="nav-link{if $option == 'checkinsettings'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Check-in settings')}</a>
+        <a href="{:Url('admin/Index/vipsettings')}" class="nav-link{if $option == 'vipsettings'} bg-secondary text-white{else /} text-dark{/if}">{:lang('VIP member settings')}</a>
         <a href="{:Url('admin/Index/smtpsettings')}" class="nav-link{if $option == 'smtpsettings'} bg-secondary text-white{else /} text-dark{/if}">{:lang('SMTP settings')}</a>
         <a href="{:Url('admin/Index/themeswitching')}" class="nav-link{if $option == 'themeswitching'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Theme switching')}</a>
         {if condition="$themesetting == 1"}

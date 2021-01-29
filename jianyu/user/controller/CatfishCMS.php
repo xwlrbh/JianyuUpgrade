@@ -32,7 +32,15 @@ class CatfishCMS
         }
         if(!Catfish::hasSession('user_id'))
         {
-            Catfish::redirect('login/Index/index');
+            $jumpto = Catfish::getGet('jumpto');
+            if(!empty($jumpto)){
+                $jumpto = '?finalto=' . $jumpto;
+                $jumpto .= '&jumpto=' . Catfish::currentUrl();
+            }
+            else{
+                $jumpto = '';
+            }
+            Catfish::redirect(Catfish::url('login/Index/index') . $jumpto);
             exit();
         }
         elseif(!Catfish::checkUser()){
@@ -297,7 +305,7 @@ class CatfishCMS
         $myforum['geshi'] = $tmp_geshi;
         switch($forum['fujian']){
             case 0:
-                $myforum['fujian'] = ($forum['fujiandj'] <= $dengji || $utype < 20 || $mtype > 0) ? 1 : 0;
+                $myforum['fujian'] = ($forum['fujiandj'] <= $dengji || $utype < 15 || $mtype > 0) ? 1 : 0;
                 break;
             case 5:
                 $myforum['fujian'] = ($mtype >= 5 || $utype <= 5) ? 1 : 0;
@@ -320,7 +328,7 @@ class CatfishCMS
         }
         switch($forum['tupian']){
             case 0:
-                $myforum['tupian'] = ($forum['tupiandj'] <= $dengji || $utype < 20 || $mtype > 0) ? 1 : 0;
+                $myforum['tupian'] = ($forum['tupiandj'] <= $dengji || $utype < 15 || $mtype > 0) ? 1 : 0;
                 break;
             case 5:
                 $myforum['tupian'] = ($mtype >= 5 || $utype <= 5) ? 1 : 0;
@@ -343,7 +351,7 @@ class CatfishCMS
         }
         switch($forum['lianjie']){
             case 0:
-                $myforum['lianjie'] = ($forum['lianjiedj'] <= $dengji || $utype < 20 || $mtype > 0) ? 1 : 0;
+                $myforum['lianjie'] = ($forum['lianjiedj'] <= $dengji || $utype < 15 || $mtype > 0) ? 1 : 0;
                 break;
             case 5:
                 $myforum['lianjie'] = ($mtype >= 5 || $utype <= 5) ? 1 : 0;
@@ -366,7 +374,7 @@ class CatfishCMS
         }
         switch($forum['jifen']){
             case 0:
-                $myforum['jifen'] = ($forum['jifendj'] <= $dengji || $utype < 20 || $mtype > 0) ? 1 : 0;
+                $myforum['jifen'] = ($forum['jifendj'] <= $dengji || $utype < 15 || $mtype > 0) ? 1 : 0;
                 break;
             case 5:
                 $myforum['jifen'] = ($mtype >= 5 || $utype <= 5) ? 1 : 0;
@@ -389,7 +397,7 @@ class CatfishCMS
         }
         switch($forum['jinbi']){
             case 0:
-                $myforum['jinbi'] = ($forum['jinbidj'] <= $dengji || $utype < 20 || $mtype > 0) ? 1 : 0;
+                $myforum['jinbi'] = ($forum['jinbidj'] <= $dengji || $utype < 15 || $mtype > 0) ? 1 : 0;
                 break;
             case 5:
                 $myforum['jinbi'] = ($mtype >= 5 || $utype <= 5) ? 1 : 0;
@@ -412,7 +420,7 @@ class CatfishCMS
         }
         switch($forum['shipin']){
             case 0:
-                $myforum['shipin'] = ($forum['shipindj'] <= $dengji || $utype < 20 || $mtype > 0) ? 1 : 0;
+                $myforum['shipin'] = ($forum['shipindj'] <= $dengji || $utype < 15 || $mtype > 0) ? 1 : 0;
                 break;
             case 5:
                 $myforum['shipin'] = ($mtype >= 5 || $utype <= 5) ? 1 : 0;
@@ -431,6 +439,29 @@ class CatfishCMS
                 break;
             case 30:
                 $myforum['shipin'] = ($utype == 1) ? 1 : 0;
+                break;
+        }
+        switch($forum['huiyuan']){
+            case 0:
+                $myforum['huiyuan'] = ($forum['huiyuandj'] <= $dengji || $utype < 15 || $mtype > 0) ? 1 : 0;
+                break;
+            case 5:
+                $myforum['huiyuan'] = ($mtype >= 5 || $utype <= 5) ? 1 : 0;
+                break;
+            case 10:
+                $myforum['huiyuan'] = ($mtype >= 10 || $utype <= 5) ? 1 : 0;
+                break;
+            case 15:
+                $myforum['huiyuan'] = ($mtype >= 15 || $utype <= 5) ? 1 : 0;
+                break;
+            case 20:
+                $myforum['huiyuan'] = ($utype <= 5) ? 1 : 0;
+                break;
+            case 25:
+                $myforum['huiyuan'] = ($utype <= 3) ? 1 : 0;
+                break;
+            case 30:
+                $myforum['huiyuan'] = ($utype == 1) ? 1 : 0;
                 break;
         }
         return $myforum;

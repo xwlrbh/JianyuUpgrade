@@ -173,6 +173,7 @@ class Index extends CatfishCMS
                 $tcstr .= empty($tcstr) ? $val['cid'] : ',' . $val['cid'];
                 $gentieshu ++;
             }
+            $nrtmp = Catfish::db('tienr')->where('tid',$id)->field('zhengwen,fujian')->find();
             Catfish::dbStartTrans();
             try{
                 Catfish::db('tie')
@@ -248,7 +249,8 @@ class Index extends CatfishCMS
                 'id' => $id,
                 'uid' => $tmp['uid'],
                 'tu' => $tmp['tu'],
-                'shipin' => $tmp['shipin']
+                'shipin' => $tmp['shipin'],
+                'fujian' => $nrtmp['fujian']
             ];
             $this->plantHook('deleteMainPost', $params);
             Catfish::removeCache('post_'.$id);
@@ -851,20 +853,64 @@ class Index extends CatfishCMS
             $utp = intval(Catfish::getSession('user_type'));
             $totp = intval(Catfish::getPost('gup'));
             $id = intval(Catfish::getPost('id'));
+            $leixing = intval(Catfish::getPost('leixing'));
+            $shixian = Catfish::getPost('shixian');
+            $nowtime = time();
             if($utp >= $totp){
                 echo Catfish::lang('Your operation is illegal');
                 exit();
             }
             else{
-                $reu = Catfish::db('users')->where('id',$id)->field('utype')->find();
+                $reu = Catfish::db('users')->where('id',$id)->field('utype,vipend,viptype')->find();
                 if($utp >= intval($reu['utype'])){
                     echo Catfish::lang('Your operation is illegal');
                     exit();
                 }
+                elseif($totp == 15 && $leixing <= 0){
+                    echo Catfish::lang('Member type must be selected');
+                    exit();
+                }
+                elseif($totp == 15 && $leixing != 3 && !preg_match("/^[1-9][0-9]*$/", $shixian)){
+                    echo Catfish::lang('The membership period must be an integer greater than 0');
+                    exit();
+                }
+                elseif($totp == 15 && intval($reu['utype']) < 6){
+                    echo Catfish::lang('The administrator cannot be changed to a VIP member');
+                    exit();
+                }
+                elseif($totp != 15 && ($reu['viptype'] == 3 || (in_array($reu['viptype'], [1,2]) && strtotime($reu['vipend']) > $nowtime))){
+                    echo Catfish::lang('VIP members cannot be changed to other user groups');
+                    exit();
+                }
                 else{
-                    Catfish::db('users')->where('id',$id)->update([
-                        'utype' => $totp
-                    ]);
+                    if($totp == 15){
+                        $viped = strtotime($reu['vipend']);
+                        if($viped > $nowtime){
+                            $start = $viped;
+                        }
+                        else{
+                            $start = $nowtime;
+                        }
+                        if($leixing == 1){
+                            $end = strtotime("+{$shixian} months", $start);
+                        }
+                        elseif($leixing == 2){
+                            $end = strtotime("+{$shixian} years", $start);
+                        }
+                        else{
+                            $end = $start;
+                        }
+                        Catfish::db('users')->where('id',$id)->update([
+                            'utype' => $totp,
+                            'vipend' => date("Y-m-d H:i:s", $end),
+                            'viptype' => $leixing
+                        ]);
+                    }
+                    else{
+                        Catfish::db('users')->where('id',$id)->update([
+                            'utype' => $totp
+                        ]);
+                    }
                     echo 'ok';
                     exit();
                 }
@@ -889,6 +935,122 @@ class Index extends CatfishCMS
         else{
             echo Catfish::lang('Your operation is illegal');
             exit();
+        }
+    }
+    public function vipmember()
+    {
+        $this->checkUser();
+        $yonghuming = Catfish::getGet('yonghuming');
+        if($yonghuming === false){
+            $yonghuming = '';
+        }
+        $query = [];
+        $catfish = Catfish::db('users')
+            ->where('id', '>', 1)
+            ->where('utype', 15);
+        if($yonghuming != ''){
+            $catfish = $catfish->where('yonghu','=',$yonghuming);
+            $query['yonghuming'] = $yonghuming;
+        }
+        $catfish = $catfish->field('id,yonghu,nicheng,email,shouji,touxiang,utype,vipend,viptype')
+            ->order('id desc')
+            ->paginate(20,false,[
+                'query' => $query
+            ]);
+        Catfish::allot('pages', $catfish->render());
+        $catfish = $catfish->items();
+        foreach($catfish as $key => $val){
+            if($val['viptype'] == 3){
+                $catfish[$key]['vipend'] = Catfish::lang('Permanent');
+                $catfish[$key]['viptype'] = Catfish::lang('Permanent member');
+                $catfish[$key]['expired'] = 0;
+            }
+            else{
+                if(strtotime($val['vipend']) > time()){
+                    $catfish[$key]['expired'] = 0;
+                }
+                else{
+                    $catfish[$key]['expired'] = 1;
+                }
+                $catfish[$key]['viptype'] = Catfish::lang('Term membership');
+            }
+        }
+        Catfish::allot('catfishcms', $catfish);
+        return $this->show(Catfish::lang('VIP member'), 3, 'vipmember');
+    }
+    public function viprenewal()
+    {
+        if(Catfish::isPost(3)){
+            $id = intval(Catfish::getPost('id'));
+            $leixing = intval(Catfish::getPost('leixing'));
+            $shixian = Catfish::getPost('shixian');
+            $nowtime = time();
+            if($leixing <= 0){
+                $result = [
+                    'result' => 'error',
+                    'message' => Catfish::lang('Member type must be selected')
+                ];
+                return json($result);
+            }
+            elseif($leixing != 3 && !preg_match("/^[1-9][0-9]*$/", $shixian)){
+                $result = [
+                    'result' => 'error',
+                    'message' => Catfish::lang('The membership period must be an integer greater than 0')
+                ];
+                return json($result);
+            }
+            else{
+                $reu = Catfish::db('users')->where('id',$id)->field('utype,vipend,viptype')->find();
+                if($reu['utype'] != 15){
+                    $result = [
+                        'result' => 'error',
+                        'message' => Catfish::lang('Your operation is illegal')
+                    ];
+                    return json($result);
+                }
+                $viped = strtotime($reu['vipend']);
+                if($viped > $nowtime){
+                    $start = $viped;
+                }
+                else{
+                    $start = $nowtime;
+                }
+                if($leixing == 1){
+                    $end = strtotime("+{$shixian} months", $start);
+                }
+                elseif($leixing == 2){
+                    $end = strtotime("+{$shixian} years", $start);
+                }
+                else{
+                    $end = $start;
+                }
+                $vipend = date("Y-m-d H:i:s", $end);
+                Catfish::db('users')->where('id',$id)->update([
+                    'vipend' => $vipend,
+                    'viptype' => $leixing
+                ]);
+                if($leixing == 3){
+                    $vipend = Catfish::lang('Permanent');
+                    $viptype = Catfish::lang('Permanent member');
+                }
+                else{
+                    $viptype = Catfish::lang('Term membership');
+                }
+                $result = [
+                    'result' => 'ok',
+                    'vipend' => $vipend,
+                    'viptype' =>$viptype,
+                    'message' => ''
+                ];
+                return json($result);
+            }
+        }
+        else{
+            $result = [
+                'result' => 'error',
+                'message' => Catfish::lang('Your operation is illegal')
+            ];
+            return json($result);
         }
     }
     public function moderator()
@@ -1232,11 +1394,14 @@ class Index extends CatfishCMS
                     'jifendj' => Catfish::getPost('jifendj'),
                     'jinbi' => Catfish::getPost('jinbi'),
                     'jinbidj' => Catfish::getPost('jinbidj'),
+                    'huiyuan' => Catfish::getPost('huiyuan'),
+                    'huiyuandj' => Catfish::getPost('huiyuandj'),
                     'kzleixing' => $kzleixing,
                     'shipin' => Catfish::getPost('shipin'),
                     'shipindj' => Catfish::getPost('shipindj'),
                     'shipinkan' => Catfish::getPost('shipinkan'),
-                    'jifenbi' => Catfish::getPost('jifenbi')
+                    'jifenbi' => Catfish::getPost('jifenbi'),
+                    'huiyuanmianfu' => Catfish::getPost('huiyuanmianfu')
                 ]);
             $tietype = Catfish::db('tietype')->where('id',3)->field('id')->find();
             if(empty($tietype) && $kzleixing != ''){
@@ -1259,7 +1424,7 @@ class Index extends CatfishCMS
             echo 'ok';
             exit();
         }
-        $forum = Catfish::db('forum')->where('id',1)->field('fujian,fujiandj,fujiandwn,tiezi,tupian,tupiandj,lianjie,lianjiedj,yanzhengzt,yanzhenggt,shichangzt,shichanggt,geshi,mingan,preaudit,fpreaudit,jifen,jifendj,jinbi,jinbidj,kzleixing,shipin,shipindj,shipinkan,jifenbi')->find();
+        $forum = Catfish::db('forum')->where('id',1)->field('fujian,fujiandj,fujiandwn,tiezi,tupian,tupiandj,lianjie,lianjiedj,yanzhengzt,yanzhenggt,shichangzt,shichanggt,geshi,mingan,preaudit,fpreaudit,jifen,jifendj,jinbi,jinbidj,huiyuan,huiyuandj,kzleixing,shipin,shipindj,shipinkan,jifenbi,huiyuanmianfu')->find();
         Catfish::allot('forum', $forum);
         $extend = Catfish::iszero(Catfish::remind()) ? 0 : 1;
         Catfish::allot('extend', $extend);
@@ -2260,6 +2425,72 @@ class Index extends CatfishCMS
         }
         Catfish::allot('catfishcms', $catfish);
         return $this->show(Catfish::lang('Fine post'), 5, 'finepost');
+    }
+    public function vipsettings()
+    {
+        $this->checkUser();
+        if(Catfish::isPost(3)){
+            $monthvipcoins = Catfish::getPost('monthvipcoins');
+            if(!empty($monthvipcoins) && !preg_match("/^[1-9][0-9]*$/", $monthvipcoins)){
+                echo Catfish::lang('You must fill in an integer greater than 0');
+                exit();
+            }
+            $yearvipcoins = Catfish::getPost('yearvipcoins');
+            if(!empty($yearvipcoins) && !preg_match("/^[1-9][0-9]*$/", $yearvipcoins)){
+                echo Catfish::lang('You must fill in an integer greater than 0');
+                exit();
+            }
+            $permanentvipcoins = Catfish::getPost('permanentvipcoins');
+            if(!empty($permanentvipcoins) && !preg_match("/^[1-9][0-9]*$/", $permanentvipcoins)){
+                echo Catfish::lang('You must fill in an integer greater than 0');
+                exit();
+            }
+            $allowpointsvip = Catfish::getPost('allowpointsvip');
+            $monthvippoints = Catfish::getPost('monthvippoints');
+            if(!empty($monthvippoints) && !preg_match("/^[1-9][0-9]*$/", $monthvippoints)){
+                echo Catfish::lang('You must fill in an integer greater than 0');
+                exit();
+            }
+            $yearvippoints = Catfish::getPost('yearvippoints');
+            if(!empty($yearvippoints) && !preg_match("/^[1-9][0-9]*$/", $yearvippoints)){
+                echo Catfish::lang('You must fill in an integer greater than 0');
+                exit();
+            }
+            $permanentvippoints = Catfish::getPost('permanentvippoints');
+            if(!empty($permanentvippoints) && !preg_match("/^[1-9][0-9]*$/", $permanentvippoints)){
+                echo Catfish::lang('You must fill in an integer greater than 0');
+                exit();
+            }
+            $vipsetting = [
+                'monthvipcoins' => $monthvipcoins,
+                'yearvipcoins' => $yearvipcoins,
+                'permanentvipcoins' => $permanentvipcoins,
+                'allowpointsvip' => $allowpointsvip,
+                'monthvippoints' => $monthvippoints,
+                'yearvippoints' => $yearvippoints,
+                'permanentvippoints' => $permanentvippoints
+            ];
+            Catfish::set('vipsettings', serialize($vipsetting));
+            echo 'ok';
+            exit();
+        }
+        $vipsetting = Catfish::get('vipsettings');
+        if(!empty($vipsetting)){
+            $vipsetting = unserialize($vipsetting);
+        }
+        else{
+            $vipsetting = [
+                'monthvipcoins' => '',
+                'yearvipcoins' => '',
+                'permanentvipcoins' => '',
+                'allowpointsvip' => 0,
+                'monthvippoints' => '',
+                'yearvippoints' => '',
+                'permanentvippoints' => '',
+            ];
+        }
+        Catfish::allot('catfishcms', $vipsetting);
+        return $this->show(Catfish::lang('VIP member settings'), 3, 'vipsettings');
     }
     public function smtpsettings()
     {

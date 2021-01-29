@@ -948,7 +948,7 @@ class Catfish
     {
         $forum = self::getCache('forumsettings');
         if($forum === false){
-            $forum = self::db('forum')->where('id',1)->field('fujian,fujiandj,fujiandwn,tiezi,tupian,tupiandj,lianjie,lianjiedj,yanzhengzt,yanzhenggt,shichangzt,shichanggt,geshi,mingan,preaudit,fpreaudit,jifen,jifendj,jinbi,jinbidj,shipin,shipindj,shipinkan,jifenbi')->find();
+            $forum = self::db('forum')->where('id',1)->field('fujian,fujiandj,fujiandwn,tiezi,tupian,tupiandj,lianjie,lianjiedj,yanzhengzt,yanzhenggt,shichangzt,shichanggt,geshi,mingan,preaudit,fpreaudit,jifen,jifendj,jinbi,jinbidj,huiyuan,huiyuandj,shipin,shipindj,shipinkan,jifenbi,huiyuanmianfu')->find();
             self::setCache('forumsettings',$forum,86400);
         }
         return $forum;
@@ -1302,5 +1302,9 @@ class Catfish
     public static function pluginAssign($name, $value = '')
     {
         return self::allot('p_' . $name, $value);
+    }
+    public static function currentUrl($url = null)
+    {
+        return self::domain() . ltrim(Request::instance()->baseUrl($url), '/');
     }
 }

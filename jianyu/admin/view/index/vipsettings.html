@@ -1,0 +1,42 @@
+{include file="index/header" /}
+<form>
+    <div class="form-group">
+        <label for="monthvipcoins">{:lang('Buying one-month VIP membership requires forum coins')}</label>
+        <input type="number" value="{$catfishcms.monthvipcoins}" min="1" step="1" class="form-control" id="monthvipcoins" name="monthvipcoins">
+    </div>
+    <div class="form-group">
+        <label for="yearvipcoins">{:lang('Buying one year VIP membership requires forum coins')}</label>
+        <input type="number" value="{$catfishcms.yearvipcoins}" min="1" step="1" class="form-control" id="yearvipcoins" name="yearvipcoins">
+    </div>
+    <div class="form-group">
+        <label for="permanentvipcoins">{:lang('Forum coins is required to purchase permanent VIP members')}</label>
+        <input type="number" value="{$catfishcms.permanentvipcoins}" min="1" step="1" class="form-control" id="permanentvipcoins" name="permanentvipcoins">
+    </div>
+    <div class="form-group">
+        <label for="allowpointsvip">{:lang('Whether to allow points to purchase VIP members')}</label>
+        <select class="form-control" id="allowpointsvip" name="allowpointsvip">
+            <option value="0"{if condition="$catfishcms.allowpointsvip eq 0"} selected{/if}>{:lang('It is not allowed to use points to purchase VIP members')}</option>
+            <option value="1"{if condition="$catfishcms.allowpointsvip eq 1"} selected{/if}>{:lang('Allow points to purchase VIP members')}</option>
+        </select>
+    </div>
+    <div id="jifendiv" class="{if condition="$catfishcms.allowpointsvip eq 0"}d-none{/if}">
+        <div class="form-group">
+            <label for="monthvippoints">{:lang('Points are required to purchase one-month VIP membership')}</label>
+            <input type="number" value="{$catfishcms.monthvippoints}" min="1" step="1" class="form-control" id="monthvippoints" name="monthvippoints">
+        </div>
+        <div class="form-group">
+            <label for="yearvippoints">{:lang('Points are required to purchase one-year VIP membership')}</label>
+            <input type="number" value="{$catfishcms.yearvippoints}" min="1" step="1" class="form-control" id="yearvippoints" name="yearvippoints">
+        </div>
+        <div class="form-group">
+            <label for="permanentvippoints">{:lang('Points are required to purchase permanent VIP members')}</label>
+            <input type="number" value="{$catfishcms.permanentvippoints}" min="1" step="1" class="form-control" id="permanentvippoints" name="permanentvippoints">
+        </div>
+    </div>
+    <div class="text-center mb-5">
+        <input type="hidden" name="verification" value="{$verification}">
+        <button type="button" id="formsubmit" class="btn btn-info submit">{:lang('Submit')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+    </div>
+</form>
+<script src="{$domain}public/common/js/vipsettings.js"></script>
+{include file="index/footer" /}
