@@ -1,0 +1,1 @@
+/*** Created by A.J on 2020/10/15.*/$(document).ready(function(){$("#openapi").on("change", function(){if($(this).val() == 1){$.post("openapi", { open: $(this).val(), verification:$("#verification").text()});}});});

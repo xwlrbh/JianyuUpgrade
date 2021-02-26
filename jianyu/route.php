@@ -45,4 +45,5 @@ return [
     'payqrcode' => 'pay/Index/payqrcode',
     'wxnotify' => 'pay/Index/wxnotify',
     'face/:find' => 'index/Index/face',
+    'api' => 'api/Index/index',
 ];

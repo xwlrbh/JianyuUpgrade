@@ -509,4 +509,8 @@ return [
     'Need to pay' => '需要支付',
     'No payment' => '免支付',
     'Set whether VIP members can access posts that require payment of points or forum coins for free' => '设置VIP会员是否可以免费访问需要支付积分或论坛币的帖子',
+    'Whether to open the API' => '是否开启API',
+    'Not open' => '不开启',
+    'Open API' => '开启API',
+    'This function is only valid for authorized users' => '此项功能仅授权用户有效',
 ];

@@ -1348,7 +1348,7 @@ class CatfishCMS
         $myforum['fpreaudit'] = $forum['fpreaudit'];
         switch($forum['tupian']){
             case 0:
-                $myforum['tupian'] = ($forum['tupiandj'] <= $dengji || $utype < 20 || $mtype > 0) ? 1 : 0;
+                $myforum['tupian'] = ($forum['tupiandj'] <= $dengji || $utype < 15 || $mtype > 0) ? 1 : 0;
                 break;
             case 5:
                 $myforum['tupian'] = ($mtype >= 5 || $utype <= 5) ? 1 : 0;
@@ -1371,7 +1371,7 @@ class CatfishCMS
         }
         switch($forum['lianjie']){
             case 0:
-                $myforum['lianjie'] = ($forum['lianjiedj'] <= $dengji || $utype < 20 || $mtype > 0) ? 1 : 0;
+                $myforum['lianjie'] = ($forum['lianjiedj'] <= $dengji || $utype < 15 || $mtype > 0) ? 1 : 0;
                 break;
             case 5:
                 $myforum['lianjie'] = ($mtype >= 5 || $utype <= 5) ? 1 : 0;

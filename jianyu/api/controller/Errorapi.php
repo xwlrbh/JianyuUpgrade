@@ -6,9 +6,13 @@
  * License: Catfish CMS License ( http://www.catfish-cms.com/licenses/ccl )
  * Copyright: http://jianyuluntan.com All rights reserved.
  */
-return [
-    'version' => '3.0.0',
-    'name' => '剑鱼论坛',
-    'description' => 'Catfish(鲶鱼) CMS官方发布的轻论坛程序',
-    'official' => 'jianyuluntan.com'
-];
+namespace app\api\controller;
+class Errorapi extends Jsonapi
+{
+    public function getData($code, $detail, $title = null, $source = null)
+    {
+        $err = $this->createError($code, $detail, $title, $source);
+        $this->addError($err);
+        return $this->outJsonApi();
+    }
+}

@@ -159,6 +159,15 @@
         <button type="button" id="formsubmit" class="btn btn-info{if condition="$forum.fujian eq 0"} submit{/if}">{:lang('Submit')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
     </div>
 </form>
+<div class="modal bd-example-modal-sm" id="videoModal" tabindex="-1">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content p-3">
+            <div>
+                <i class="fa fa-refresh fa-spin text-info mr-2"></i> <span id="tishixinxi">{:lang('Uploading video, please wait...')}</span>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="d-none" id="upload_handyeditor_url">{:Url('user/Index/uploadhandyeditor')}</div>
 <div class="d-none" id="sizeError">{:lang('Cannot upload images larger than 2M')}</div>
 <div class="d-none" id="typeError">{:lang('Can only upload images in gif, png, jpg, jpeg format')}</div>

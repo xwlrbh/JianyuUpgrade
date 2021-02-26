@@ -948,7 +948,7 @@ class Catfish
     {
         $forum = self::getCache('forumsettings');
         if($forum === false){
-            $forum = self::db('forum')->where('id',1)->field('fujian,fujiandj,fujiandwn,tiezi,tupian,tupiandj,lianjie,lianjiedj,yanzhengzt,yanzhenggt,shichangzt,shichanggt,geshi,mingan,preaudit,fpreaudit,jifen,jifendj,jinbi,jinbidj,huiyuan,huiyuandj,shipin,shipindj,shipinkan,jifenbi,huiyuanmianfu')->find();
+            $forum = self::db('forum')->where('id',1)->field('fujian,fujiandj,fujiandwn,tiezi,tupian,tupiandj,lianjie,lianjiedj,yanzhengzt,yanzhenggt,shichangzt,shichanggt,geshi,mingan,preaudit,fpreaudit,jifen,jifendj,jinbi,jinbidj,huiyuan,huiyuandj,shipin,shipindj,shipinkan,jifenbi,huiyuanmianfu,openapi')->find();
             self::setCache('forumsettings',$forum,86400);
         }
         return $forum;
@@ -1306,5 +1306,101 @@ class Catfish
     public static function currentUrl($url = null)
     {
         return self::domain() . ltrim(Request::instance()->baseUrl($url), '/');
+    }
+    public static function isGetRequest()
+    {
+        return Request::instance()->isGet();
+    }
+    public static function isPostRequest()
+    {
+        return Request::instance()->isPost();
+    }
+    public static function isPutRequest()
+    {
+        return Request::instance()->isPut();
+    }
+    public static function isDeleteRequest()
+    {
+        return Request::instance()->isDelete();
+    }
+    public static function isPatchRequest()
+    {
+        return Request::instance()->isPatch();
+    }
+    public static function getAllGet()
+    {
+        if(self::isGetRequest()){
+            return Request::instance()->param();
+        }
+        else{
+            return false;
+        }
+    }
+    public static function getAllPost()
+    {
+        if(self::isPostRequest()){
+            return Request::instance()->put();
+        }
+        else{
+            return false;
+        }
+    }
+    public static function getAllPut()
+    {
+        if(self::isPutRequest()){
+            return Request::instance()->put();
+        }
+        else{
+            return false;
+        }
+    }
+    public static function getAllDelete()
+    {
+        if(self::isDeleteRequest()){
+            return Request::instance()->delete();
+        }
+        else{
+            return false;
+        }
+    }
+    public static function getAllPatch()
+    {
+        if(self::isPatchRequest()){
+            return Request::instance()->patch();
+        }
+        else{
+            return false;
+        }
+    }
+    public static function jsonApi($data)
+    {
+        header("Content-type: application/vnd.api+json");
+        echo json_encode($data, JSON_UNESCAPED_UNICODE);
+        exit();
+    }
+    public static function getHeader($name = null)
+    {
+        if(empty($name)){
+            return Request::instance()->header();
+        }
+        else{
+            return Request::instance()->header($name);
+        }
+    }
+    public static function checkJsonApi()
+    {
+        $accept = self::getHeader('Accept');
+        $forum = self::getForum();
+        if($accept != 'application/vnd.api+json' || $forum['openapi'] != 1 || self::remind() == 0){
+            header("HTTP/1.1 406 Not Acceptable");
+            exit();
+        }
+        if(!self::isGetRequest()){
+            $contentType = self::getHeader('Content-Type');
+            if((self::isPostRequest() && $contentType != 'application/vnd.api+json' && stripos($contentType, 'multipart/form-data') === false) || (!self::isPostRequest() && $contentType != 'application/vnd.api+json')){
+                header("HTTP/1.1 415 Unsupported Media Type");
+                exit();
+            }
+        }
     }
 }

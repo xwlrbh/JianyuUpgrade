@@ -1401,7 +1401,8 @@ class Index extends CatfishCMS
                     'shipindj' => Catfish::getPost('shipindj'),
                     'shipinkan' => Catfish::getPost('shipinkan'),
                     'jifenbi' => Catfish::getPost('jifenbi'),
-                    'huiyuanmianfu' => Catfish::getPost('huiyuanmianfu')
+                    'huiyuanmianfu' => Catfish::getPost('huiyuanmianfu'),
+                    'openapi' => Catfish::getPost('openapi')
                 ]);
             $tietype = Catfish::db('tietype')->where('id',3)->field('id')->find();
             if(empty($tietype) && $kzleixing != ''){
@@ -1424,7 +1425,11 @@ class Index extends CatfishCMS
             echo 'ok';
             exit();
         }
-        $forum = Catfish::db('forum')->where('id',1)->field('fujian,fujiandj,fujiandwn,tiezi,tupian,tupiandj,lianjie,lianjiedj,yanzhengzt,yanzhenggt,shichangzt,shichanggt,geshi,mingan,preaudit,fpreaudit,jifen,jifendj,jinbi,jinbidj,huiyuan,huiyuandj,kzleixing,shipin,shipindj,shipinkan,jifenbi,huiyuanmianfu')->find();
+        $zipath = ROOT_PATH . 'data' . DS . 'temp' . DS . 'api' . DS . 'jianyu.zip';
+        if(is_file($zipath)){
+            @unlink($zipath);
+        }
+        $forum = Catfish::db('forum')->where('id',1)->field('fujian,fujiandj,fujiandwn,tiezi,tupian,tupiandj,lianjie,lianjiedj,yanzhengzt,yanzhenggt,shichangzt,shichanggt,geshi,mingan,preaudit,fpreaudit,jifen,jifendj,jinbi,jinbidj,huiyuan,huiyuandj,kzleixing,shipin,shipindj,shipinkan,jifenbi,huiyuanmianfu,openapi')->find();
         Catfish::allot('forum', $forum);
         $extend = Catfish::iszero(Catfish::remind()) ? 0 : 1;
         Catfish::allot('extend', $extend);
@@ -1436,6 +1441,44 @@ class Index extends CatfishCMS
         }
         Catfish::allot('dengji', $dengji);
         return $this->show(Catfish::lang('Forum settings'), 3, 'forumsettings');
+    }
+    public function openapi()
+    {
+        if(Catfish::isPost(3)){
+            ignore_user_abort(true);
+            ini_set('max_execution_time', 0);
+            ini_set('memory_limit', -1);
+            $getime = Catfish::get('apitime');
+            $serial = Catfish::get('serial');
+            $pf = APP_PATH . 'api' . DS . 'controller' . DS . 'Index.php';
+            if(!is_file($pf) && !empty($serial) && (empty($getime) || (!empty($getime) && ($getime + 86400) < time()))){
+                $dom = Catfish::get('domain');
+                $gtap = Catfish::curl('http://jianyuluntan.com/downloadapi/?dm='.$dom.'&se='.md5($serial).'&lx=');
+                Catfish::set('apitime', time());
+                if(!empty($gtap)){
+                    $gtap = gzuncompress($gtap);
+                    $chk = substr($gtap, -32);
+                    $gtap = substr($gtap, 0, -32);
+                    if(md5($gtap . $serial) == $chk){
+                        $path = ROOT_PATH . 'data' . DS . 'temp' . DS . 'api';
+                        if(!is_dir($path)){
+                            mkdir($path, 0777, true);
+                        }
+                        $iv = substr(md5($serial), 0, 16);
+                        $gtap = openssl_decrypt($gtap, 'aes-256-cbc', $serial, OPENSSL_RAW_DATA, $iv);
+                        $path .= DS . 'jianyu.zip';
+                        file_put_contents($path, $gtap);
+                        $zip = new \ZipArchive();
+                        if($zip->open($path, \ZipArchive::OVERWRITE || \ZIPARCHIVE::CREATE) === true){
+                            $zip->extractTo(ROOT_PATH);
+                            $zip->close();
+                            @unlink($path);
+                        }
+                    }
+                }
+            }
+            exit();
+        }
     }
     public function levelsetting()
     {

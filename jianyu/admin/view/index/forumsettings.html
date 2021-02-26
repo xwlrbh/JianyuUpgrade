@@ -253,6 +253,14 @@
         </select>
         <small class="form-text text-muted">{:lang('Set whether VIP members can access posts that require payment of points or forum coins for free')}</small>
     </div>
+    <div class="form-group">
+        <label>{:lang('Whether to open the API')}</label>
+        <select class="form-control" name="openapi" id="openapi">
+            <option value="0"{if condition="$forum.openapi eq 0"} selected{/if}>{:lang('Not open')}</option>
+            <option value="1"{if condition="$forum.openapi eq 1"} selected{/if}>{:lang('Open API')}</option>
+        </select>
+        <small class="form-text text-muted">{:lang('This function is only valid for authorized users')}</small>
+    </div>
     {if condition="$extend eq 1"}
     <div class="form-group">
         <label>{:lang('Extension type name')}</label>
@@ -275,4 +283,5 @@
         <button type="button" id="formsubmit" class="btn btn-info submit">{:lang('Submit')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
     </div>
 </form>
+<script src="{$domain}public/common/js/forumsettings.js"></script>
 {include file="index/footer" /}

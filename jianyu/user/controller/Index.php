@@ -888,7 +888,7 @@ class Index extends CatfishCMS
         if(!empty($touxiang)){
             $touxiang = Catfish::domain() . 'data/avatar/' . $touxiang;
         }
-        Catfish::allot('touxiang', $touxiang);
+        Catfish::allot('utouxiang', $touxiang);
         return $this->show(Catfish::lang('My icon'), 'myicon');
     }
     public function myprofile()
