@@ -12,6 +12,7 @@ class CatfishCMS
 {
     protected $captcha;
     protected $template = 'default';
+    protected $guanbizhuce = 0;
     protected function checkUser()
     {
         if(!is_file(APP_PATH . 'database.php')){
@@ -50,6 +51,21 @@ class CatfishCMS
             elseif($val['name'] == 'captcha'){
                 $this->captcha = $val['value'];
                 Catfish::allot($val['name'], $val['value']);
+            }
+            elseif($val['name'] == 'spare'){
+                if(!empty($val['value'])){
+                    $spare = unserialize($val['value']);
+                    if(isset($spare['guanbizhuce'])){
+                        $this->guanbizhuce = $spare['guanbizhuce'];
+                        Catfish::allot('guanbizhuce', $spare['guanbizhuce']);
+                    }
+                    else{
+                        Catfish::allot('guanbizhuce', 0);
+                    }
+                }
+                else{
+                    Catfish::allot('guanbizhuce', 0);
+                }
             }
             else
             {
@@ -256,5 +272,15 @@ class CatfishCMS
             return Catfish::listen($hook, $params);
         }
         return false;
+    }
+    protected function geturl()
+    {
+        return [
+            'shouye' => Catfish::url('index/Index/index'),
+            'denglu' => Catfish::url('login/Index/index'),
+            'zhaohuimima' => Catfish::url('login/Index/repsd'),
+            'tiaozhuan' => Catfish::url('login/Index/ljump'),
+            'zhuce' => Catfish::url('login/Index/register')
+        ];
     }
 }

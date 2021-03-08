@@ -87,7 +87,20 @@ class Index extends CatfishCMS
             Catfish::allot('finalto', '');
         }
         Catfish::allot('shouji', $this->mobile());
-        $view = Catfish::output();
+        Catfish::allot('url', $this->geturl());
+        Catfish::allot('biaoti',Catfish::lang('Log in'));
+        $templatePath = ROOT_PATH.'public'.DS.'theme'.DS.$this->template.DS;
+        $mobileFile = $templatePath . 'mobile' . DS . 'denglu.html';
+        $templateFile = $templatePath . 'denglu.html';
+        if(Catfish::isMobile() && is_file($mobileFile)){
+            $view = Catfish::output($mobileFile);
+        }
+        elseif(is_file($templateFile)){
+            $view = Catfish::output($templateFile);
+        }
+        else{
+            $view = Catfish::output();
+        }
         return $view;
     }
     public function denglu()
@@ -229,6 +242,9 @@ class Index extends CatfishCMS
     public function register()
     {
         $this->checkUser();
+        if($this->guanbizhuce == 1){
+            Catfish::toError();
+        }
         if(Catfish::getPost('user') !== false)
         {
             $rule = [
@@ -325,7 +341,20 @@ class Index extends CatfishCMS
             exit();
         }
         Catfish::allot('shouji', $this->mobile());
-        $view = Catfish::output();
+        Catfish::allot('url', $this->geturl());
+        Catfish::allot('biaoti',Catfish::lang('Sign up'));
+        $templatePath = ROOT_PATH.'public'.DS.'theme'.DS.$this->template.DS;
+        $mobileFile = $templatePath . 'mobile' . DS . 'zhuce.html';
+        $templateFile = $templatePath . 'zhuce.html';
+        if(Catfish::isMobile() && is_file($mobileFile)){
+            $view = Catfish::output($mobileFile);
+        }
+        elseif(is_file($templateFile)){
+            $view = Catfish::output($templateFile);
+        }
+        else{
+            $view = Catfish::output();
+        }
         return $view;
     }
     public function quit()

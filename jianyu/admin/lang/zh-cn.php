@@ -513,4 +513,6 @@ return [
     'Not open' => '不开启',
     'Open API' => '开启API',
     'This function is only valid for authorized users' => '此项功能仅授权用户有效',
+    'Whether to close registration' => '是否关闭注册',
+    'Close registration' => '关闭注册',
 ];

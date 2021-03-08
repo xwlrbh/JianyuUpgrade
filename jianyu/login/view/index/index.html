@@ -47,7 +47,9 @@
                             <button type="button" id="submit" class="btn btn-info">{:lang('Log in')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
                         </div>
                         <a href="{:Url('index/Index/index')}">{:lang('Home')}</a>
+                        {if $guanbizhuce == 0}
                         <a href="{:Url('login/Index/register')}" class="float-right">{:lang('Sign up')}</a>
+                        {/if}
                         <a href="{:Url('login/Index/repsd')}" class="float-right mr-2 text-muted">{:lang('Retrieve password')}</a>
                     </form>
                 </div>

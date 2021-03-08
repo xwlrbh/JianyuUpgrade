@@ -45,7 +45,6 @@ class CatfishCMS
         $isicon = 0;
         $crtm = date("Y");
         $title = '';
-        $notfollow = 0;
         foreach($data_options as $key => $val)
         {
             if($val['name'] == 'statistics')
@@ -111,7 +110,18 @@ class CatfishCMS
             elseif($val['name'] == 'spare'){
                 if(!empty($val['value'])){
                     $spare = unserialize($val['value']);
-                    $notfollow = $spare['notfollow'];
+                    if(isset($spare['notfollow'])){
+                        Catfish::allot('notfollow', $spare['notfollow']);
+                    }
+                    else{
+                        Catfish::allot('notfollow', 0);
+                    }
+                    if(isset($spare['guanbizhuce'])){
+                        Catfish::allot('guanbizhuce', $spare['guanbizhuce']);
+                    }
+                    else{
+                        Catfish::allot('guanbizhuce', 0);
+                    }
                 }
             }
             else
@@ -119,7 +129,6 @@ class CatfishCMS
                 Catfish::allot($val['name'], $val['value']);
             }
         }
-        Catfish::allot('notfollow', $notfollow);
         if($islogo == 0){
             Catfish::allot('logo', $this->domain.'public/common/images/jianyu.png');
         }

@@ -1247,6 +1247,7 @@ class Index extends CatfishCMS
                     $spare = unserialize($spare);
                 }
                 $spare['notfollow'] = Catfish::getPost('notfollow') == 'on' ? 1 : 0;
+                $spare['guanbizhuce'] = Catfish::getPost('guanbizhuce') == 'on' ? 1 : 0;
                 Catfish::dbStartTrans();
                 try{
                     Catfish::db('options')
