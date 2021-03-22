@@ -47,6 +47,7 @@ class CatfishCMS
         $title = '';
         foreach($data_options as $key => $val)
         {
+            Catfish::allot('guanbizhuce', 0);
             if($val['name'] == 'statistics')
             {
                 $statistics = unserialize($val['value']);

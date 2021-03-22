@@ -40,6 +40,7 @@ class CatfishCMS
         $data_options = Catfish::autoload();
         foreach($data_options as $key => $val)
         {
+            Catfish::allot('guanbizhuce', 0);
             if($val['name'] == 'copyright' || $val['name'] == 'statistics')
             {
                 Catfish::allot($val['name'], unserialize($val['value']));

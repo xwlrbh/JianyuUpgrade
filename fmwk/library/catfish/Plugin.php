@@ -150,4 +150,31 @@ class Plugin
         }
         Catfish::removeCache('jianyu_plugin_options_'.$key);
     }
+    public static function toraw($str)
+    {
+        return htmlspecialchars_decode($str);
+    }
+    public static function getPost($param = '', $filter = true)
+    {
+        Catfish::getPost($param, $filter, false);
+    }
+    public static function getGet($param = '', $filter = true)
+    {
+        Catfish::getGet($param, $filter);
+    }
+    public static function uploadImg()
+    {
+        $file = request()->file('file');
+        $validate = [
+            'ext' => 'jpg,png,gif,jpeg'
+        ];
+        $file->validate($validate);
+        $info = $file->move(ROOT_PATH . 'data' . DS . 'uploads');
+        if($info){
+            $position = 'data/uploads/'.str_replace('\\','/',$info->getSaveName());
+            return Catfish::domain().$position;
+        }else{
+            return false;
+        }
+    }
 }

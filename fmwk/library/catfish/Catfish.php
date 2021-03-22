@@ -801,7 +801,7 @@ class Catfish
         if(stripos($lang, 'zh') !== false){
             $lang = 'zh-cn';
         }
-        self::setCookie('yuyuelang', $lang, 3600);
+        self::setCookie('jianyulang', $lang, 3600);
         return $lang;
     }
     public static function setAllowLangList($list)
