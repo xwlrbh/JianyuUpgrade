@@ -124,6 +124,9 @@ class CatfishCMS
                         Catfish::allot('guanbizhuce', 0);
                     }
                 }
+				else{
+                    Catfish::allot('notfollow', 0);
+                }
             }
             else
             {
@@ -406,15 +409,15 @@ class CatfishCMS
     protected function getcolumn($find)
     {
         $find = intval($find);
-        $biaoti = '';
-        $keyword = '';
-        $description = '';
         $subSort = Catfish::getCache('subsortcache_'.$find);
         if($subSort === false){
-            $fenleiarr = $this->getSortCache('id,sname,bieming,description,icon,parentid');
+            $fenleiarr = $this->getSortCache('id,sname,bieming,guanjianzi,description,icon,parentid');
             $ctl = false;
             $levelen = 0;
             $subSort['idstr'] = '';
+            $subSort['biaoti'] = '';
+            $subSort['keyword'] = '';
+            $subSort['description'] = '';
             $pathSort = [];
             foreach($fenleiarr as $key => $val){
                 if($ctl == false){
@@ -422,9 +425,9 @@ class CatfishCMS
                         $ctl = true;
                         $levelen = strlen($val['level']);
                         $subSort['idstr'] = (string)$val['id'];
-                        $biaoti = empty($val['bieming']) ? $val['sname'] : $val['bieming'];
-                        $keyword = $val['sname'];
-                        $description = $val['description'];
+                        $subSort['biaoti'] = empty($val['bieming']) ? $val['sname'] : $val['bieming'];
+                        $subSort['keyword'] = empty($val['guanjianzi']) ? $val['sname'] : $val['guanjianzi'];
+                        $subSort['description'] = $val['description'];
                     }
                     $tmpend = end($pathSort);
                     while($tmpend !== false && strlen($tmpend['level']) >= strlen($val['level'])){
@@ -510,9 +513,9 @@ class CatfishCMS
         }
         $params = [
             'template' => $this->template,
-            'biaoti' => $biaoti,
-            'keyword' => $keyword,
-            'description' => $description,
+            'biaoti' => $subSort['biaoti'],
+            'keyword' => $subSort['keyword'],
+            'description' => $subSort['description'],
             'daohang' => $daohang,
             'jianyu' => $column
         ];
@@ -1055,8 +1058,8 @@ class CatfishCMS
                         $relsarr[$val['luid']] = $val['gentieren'];
                     }
                     foreach($results as $key => $val){
-                        if(isset($relsarr[$val['uid']])){
-                            $results[$key]['gentieren'] = $relsarr[$val['uid']];
+                        if(isset($relsarr[$val['luid']])){
+                            $results[$key]['gentieren'] = $relsarr[$val['luid']];
                         }
                     }
                 }
