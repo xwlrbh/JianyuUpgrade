@@ -251,6 +251,38 @@ class CatfishCMS
                 $fenlei[$key]['disabled'] = 0;
             }
         }
+        $exclusion = [];
+        $tmp = [];
+        foreach($fenlei as $key => $val){
+            $tmplen = strlen($val['level']);
+            if($key > 0){
+                if(strlen($fenlei[$key -1]['level']) >= $tmplen){
+                    if(count($tmp) > 0){
+                        $exclusion = array_merge($exclusion, array_keys($tmp));
+                        $tmp = [];
+                    }
+                }
+                if($val['disabled'] == 1){
+                    $tmp[$key] = $tmplen;
+                }
+                else{
+                    $tmp = [];
+                }
+            }
+            else{
+                if($val['disabled'] == 1){
+                    $tmp[$key] = $tmplen;
+                }
+            }
+        }
+        if(count($tmp) > 0){
+            $exclusion = array_merge($exclusion, array_keys($tmp));
+        }
+        if(count($exclusion) > 0){
+            foreach($exclusion as $val){
+                unset($fenlei[$val]);
+            }
+        }
     }
     protected function changepasswordPost()
     {

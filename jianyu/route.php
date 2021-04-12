@@ -46,4 +46,5 @@ return [
     'wxnotify' => 'pay/Index/wxnotify',
     'face/:find' => 'index/Index/face',
     'api' => 'api/Index/index',
+    'lost' => 'index/Index/lost',
 ];

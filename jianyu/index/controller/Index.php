@@ -514,7 +514,7 @@ class Index extends CatfishCMS
                 $re['gentieshijian'] = $now;
                 $this->filtergentief($re);
                 $replied = Catfish::view('tie_comments','id,uid,createtime as gentieshijian,content as neirong')
-                    ->view('users','nicheng,touxiang,createtime as jiaru,lastlogin as zuijindenglu,lastonline as zuijinzaixian,dengji,fatie as uzhutie,pinglun as ugentie','users.id=tie_comments.uid')
+                    ->view('users','nicheng,touxiang,qianming,createtime as jiaru,lastlogin as zuijindenglu,lastonline as zuijinzaixian,dengji,fatie as uzhutie,pinglun as ugentie','users.id=tie_comments.uid')
                     ->where('tie_comments.id',$cid)
                     ->where('tie_comments.status','=',1)
                     ->find();
