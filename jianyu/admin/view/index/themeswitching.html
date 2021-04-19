@@ -1,5 +1,28 @@
 {include file="index/header" /}
 <div class="container">
+    <div class="row">
+        <div class="col-sm">
+        </div>
+        <div class="col-sm">
+            <div class="clearfix">
+                <button class="btn btn-light btn-sm float-sm-right" type="button" data-toggle="collapse" data-target="#uploadtheme">{:lang('Upload theme')}</button>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="collapse multi-collapse mt-2" id="uploadtheme">
+                        <form method="post" id="upreform">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="upfile" name="file">
+                                <label class="custom-file-label col-form-label-sm" for="upfile" data-browse="{:lang('Browse')}">{:lang('Select a file')}</label>
+                            </div>
+                            <input type="hidden" name="verification" value="{$verification}">
+                            <button type="button" id="formsubmit" class="btn btn-info btn-sm my-2">{:lang('Upload theme')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row mb-5">
         {volist name="jianyuThemes" id="vo"}
         <div class="col-sm-6 col-md-4 mt-3">
@@ -22,4 +45,6 @@
         {/volist}
     </div>
 </div>
+<script src="{$domain}public/common/js/jqueryupload.js"></script>
+<script src="{$domain}public/common/js/themeswitching.js"></script>
 {include file="index/footer" /}

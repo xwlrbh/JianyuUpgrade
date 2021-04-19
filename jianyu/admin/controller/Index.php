@@ -1703,6 +1703,55 @@ class Index extends CatfishCMS
         Catfish::allot('themeSetting', $params['html']);
         return $this->show(Catfish::lang('Theme setting'), 3, 'themesetting');
     }
+    public function uploadtheme()
+    {
+        if(Catfish::isPost(3)){
+            $file = request()->file('file');
+            if($file->checkExt('zip') === true){
+                $tempdatadir = ROOT_PATH . 'runtime' . DS . 'themes';
+                $this->delFolder($tempdatadir);
+                $info = $file->move($tempdatadir, false);
+                if($info){
+                    $fileName = $info->getSaveName();
+                    $themeFile = $tempdatadir . DS . $fileName;
+                    $tempdir = ROOT_PATH . 'runtime' . DS . 'transfer' . DS . 'themes';
+                    if(!is_dir($tempdir)){
+                        mkdir($tempdir, 0777, true);
+                    }
+                    $this->delFolder($tempdir);
+                    if(is_file($themeFile)){
+                        try{
+                            $zip = new \ZipArchive();
+                            if($zip->open($themeFile, \ZipArchive::OVERWRITE || \ZIPARCHIVE::CREATE) === true){
+                                $zip->extractTo($tempdir . DS . substr($fileName, 0, -4));
+                                $zip->close();
+                                if($this->moveTheme($tempdir)){
+                                    echo 'ok';
+                                }
+                                else{
+                                    echo Catfish::lang('Upload failed');
+                                }
+                            }
+                            else{
+                                echo Catfish::lang('The uploaded zip file is not available');
+                            }
+                        }
+                        catch(\Exception $e){
+                            echo Catfish::lang('Upload failed');
+                        }
+                        @unlink($themeFile);
+                        $this->delFolder($tempdir);
+                    }
+                }else{
+                    echo $file->getError();
+                }
+            }
+            else{
+                echo Catfish::lang('Please upload the zip file');
+            }
+        }
+        exit();
+    }
     public function pluginlist()
     {
         $this->checkUser();
@@ -1710,12 +1759,12 @@ class Index extends CatfishCMS
         if(Catfish::isPost(1)){
             $file = request()->file('file');
             if($file->checkExt('zip') === true){
-                $tempdatadir = ROOT_PATH . 'data' . DS . 'plugin';
+                $tempdatadir = ROOT_PATH . 'runtime' . DS . 'plugin';
                 $this->delFolder($tempdatadir);
                 $info = $file->move($tempdatadir, false);
                 if($info){
                     $pluginFile = $tempdatadir . DS . $info->getSaveName();
-                    $tempdir = ROOT_PATH . 'data' . DS . 'temp' . DS . 'plugin';
+                    $tempdir = ROOT_PATH . 'runtime' . DS . 'transfer' . DS . 'plugin';
                     if(!is_dir($tempdir)){
                         mkdir($tempdir, 0777, true);
                     }

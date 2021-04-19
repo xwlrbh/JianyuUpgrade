@@ -752,4 +752,30 @@ class CatfishCMS
         }
         return $icons;
     }
+    protected function moveTheme($folderPath)
+    {
+        $folder = $folderPath;
+        $hasphp = glob($folder . DS . '*.html');
+        while(!is_array($hasphp) || count($hasphp) < 1){
+            $farr = glob($folder . DS . '*', GLOB_ONLYDIR);
+            if(is_array($farr) && count($farr) > 0){
+                $folder = $farr[0];
+                $hasphp = glob($folder . DS . '*.html');
+            }
+            else{
+                break;
+            }
+        }
+        $themeName = basename($folder);
+        $themeDir = ROOT_PATH . DS . 'public' . DS . 'theme';
+        $themePath = $themeDir . DS . $themeName;
+        if(!is_dir($themePath)){
+            mkdir($themePath, 0777, true);
+            $this->recurseCopy($folder, $themePath);
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 }
