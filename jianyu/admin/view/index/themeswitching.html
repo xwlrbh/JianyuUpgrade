@@ -13,7 +13,7 @@
                         <form method="post" id="upreform">
                             <div class="custom-file">
                                 <input type="file" class="custom-file-input" id="upfile" name="file">
-                                <label class="custom-file-label col-form-label-sm" for="upfile" data-browse="{:lang('Browse')}">{:lang('Select a file')}</label>
+                                <label class="custom-file-label col-form-label-sm" for="upfile" data-browse="{:lang('Browse')}">{:lang('Choose a zip file')}</label>
                             </div>
                             <input type="hidden" name="verification" value="{$verification}">
                             <button type="button" id="formsubmit" class="btn btn-info btn-sm my-2">{:lang('Upload theme')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
@@ -33,11 +33,19 @@
                     {if $vo.open == 1}
                     <a href="#!" class="btn btn-light disabled">{:lang('Activated')}</a>
                     {else /}
-                    <form>
+                    <form class="d-inline-block mr-2">
                         <input type="hidden" name="theme" value="{$vo.name}">
                         <input type="hidden" name="verification" value="{$verification}">
                         <button type="button" class="btn btn-info submit">{:lang('Enable')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
                     </form>
+                    <div class="btn-group dropup ml-2">
+                        <button type="button" class="btn btn-outline-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {:lang('Operation')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item deltheme" data-name="{$vo.name}" href="#">{:lang('Delete')}</a>
+                        </div>
+                    </div>
                     {/if}
                 </div>
             </div>
@@ -45,6 +53,8 @@
         {/volist}
     </div>
 </div>
+<div class="d-none" id="quedingshanchu">{:lang('Confirm to delete?')}</div>
+<div class="d-none" id="bukehuifu">{:lang('Are you sure you want to delete it? It cannot be recovered after deletion!')}</div>
 <script src="{$domain}public/common/js/jqueryupload.js"></script>
 <script src="{$domain}public/common/js/themeswitching.js"></script>
 {include file="index/footer" /}

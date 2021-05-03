@@ -1707,6 +1707,10 @@ class Index extends CatfishCMS
     {
         if(Catfish::isPost(3)){
             $file = request()->file('file');
+            if(empty($file)){
+                echo Catfish::lang('Please upload the zip file');
+                exit();
+            }
             if($file->checkExt('zip') === true){
                 $tempdatadir = ROOT_PATH . 'runtime' . DS . 'themes';
                 $this->delFolder($tempdatadir);
@@ -1751,6 +1755,22 @@ class Index extends CatfishCMS
             }
         }
         exit();
+    }
+    public function deltheme()
+    {
+        if(Catfish::isPost(1)){
+            $theme = trim(Catfish::getPost('name'));
+            $themePath = ROOT_PATH . DS . 'public' . DS . 'theme'. DS . $theme;
+            if(is_dir($themePath)){
+                $this->deleteFolder($themePath);
+            }
+            echo 'ok';
+            exit();
+        }
+        else{
+            echo Catfish::lang('Your operation is illegal');
+            exit();
+        }
     }
     public function pluginlist()
     {

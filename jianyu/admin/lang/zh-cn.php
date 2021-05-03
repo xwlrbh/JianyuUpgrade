@@ -516,4 +516,5 @@ return [
     'Whether to close registration' => '是否关闭注册',
     'Close registration' => '关闭注册',
     'Upload theme' => '上传主题',
+    'Choose a zip file' => '选择一个zip文件',
 ];
