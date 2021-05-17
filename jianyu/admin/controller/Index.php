@@ -2322,6 +2322,7 @@ class Index extends CatfishCMS
             $dbnm = Catfish::getConfig('database.database');
             $dbPrefix = Catfish::getConfig('database.prefix');
             $prefixlen = strlen($dbPrefix);
+            $dbPrefix = str_replace('_', '\_', $dbPrefix);
             $bkstr = '';
             $sql = "SHOW TABLES FROM {$dbnm} LIKE '{$dbPrefix}%'";
             $renm = Catfish::dbExecute($sql);

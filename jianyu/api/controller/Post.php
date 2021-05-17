@@ -386,7 +386,7 @@ class Post extends Jsonapi
     public function patch($param, $uid, $id)
     {
         $tie = Catfish::db('tie')->where('id',$id)->field('id,uid')->find();
-        if($param['method'] == 'like'){
+        if(trim($param['method']) == 'like'){
             if($tie['uid'] == $uid){
                 $err = $this->createError('731', 'Can not like yourself', 'Operation not allowed');
                 $this->addError($err);
@@ -423,7 +423,7 @@ class Post extends Jsonapi
                 }
             }
         }
-        elseif($param['method'] == 'dislike'){
+        elseif(trim($param['method']) == 'dislike'){
             if($tie['uid'] == $uid){
                 $err = $this->createError('733', 'Can not dislike yourself', 'Operation not allowed');
                 $this->addError($err);
@@ -460,7 +460,7 @@ class Post extends Jsonapi
                 }
             }
         }
-        elseif($param['method'] == 'keep'){
+        elseif(trim($param['method']) == 'keep'){
             if($tie['uid'] == $uid){
                 $err = $this->createError('735', 'Can not collect yourself', 'Operation not allowed');
                 $this->addError($err);
@@ -503,6 +503,7 @@ class Post extends Jsonapi
             $err = $this->createError('730', 'Operation instructions are not clear', 'Operation not allowed');
             $this->addError($err);
         }
+        return $this->outJsonApi();
     }
     private function getSortCache($field = 'id,sname,virtual,parentid')
     {

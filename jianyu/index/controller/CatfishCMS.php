@@ -124,7 +124,7 @@ class CatfishCMS
                         Catfish::allot('guanbizhuce', 0);
                     }
                 }
-				else{
+                else{
                     Catfish::allot('notfollow', 0);
                 }
             }

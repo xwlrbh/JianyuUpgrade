@@ -346,7 +346,7 @@ class Discuss extends Jsonapi
     public function patch($param, $uid, $id)
     {
         $getuser = Catfish::db('tie_comments')->where('id', $id)->field('uid')->find();
-        if($param['method'] == 'like'){
+        if(trim($param['method']) == 'like'){
             if($getuser['uid'] == $uid){
                 $err = $this->createError('731', 'Can not like yourself', 'Operation not allowed');
                 $this->addError($err);
@@ -383,7 +383,7 @@ class Discuss extends Jsonapi
                 }
             }
         }
-        elseif($param['method'] == 'dislike'){
+        elseif(trim($param['method']) == 'dislike'){
             if($getuser['uid'] == $uid){
                 $err = $this->createError('733', 'Can not dislike yourself', 'Operation not allowed');
                 $this->addError($err);
@@ -424,5 +424,6 @@ class Discuss extends Jsonapi
             $err = $this->createError('730', 'Operation instructions are not clear', 'Operation not allowed');
             $this->addError($err);
         }
+        return $this->outJsonApi();
     }
 }
