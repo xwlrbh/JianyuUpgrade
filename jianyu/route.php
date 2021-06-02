@@ -47,4 +47,5 @@ return [
     'face/:find' => 'index/Index/face',
     'api' => 'api/Index/index',
     'lost' => 'index/Index/lost',
+    'newpost' => 'index/Index/newpost',
 ];

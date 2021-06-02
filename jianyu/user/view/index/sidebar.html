@@ -1,4 +1,12 @@
-<div class="text-secondary pt-3 clearfix">
+<div class="pt-2 pl-1 clearfix fstlvl{if $current == 'index'} bg-info{/if}">
+    <a href="{:Url('user/Index/index')}" class="text-decoration-none{if $current == 'index'} text-white{else /} text-dark{/if}">
+        <h6 class="float-left w-100{if $current == 'index'} text-white{/if}">
+            <i class="fa fa-home"></i>
+            {:lang('User Center Home')}
+        </h6>
+    </a>
+</div>
+<div class="text-secondary pt-3 pl-1 clearfix">
     <h6 class="float-left">
         <i class="fa fa-edit"></i>
         {:lang('Posting area')}
@@ -7,13 +15,13 @@
 </div>
 <div>
     <nav class="nav flex-column">
-        <a href="{:Url('user/Index/index')}" class="nav-link{if $current == 'sendnewposts'} bg-info text-white{else /} text-dark{/if}">{:lang('Send new posts')}</a>
+        <a href="{:Url('user/Index/newpost')}" class="nav-link{if $current == 'sendnewposts'} bg-info text-white{else /} text-dark{/if}">{:lang('Send new posts')}</a>
         <a href="{:Url('user/Index/mymainpost')}" class="nav-link{if $current == 'mymainpost'} bg-info text-white{else /} text-dark{/if}">{:lang('My main post')}</a>
         <a href="{:Url('user/Index/myfollowuppost')}" class="nav-link{if $current == 'myfollowuppost'} bg-info text-white{else /} text-dark{/if}">{:lang('My follow-up post')}</a>
         <a href="{:Url('user/Index/recyclebin')}" class="nav-link{if $current == 'recyclebin'} bg-info text-white{else /} text-dark{/if}">{:lang('Recycle bin')}</a>
     </nav>
 </div>
-<div class="text-secondary pt-3 clearfix">
+<div class="text-secondary pt-3 pl-1 clearfix">
     <h6 class="float-left">
         <i class="fa fa-user"></i>
         {:lang('Personal information')}
@@ -28,7 +36,7 @@
         <a href="{:Url('user/Index/vipmember')}" class="nav-link{if $current == 'vipmember'} bg-info text-white{else /} text-dark{/if}">{:lang('VIP member')}</a>
     </nav>
 </div>
-<div class="text-secondary pt-3 clearfix">
+<div class="text-secondary pt-3 pl-1 clearfix">
     <h6 class="float-left">
         <i class="fa fa-street-view"></i>
         {:lang('My daily')}
@@ -40,7 +48,7 @@
         <a href="{:Url('user/Index/checkin')}" class="nav-link{if $current == 'checkin'} bg-info text-white{else /} text-dark{/if}">{:lang('Check in')}</a>
     </nav>
 </div>
-<div class="text-secondary pt-3 clearfix">
+<div class="text-secondary pt-3 pl-1 clearfix">
     <h6 class="float-left">
         <i class="fa fa-paw"></i>
         {:lang('My footprint')}
@@ -58,7 +66,7 @@
         <a href="{:Url('user/Index/dislikedfollow')}" class="nav-link{if $current == 'dislikedfollow'} bg-info text-white{else /} text-dark{/if}">{:lang('Disliked follow')}</a>
     </nav>
 </div>
-<div class="text-secondary pt-3 clearfix">
+<div class="text-secondary pt-3 pl-1 clearfix">
     <h6 class="float-left">
         <i class="fa fa-money"></i>
         {:lang('My wealth')}
@@ -75,7 +83,7 @@
     </nav>
 </div>
 {if condition="$hasPlugin > 0"}
-<div class="text-secondary pt-3 clearfix">
+<div class="text-secondary pt-3 pl-1 clearfix">
     <h6 class="float-left">
         <i class="fa fa-wrench"></i>
         {:lang('Other')}
@@ -91,7 +99,7 @@
 </div>
 {/if}
 {if condition="$isModerator == 1"}
-<div class="text-secondary pt-3 clearfix">
+<div class="text-secondary pt-3 pl-1 clearfix">
     <h6 class="float-left">
         <i class="fa fa-gavel"></i>
         {:lang('I am the moderator')}

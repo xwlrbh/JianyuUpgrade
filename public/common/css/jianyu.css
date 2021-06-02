@@ -10,3 +10,7 @@ pre{white-space: pre-wrap}
 .zindex1070{z-index:1070}
 .zindex1060{z-index:1060}
 .overbg{background-color:#cbdded}
+.fstlvl:hover{
+    background-color: #cbdded;
+    cursor: pointer;
+}

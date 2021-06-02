@@ -1,184 +1,58 @@
 {include file="index/header" /}
-<form>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label>{:lang('Section selection')}&nbsp;<b><span class="text-info">*</span></b></label>
-                <div class="dropdown">
-                    <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">
-                        {:lang('Please select which section to publish to')}
-                    </button>
-                    {notempty name="fenlei"}
-                    <div class="dropdown-menu border-0 overflow-auto" style="background-color: #d7eef1;z-index: 9010;max-height: 98vh">
-                        {volist name="fenlei" id="vo"}
-                        <a class="dropdown-item{if $vo.disabled == 1} disabled{/if}" href="#" data-val="{$vo.id}">{$vo.level}{$vo.sname}</a>
-                        {/volist}
-                    </div>
-                    {/notempty}
-                </div>
-                <input type="hidden" name="sid" value="0">
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                <label>{:lang('Type selection')}&nbsp;<b><span class="text-info">*</span></b></label>
-                <div class="dropdown">
-                    <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">
-                        {:lang('Please choose the type')}
-                    </button>
-                    <div class="dropdown-menu border-0" style="background-color: #d7eef1;z-index: 9010">
-                        {volist name="tieleixing" id="vo"}
-                        <a class="dropdown-item" href="#" data-val="{$vo.id}">{$vo.tpname}</a>
-                        {/volist}
-                    </div>
-                </div>
-                <input type="hidden" name="tietype" value="0">
-            </div>
-        </div>
+<div class="row">
+    <div class="col-12 col-sm-4 col-md-3 text-center">
+        <a href="{:Url('user/Index/myicon')}"><img src="{$touxiang}" class="rounded img-fluid" height="128"></a>
     </div>
-    <div class="form-group">
-        <label>{:lang('Title')}&nbsp;<b><span class="text-info">*</span></b></label>
-        <input type="text" name="biaoti" maxlength="100" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" placeholder="{:lang('Please enter ')}{:lang('Title')}">
-    </div>
-    <div class="form-group">
-        <label>{:lang('Details')}&nbsp;<b><span class="text-info">*</span></b></label>
-        <textarea class="form-control hidden" rows="3" id="zhengwen" name="zhengwen"></textarea>
-        <input type="hidden" name="zhaiyao" id="zhaiyao" value="">
-        <small class="form-text text-muted">{:lang('Please enter the new post content above')}</small>
-    </div>
-    {if condition="$forum.fujian eq 1"}
-    <div class="form-group">
-        <label>{:lang('Annex')}</label>
-        <div class="custom-file">
-            <input type="file" class="custom-file-input" id="fujian" name="fujian">
-            <label class="custom-file-label" for="fujian" data-browse="{:lang('Browse')}">{:lang('Select a file')}</label>
-        </div>
-    </div>
-    {/if}
-    {if condition="$forum.shipin eq 1"}
-    <div class="form-group">
-        <label>{:lang('Video')}</label>
-        <div id="shipindiv" class="d-none">
-            <div class="float-left">
-                <span class="mr-2 text-info"><i class="fa fa-film" aria-hidden="true"></i></span>
-                <span id="shipinnameshow"></span>
-            </div>
-        </div>
-        <div class="custom-file">
-            <input type="hidden" name="shipinname" id="shipinname" value="">
-            <input type="hidden" name="shipinurl" id="shipinurl" value="">
-            <input type="file" class="custom-file-input" id="shipin" name="shipin">
-            <label class="custom-file-label" for="shipin" data-browse="{:lang('Browse')}">{:lang('Select a file')}</label>
-        </div>
-        <small class="form-text text-muted">{:lang('Maximum uploadable file size allowed by the server')}: {$maxfilesize}</small>
-    </div>
-    {/if}
-    {if condition="$forum.jifen eq 1 OR $forum.jinbi eq 1 OR $forum.huiyuan eq 1"}
-    <div class="form-group">
-        <label>{:lang('View method')}</label>
-        <select class="form-control" name="zhifufangshi" id="zhifufangshi">
-            <option value="0">{:lang('No need to pay')}</option>
-            {if condition="$forum.jifen eq 1"}
-            <option value="1">{:lang('Need points to pay')}</option>
-            {/if}
-            {if condition="$forum.jinbi eq 1"}
-            <option value="2">{:lang('Need forum coins to pay')}</option>
-            {/if}
-            {if condition="$forum.huiyuan eq 1"}
-            <option value="3">{:lang('Only VIP members can access')}</option>
-            {/if}
-        </select>
-    </div>
-    {/if}
-    {if condition="$forum.jifen eq 1"}
-    <div id="jifenzhifu" class="d-none">
-        <div class="form-group">
-            <label>{:lang('Payment method')}</label>
-            <select class="form-control" name="jifenleixing" id="jifenleixing">
-                <option value="1">{:lang('Points are required to view posts')}</option>
-                {if condition="$forum.fujian eq 1"}
-                <option value="2">{:lang('Downloading attachments requires points')}</option>
-                {/if}
-                {if condition="$forum.shipin eq 1"}
-                <option value="3">{:lang('Points are required to watch video')}</option>
-                {/if}
-            </select>
-        </div>
-        <div class="form-group">
-            <label>{:lang('Integral')}</label>
-            <input type="number" name="jifen" id="jifen" min="0" value="0" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" placeholder="{:lang('Please enter ')}{:lang('Integral')}">
-            <small class="form-text text-muted" id="jifentishi">{:lang('The number of points paid to the author to access this post')}</small>
-        </div>
-    </div>
-    {/if}
-    {if condition="$forum.jinbi eq 1"}
-    <div id="jinbizhifu" class="d-none">
-        <div class="form-group">
-            <label>{:lang('Payment method')}</label>
-            <select class="form-control" name="jinbileixing" id="jinbileixing">
-                <option value="1">{:lang('Forum coins is required to view posts')}</option>
-                {if condition="$forum.fujian eq 1"}
-                <option value="2">{:lang('Download the attachment requires payment of forum coins')}</option>
-                {/if}
-                {if condition="$forum.shipin eq 1"}
-                <option value="3">{:lang('You need to pay forum coins to watch videos')}</option>
-                {/if}
-            </select>
-        </div>
-        <div class="form-group">
-            <label>{:lang('Forum coin')}</label>
-            <input type="number" name="jinbi" id="jinbi" min="0" value="0" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" placeholder="{:lang('Please enter ')}{:lang('Forum coin')}">
-            <small class="form-text text-muted" id="jinbitishi">{:lang('The number of forum coins paid to the author to access this post')}</small>
-        </div>
-    </div>
-    {/if}
-    {if condition="$forum.huiyuan eq 1"}
-    <div id="huiyuanzhifu" class="d-none">
-        <div class="form-group">
-            <label>{:lang('Restriction of visit')}</label>
-            <select class="form-control" name="huiyuanleixing" id="huiyuanleixing">
-                <option value="1">{:lang('VIP members can view posts')}</option>
-                {if condition="$forum.fujian eq 1"}
-                <option value="2">{:lang('VIP members can download attachments')}</option>
-                {/if}
-                {if condition="$forum.shipin eq 1"}
-                <option value="3">{:lang('VIP members can watch the video')}</option>
-                {/if}
-            </select>
-        </div>
-    </div>
-    {/if}
-    {if condition="$needvcode eq 1"}
-    <div class="form-group">
-        <label>{:lang('Captcha')}&nbsp;<b><span class="text-info">*</span></b></label>
-        <div><img class="img-fluid" style="cursor: pointer;" src="{:captcha_src()}" id="captcha" alt="captcha" />&nbsp;<a href="#!" id="resetcaptcha" class="text-info text-decoration-none">{:lang('Can not see clearly')}</a></div>
-        <input type="text" class="form-control" name="captcha" id="captchain" placeholder="{:lang('Captcha')}">
-    </div>
-    {/if}
-    <div class="text-center mb-5">
-        <input type="hidden" id="tid" name="tid" value="0">
-        <input type="hidden" name="verification" value="{$verification}">
-        <button type="button" id="formsubmit" class="btn btn-info{if condition="$forum.fujian eq 0"} submit{/if}">{:lang('Submit')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
-    </div>
-</form>
-<div class="modal bd-example-modal-sm" id="videoModal" tabindex="-1">
-    <div class="modal-dialog modal-sm modal-dialog-centered">
-        <div class="modal-content p-3">
-            <div>
-                <i class="fa fa-refresh fa-spin text-info mr-2"></i> <span id="tishixinxi">{:lang('Uploading video, please wait...')}</span>
-            </div>
-        </div>
+    <div class="col-12 col-sm-8 col-md-9">
+        <div class="mb-2 h5"><span class="text-secondary">{:lang('Username')}：</span><span class="mr-3">{$user}</span>(<span class="ml-1 text-secondary h6">{$info.dengjiming}</span><span class="ml-2 mr-1 text-secondary">LV&nbsp;{$info.dengji}</span>){if condition="$info.isvip eq 1"}<span class="text-warning ml-3 font-weight-bold">VIP</span>{/if}</div>
+        <div class="mb-2 h5"><span class="text-secondary">{:lang('Nickname')}：</span>{$info.nicheng}<a href="{:Url('user/Index/myprofile')}" class="text-success ml-3"><i class="fa fa-pencil-square-o"></i><span class="h6">{:lang('Change nickname')}</span></a></div>
+        <div class="mb-2 h5"><span class="text-secondary">{:lang('Registration date')}：</span>{$info.createtime}</div>
+        <div class="mb-2 h5"><span class="text-secondary">{:lang('Last login time')}：</span>{$info.lastlogin}</div>
     </div>
 </div>
-<div class="d-none" id="upload_handyeditor_url">{:Url('user/Index/uploadhandyeditor')}</div>
-<div class="d-none" id="sizeError">{:lang('Cannot upload images larger than 2M')}</div>
-<div class="d-none" id="typeError">{:lang('Can only upload images in gif, png, jpg, jpeg format')}</div>
-<div class="d-none" id="jifenpost">{:lang('The number of points paid to the author to access this post')}</div>
-<div class="d-none" id="jifenattach">{:lang('Downloading attachments requires points paid to the author')}</div>
-<div class="d-none" id="hasuploaded">{:lang('Video has been uploaded')}</div>
-<div class="d-none" id="daitupian">{$forum.tupian}</div>
-<div class="d-none" id="dailianjie">{$forum.lianjie}</div>
-<script type="text/javascript" src="{$domain}public/common/HandyEditor/HandyEditor.min.js"></script>
-<script src="{$domain}public/common/js/jqueryupload.js"></script>
-<script src="{$domain}public/common/js/user/sendnewposts.js"></script>
+<hr>
+{notempty name="info.viptixing"}
+<div class="row">
+    <div class="col">
+        <div><a class="text-danger" href="{:Url('user/Index/vipmember')}">{$info.viptixing}</a></div>
+    </div>
+</div>
+{/notempty}
+<div class="row">
+    <div class="col-12 col-md-6">
+        <div class="mb-2"><span class="text-secondary">{:lang('Your identity')}：</span>{$info.shenfen}</div>
+    </div>
+    <div class="col-12 col-md-6">
+        <div class="mb-2"><span class="text-secondary">{:lang('Your position on this site')}：</span>{$info.zhiwu}</div>
+    </div>
+    <div class="col-12 col-md-6">
+        <div class="mb-2"><span class="text-secondary">{:lang('The number of points you have')}：</span>{$info.jifen}</div>
+    </div>
+    <div class="col-12 col-md-6">
+        <div class="mb-2"><span class="text-secondary">{:lang('The number of forum coins you own')}：</span>{$info.jinbi}</div>
+    </div>
+    <div class="col-12 col-md-6">
+        <div class="mb-2"><span class="text-secondary">{:lang('You have posted ')}</span>{$info.fatie}<span class="text-secondary">{:lang(' total posts')}</span></div>
+    </div>
+    <div class="col-12 col-md-6">
+        <div class="mb-2"><span class="text-secondary">{:lang('You participated in ')}</span>{$info.pinglun}<span class="text-secondary">{:lang(' discussions')}</span></div>
+    </div>
+</div>
+<hr>
+<div class="row mb-3">
+    <div class="col">
+        <div class="h5 font-weight-bold">{:lang('Now you can')}</div>
+    </div>
+</div>
+<div class="row mb-4">
+    <div class="col-12 col-md-4 text-center mb-3">
+        <a class="btn btn-outline-info px-5" href="{:Url('user/Index/newpost')}">{:lang('Send new posts')}</a>
+    </div>
+    <div class="col-12 col-md-4 text-center mb-3">
+        <a class="btn btn-outline-info px-3" href="{:Url('user/Index/myprofile')}">{:lang('Modify your information')}</a>
+    </div>
+    <div class="col-12 col-md-4 text-center mb-3">
+        <a class="btn btn-outline-info px-5" href="{:Url('user/Index/checkin')}">{:lang('Check in')}</a>
+    </div>
+</div>
 {include file="index/footer" /}

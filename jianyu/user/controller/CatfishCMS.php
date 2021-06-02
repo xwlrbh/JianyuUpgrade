@@ -650,4 +650,21 @@ class CatfishCMS
         ];
         return $this->validatePost($rule, $msg, $data);
     }
+    protected function getdjidname()
+    {
+        $dengji = Catfish::getCache('dengji_id_name');
+        if($dengji === false){
+            $dengji = [];
+            $dengjiarr = Catfish::db('dengji')
+                ->where('jibie', '>', 0)
+                ->field('jibie,djname')
+                ->order('jibie asc')
+                ->select();
+            foreach($dengjiarr as $key => $val){
+                $dengji[$val['jibie']] = Catfish::lang(ucfirst($val['djname']));
+            }
+            Catfish::setCache('dengji_id_name', $dengji, $this->time);
+        }
+        return $dengji;
+    }
 }

@@ -1210,4 +1210,223 @@ class Index extends CatfishCMS
             return json($result);
         }
     }
+    public function newpost()
+    {
+        if(!Catfish::hasSession('user_id')){
+            Catfish::redirect(Catfish::url('login/Index/index') . '?jumpto=' . urlencode(Catfish::url('index/Index/newpost')));
+            exit();
+        }
+        elseif(!Catfish::checkUser()){
+            Catfish::redirect('login/Index/quit');
+            exit();
+        }
+        $this->readydisplay();
+        Catfish::allot('daohang', [
+            [
+                'label' => Catfish::lang('Home'),
+                'href' => Catfish::url('index/Index/index'),
+                'icon' => '',
+                'active' => 0
+            ],
+            [
+                'label' => Catfish::lang('New post'),
+                'href' => '#!',
+                'icon' => '',
+                'active' => 1
+            ]
+        ]);
+        Catfish::allot('biaoti',Catfish::lang('New post'));
+        $resmz = Catfish::getForum();
+        $forum = $this->myforumpost($resmz);
+        $reur = Catfish::db('users')->where('id',Catfish::getSession('user_id'))->field('createtime,fatie')->find();
+        $needvcode = 0;
+        if($resmz['yanzhengzt'] > $reur['fatie']){
+            $needvcode = 1;
+        }
+        $yifabu = 0;
+        $error = '';
+        $fatie = [
+            'bankuai' => 0,
+            'leixing' => 0,
+            'biaoti' => '',
+            'zhengwen' => ''
+        ];
+        if(Catfish::isPost(20)){
+            $tietype = Catfish::getPost('leixing');
+            if($tietype == 0){
+                $error = Catfish::lang('Type must be selected');
+            }
+            $sid = Catfish::getPost('bankuai');
+            if($sid == 0){
+                $error = Catfish::lang('Section must be selected');
+            }
+            $fatie = [
+                'bankuai' => $sid,
+                'leixing' => $tietype,
+                'biaoti' => Catfish::getPost('biaoti'),
+                'zhengwen' => Catfish::getPost('zhengwen')
+            ];
+            $data = $this->sendnewpostsPost($needvcode);
+            if(!is_array($data)){
+                $error = $data;
+            }
+            else{
+                if($reur['fatie'] == 0 && Catfish::shixian($reur['createtime'], $resmz['shichangzt']) == false){
+                    $error = Catfish::lang('Newly registered users are temporarily unable to post');
+                }
+                $jifenleixing = 0;
+                $jifen = 0;
+                $jinbileixing = 0;
+                $jinbi = 0;
+                $huiyuanleixing = 0;
+                $zhengwen = Catfish::getPost('zhengwen', false);
+                if($forum['lianjie'] == 0){
+                    $zhengwen = Catfish::removea($zhengwen);
+                }
+                if(Catfish::getSession('user_type') != 1){
+                    if(!$this->checkIllegal($zhengwen, $forum['mingan']) || !$this->checkIllegal($data['biaoti'], $forum['mingan'])){
+                        $error = Catfish::lang('Contains prohibited content, please modify and try again');
+                    }
+                }
+                $fujian = '';
+                $name = '';
+                $annex = 0;
+                $size = 0;
+                $ttname = Catfish::db('tietype')->where('id',$tietype)->field('bieming')->find();
+                $ttname = 'tj' . $ttname['bieming'];
+                $this->newtongjitb();
+                $now = Catfish::now();
+                $chengzhang = Catfish::getGrowing();
+                $review = 1;
+                if($forum['preaudit'] == 1){
+                    $review = 0;
+                }
+                $tus = $this->extractPics($zhengwen);
+                $uid = Catfish::getSession('user_id');
+                $hasshipin = 0;
+                $shipin = '';
+                $shipinming = '';
+                $params = [
+                    'biaoti' => $data['biaoti'],
+                    'zhengwen' => $zhengwen,
+                    'tu' => $tus,
+                    'fujian' => $fujian,
+                    'shipin' => $shipin
+                ];
+                $this->plantHook('publish', $params);
+                if(isset($params['biaoti'])){
+                    $data['biaoti'] = $params['biaoti'];
+                }
+                if(isset($params['zhengwen'])){
+                    $zhengwen = $params['zhengwen'];
+                }
+                if(isset($params['tu'])){
+                    $tus = $params['tu'];
+                }
+                if(isset($params['fujian'])){
+                    $fujian = $params['fujian'];
+                }
+                if(empty($error)){
+                    Catfish::dbStartTrans();
+                    try{
+                        $reid = Catfish::db('tie')->insertGetId([
+                            'uid' => Catfish::getSession('user_id'),
+                            'sid' => $sid,
+                            'guanjianzi' => '',
+                            'fabushijian' => $now,
+                            'biaoti' => $data['biaoti'],
+                            'zhaiyao' => Catfish::getPost('zhaiyao'),
+                            'review' => $review,
+                            'ordertime' => $now,
+                            'tietype' => $tietype,
+                            'annex' => $annex,
+                            'video' => $hasshipin,
+                            'shipin' => $shipin,
+                            'tu' => $tus,
+                            'jifenleixing' => $jifenleixing,
+                            'jifen' => $jifen,
+                            'jinbileixing' => $jinbileixing,
+                            'jinbi' => $jinbi,
+                            'huiyuanleixing' => $huiyuanleixing,
+                            'zhifufangshi' => Catfish::getPost('zhifufangshi')
+                        ]);
+                        Catfish::db('tienr')->insert([
+                            'tid' => $reid,
+                            'zhengwen' => $zhengwen,
+                            'fujian' => $fujian,
+                            'fujianming' => $name,
+                            'fjsize' => $size,
+                            'shipinming' => $shipinming
+                        ]);
+                        Catfish::db('users')
+                            ->where('id', $uid)
+                            ->update([
+                                'lastfatie' => $now,
+                                'fatie' => Catfish::dbRaw('fatie+1'),
+                                'jifen' => Catfish::dbRaw('jifen+'.$chengzhang['jifen']['post']),
+                                'chengzhang' => Catfish::dbRaw('chengzhang+'.$chengzhang['chengzhang']['post'])
+                            ]);
+                        if($chengzhang['jifen']['post'] != 0){
+                            Catfish::db('points_book')->insert([
+                                'uid' => $uid,
+                                'zengjian' => $chengzhang['jifen']['post'],
+                                'booktime' => $now,
+                                'miaoshu' => Catfish::lang('Post')
+                            ]);
+                        }
+                        Catfish::db('users_tongji')
+                            ->where('uid', Catfish::getSession('user_id'))
+                            ->update([
+                                $ttname => Catfish::dbRaw($ttname.'+1')
+                            ]);
+                        Catfish::db('tietype')
+                            ->where('id', $tietype)
+                            ->update([
+                                'tongji' => Catfish::dbRaw('tongji+1')
+                            ]);
+                        Catfish::db('msort')
+                            ->where('id', $sid)
+                            ->update([
+                                'zhutie' => Catfish::dbRaw('zhutie+1'),
+                                $ttname => Catfish::dbRaw($ttname.'+1')
+                            ]);
+                        Catfish::db('users_tongji_'.date('Ym'))
+                            ->where('uid', Catfish::getSession('user_id'))
+                            ->update([
+                                'yuefatie' => Catfish::dbRaw('yuefatie+1')
+                            ]);
+                        Catfish::dbCommit();
+                        $yifabu = 1;
+                        $fatie = [
+                            'bankuai' => 0,
+                            'leixing' => 0,
+                            'biaoti' => '',
+                            'zhengwen' => ''
+                        ];
+                    } catch (\Exception $e) {
+                        Catfish::dbRollback();
+                        $error = Catfish::lang('The operation failed, please try again later');
+                    }
+                    Catfish::tongji('zhutie');
+                    Catfish::clearCache('shouye');
+                    Catfish::clearCache('column');
+                }
+            }
+        }
+        $this->getTieType();
+        $fenlei = Catfish::getCache('sort_id_sname_virtual_parentid');
+        if($fenlei === false){
+            $fenlei = Catfish::getSort('msort', 'id,sname,virtual,parentid', '&nbsp;&nbsp;&nbsp;&nbsp;', ['islink', 0]);
+            Catfish::setCache('sort_id_sname_virtual_parentid',$fenlei,3600);
+        }
+        $this->adddisabled($fenlei);
+        Catfish::allot('fenlei', $fenlei);
+        Catfish::allot('forum', $forum);
+        Catfish::allot('needvcode', $needvcode);
+        Catfish::allot('verification', Catfish::verifyCode());
+        Catfish::allot('yifabu', $yifabu);
+        Catfish::allot('error', $error);
+        Catfish::allot('fatie', $fatie);
+        return $this->show('newpost');
+    }
 }

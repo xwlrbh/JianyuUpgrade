@@ -13,6 +13,80 @@ class Index extends CatfishCMS
     public function index()
     {
         $this->checkUser();
+        $user = Catfish::db('users')->where('id',Catfish::getSession('user_id'))->field('nicheng,createtime,lastlogin,utype,vipend,viptype,mtype,dengji,jifen,jinbi,fatie,pinglun')->find();
+        $dengji = $this->getdjidname();
+        foreach($user as $key => $val){
+            if($key == 'createtime'){
+                $user[$key] = date('Y-m-d', strtotime($val));
+            }
+            if($key == 'dengji'){
+                $user['dengjiming'] = $dengji[$val];
+            }
+            if($key == 'utype'){
+                if($val == 15){
+                    $user['isvip'] = 1;
+                    $user['viptixing'] = '';
+                    if($user['viptype'] == 3){
+                        $user['vipend'] = Catfish::lang('Permanent member');
+                    }
+                    else{
+                        if(time() > strtotime($user['vipend'])){
+                            $user['viptixing'] = Catfish::lang('Your VIP membership has expired, please renew as soon as possible.');
+                        }
+                        elseif(strtotime($user['vipend']) - time() < 1209600){
+                            $user['viptixing'] = Catfish::lang('Your VIP membership is about to expire, please renew as soon as possible.');
+                        }
+                    }
+                }
+                else{
+                    $user['isvip'] = 0;
+                    $user['vipend'] = '';
+                    $user['viptixing'] = '';
+                }
+                switch($val){
+                    case 1:
+                        $user['shenfen'] = Catfish::lang('Founder');
+                        break;
+                    case 3:
+                        $user['shenfen'] = Catfish::lang('Senior administrator');
+                        break;
+                    case 5:
+                        $user['shenfen'] = Catfish::lang('Ordinary administrator');
+                        break;
+                    case 15:
+                        $user['shenfen'] = Catfish::lang('VIP member');
+                        break;
+                    case 20:
+                        $user['shenfen'] = Catfish::lang('General user');
+                        break;
+                }
+            }
+            if($key == 'mtype'){
+                switch($val){
+                    case 0:
+                        $user['zhiwu'] = Catfish::lang('Not in a position');
+                        break;
+                    case 5:
+                        $user['zhiwu'] = Catfish::lang('Intern moderator');
+                        break;
+                    case 10:
+                        $user['zhiwu'] = Catfish::lang('Secondary moderator');
+                        break;
+                    case 15:
+                        $user['zhiwu'] = Catfish::lang('Moderator');
+                        break;
+                }
+            }
+        }
+        unset($user['utype']);
+        unset($user['viptype']);
+        unset($user['mtype']);
+        Catfish::allot('info', $user);
+        return $this->show(Catfish::lang('User center'), 'index');
+    }
+    public function newpost()
+    {
+        $this->checkUser();
         $resmz = Catfish::getForum();
         $forum = $this->myforum($resmz);
         $reur = Catfish::db('users')->where('id',Catfish::getSession('user_id'))->field('createtime,fatie')->find();

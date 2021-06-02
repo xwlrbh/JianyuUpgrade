@@ -400,10 +400,10 @@ class App
     private static function getParamValue($param, &$vars, $type)
     {
         $name  = $param->getName();
-        $class = $param->getClass();
+        $class = method_exists($param, 'getType') && $param->getType() && !$param->getType()->isBuiltin();
 
         if ($class) {
-            $className = $class->getName();
+            $className = $param->getType()->getName();
             $bind      = Request::instance()->$name;
 
             if ($bind instanceof $className) {
