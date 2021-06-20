@@ -88,7 +88,7 @@ class CatfishCMS
                 $this->domain = Catfish::domainAmend($val['value']);
                 Catfish::allot($val['name'], $this->domain);
                 $root = $this->domain;
-                $dm = Catfish::url('/');
+                $dm = $this->geturl('/');
                 if(strpos($dm,'/index.php') !== false)
                 {
                     $root .= 'index.php/';
@@ -189,33 +189,33 @@ class CatfishCMS
             foreach($faces as $key => $val){
                 $find = basename($val);
                 $find = substr($find, 0, strrpos($find, '.'));
-                $faceUrl[$find] = Catfish::url('index/Index/face', ['find' => $find]);
+                $faceUrl[$find] = $this->geturl('index/Index/face', ['find' => $find]);
             }
             $urlarr = [
                 'default' => empty($order) ? '?order=default' : '?'.$order.'&order=default',
                 'reply' => empty($order) ? '?order=reply' : '?'.$order.'&order=reply',
                 'release' => empty($order) ? '?order=release' : '?'.$order.'&order=release',
                 'latest' => empty($order) ? '?order=latest' : '?'.$order.'&order=latest',
-                'shouye' => Catfish::url('index/Index/index'),
-                'postzan' => Catfish::url('index/Index/postzan'),
-                'postcai' => Catfish::url('index/Index/postcai'),
-                'postshoucang' => Catfish::url('index/Index/postshoucang'),
-                'gentiezan' => Catfish::url('index/Index/gentiezan'),
-                'gentiecai' => Catfish::url('index/Index/gentiecai'),
-                'denglu' => Catfish::url('login/Index/index'),
-                'adenglu' => Catfish::url('login/Index/denglu'),
-                'zhuce' => Catfish::url('login/Index/register'),
-                'tuichu' => Catfish::url('login/Index/quit'),
-                'sousuo' => Catfish::url('index/Index/search'),
-                'yonghuzhongxin' => Catfish::url('user/Index/index'),
-                'gentie' => Catfish::url('index/Index/gentie'),
-                'xiugai' => Catfish::url('index/Index/xiugai'),
-                'shanchugentie' => Catfish::url('index/Index/shanchugentie'),
-                'huifu' => Catfish::url('index/Index/huifu'),
-                'fatie' => Catfish::url('user/Index/newpost'),
-                'feedback' => Catfish::url('index/Index/feedback'),
-                'qiandao' => Catfish::url('index/Index/qiandao'),
-                'fajiantie' => Catfish::url('index/Index/newpost'),
+                'shouye' => $this->geturl('index/Index/index'),
+                'postzan' => $this->geturl('index/Index/postzan'),
+                'postcai' => $this->geturl('index/Index/postcai'),
+                'postshoucang' => $this->geturl('index/Index/postshoucang'),
+                'gentiezan' => $this->geturl('index/Index/gentiezan'),
+                'gentiecai' => $this->geturl('index/Index/gentiecai'),
+                'denglu' => $this->geturl('login/Index/index'),
+                'adenglu' => $this->geturl('login/Index/denglu'),
+                'zhuce' => $this->geturl('login/Index/register'),
+                'tuichu' => $this->geturl('login/Index/quit'),
+                'sousuo' => $this->geturl('index/Index/search'),
+                'yonghuzhongxin' => $this->geturl('user/Index/index'),
+                'gentie' => $this->geturl('index/Index/gentie'),
+                'xiugai' => $this->geturl('index/Index/xiugai'),
+                'shanchugentie' => $this->geturl('index/Index/shanchugentie'),
+                'huifu' => $this->geturl('index/Index/huifu'),
+                'fatie' => $this->geturl('user/Index/newpost'),
+                'feedback' => $this->geturl('index/Index/feedback'),
+                'qiandao' => $this->geturl('index/Index/qiandao'),
+                'fajiantie' => $this->geturl('index/Index/newpost'),
                 'face' => $faceUrl
             ];
             Catfish::setCache('urlarr_'.$order,$urlarr,$this->time);
@@ -296,7 +296,7 @@ class CatfishCMS
                             $caidan[$key]['href'] = $val['linkurl'];
                         }
                         else{
-                            $caidan[$key]['href'] = Catfish::url('index/Index/column',['find'=>$val['id']]);
+                            $caidan[$key]['href'] = $this->geturl('index/Index/column',['find'=>$val['id']]);
                         }
                         if($sort == $val['id']){
                             $caidan[$key]['active'] = 1;
@@ -500,14 +500,14 @@ class CatfishCMS
         }
         $daohang[] = [
             'label' => Catfish::lang('Home'),
-            'href' => Catfish::url('index/Index/index'),
+            'href' => $this->geturl('index/Index/index'),
             'icon' => '',
             'active' => 0
         ];
         foreach($subSort['path'] as $key => $val){
             $daohang[] = [
                 'label' => empty($val['bieming']) ? $val['sname'] : $val['bieming'],
-                'href' => Catfish::url('index/Index/column', ['find'=>$val['id']]),
+                'href' => $this->geturl('index/Index/column', ['find'=>$val['id']]),
                 'icon' => $val['icon'],
                 'active' => 0
             ];
@@ -521,6 +521,7 @@ class CatfishCMS
             'jianyu' => $column
         ];
         $this->plantHook('column', $params);
+        $this->getidentity($find);
         Catfish::allot('biaoti', $params['biaoti']);
         Catfish::allot('keyword', $params['keyword']);
         Catfish::allot('description', $params['description']);
@@ -562,7 +563,7 @@ class CatfishCMS
         if(!empty($post)){
             $modify = '';
             if(Catfish::hasSession('user_id') && Catfish::getSession('user_id') == $post['uid']){
-                $modify = Catfish::url('user/Index/modifymainpost') . '?c=' . $post['id'] . '&jumpto=' . urlencode(Catfish::url('index/Index/post', ['find' => $find]));
+                $modify = $this->geturl('user/Index/modifymainpost') . '?c=' . $post['id'] . '&jumpto=' . urlencode($this->geturl('index/Index/post', ['find' => $find]));
             }
             $post['xiugai'] = $modify;
         }
@@ -720,7 +721,7 @@ class CatfishCMS
                     $yuyan = $zhifufangshi == 1 ? Catfish::lang(' points to read this post') : Catfish::lang(' forum coins to read this post');
                     $post['zhengwen'] = Catfish::lang('You need to pay ') . $shuliang . $yuyan;
                     if(!Catfish::hasSession('user_id')){
-                        $post['zhengwen'] .= ' <a href="' . Catfish::url('login/Index/index') . '?jumpto=' . urlencode(Catfish::url('index/Index/post', ['find' => $post['id']])) . '">' . Catfish::lang('Please log in first') . '</a>';
+                        $post['zhengwen'] .= ' <a href="' . $this->geturl('login/Index/index') . '?jumpto=' . urlencode($this->geturl('index/Index/post', ['find' => $post['id']])) . '">' . Catfish::lang('Please log in first') . '</a>';
                     }
                     else{
                         $post['zhengwen'] .= ' <button type="button" id="paypoints" class="btn btn-light">' . Catfish::lang('Pay immediately') . '<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button><span id="paypointsresult" style="color:#dd0000;margin-left:10px"></span><script src="' . Catfish::domain() . 'public/common/js/paypoints.js"></script>';
@@ -728,10 +729,10 @@ class CatfishCMS
                 }
                 elseif($ispaid == 2){
                     if(!Catfish::hasSession('user_id')){
-                        $post['zhengwen'] = Catfish::lang('VIP members can access') . ' <a href="' . Catfish::url('login/Index/index') . '?jumpto=' . urlencode(Catfish::url('index/Index/post', ['find' => $post['id']])) . '">' . Catfish::lang('Please log in first') . '</a>';
+                        $post['zhengwen'] = Catfish::lang('VIP members can access') . ' <a href="' . $this->geturl('login/Index/index') . '?jumpto=' . urlencode($this->geturl('index/Index/post', ['find' => $post['id']])) . '">' . Catfish::lang('Please log in first') . '</a>';
                     }
                     else{
-                        $post['zhengwen'] = Catfish::lang('VIP members can access') . ' <a href="' . Catfish::url('user/Index/vipmember') . '?jumpto=' . urlencode(Catfish::url('index/Index/post', ['find' => $post['id']])) . '">' . Catfish::lang('Upgrade to VIP member immediately') . '</a>';
+                        $post['zhengwen'] = Catfish::lang('VIP members can access') . ' <a href="' . $this->geturl('user/Index/vipmember') . '?jumpto=' . urlencode($this->geturl('index/Index/post', ['find' => $post['id']])) . '">' . Catfish::lang('Upgrade to VIP member immediately') . '</a>';
                     }
                 }
                 $post['liulan'] = $quanxian['liulan'];
@@ -784,7 +785,7 @@ class CatfishCMS
                             $yuyan = $zhifufangshi == 1 ? Catfish::lang(' points to download the attachment') : Catfish::lang(' forum coins to download the attachment');
                             $post['fujianurl'] = Catfish::lang('You need to pay ') . $shuliang . $yuyan;
                             if(!Catfish::hasSession('user_id')){
-                                $post['fujianurl'] .= ' <a href="' . Catfish::url('login/Index/index') . '?jumpto=' . urlencode(Catfish::url('index/Index/post', ['find' => $post['id']])) . '">' . Catfish::lang('Please log in first') . '</a>';
+                                $post['fujianurl'] .= ' <a href="' . $this->geturl('login/Index/index') . '?jumpto=' . urlencode($this->geturl('index/Index/post', ['find' => $post['id']])) . '">' . Catfish::lang('Please log in first') . '</a>';
                             }
                             else{
                                 $post['fujianurl'] .= ' <button type="button" id="paypoints" class="btn btn-light">' . Catfish::lang('Pay immediately') . '<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button><span id="paypointsresult" style="color:#dd0000;margin-left:10px"></span><script src="' . Catfish::domain() . 'public/common/js/paypoints.js"></script>';
@@ -792,10 +793,10 @@ class CatfishCMS
                         }
                         elseif($ispaidown == 2){
                             if(!Catfish::hasSession('user_id')){
-                                $post['fujianurl'] = Catfish::lang('Only VIP members can download attachments') . ' <a href="' . Catfish::url('login/Index/index') . '?jumpto=' . urlencode(Catfish::url('index/Index/post', ['find' => $post['id']])) . '">' . Catfish::lang('Please log in first') . '</a>';
+                                $post['fujianurl'] = Catfish::lang('Only VIP members can download attachments') . ' <a href="' . $this->geturl('login/Index/index') . '?jumpto=' . urlencode($this->geturl('index/Index/post', ['find' => $post['id']])) . '">' . Catfish::lang('Please log in first') . '</a>';
                             }
                             else{
-                                $post['fujianurl'] = Catfish::lang('Only VIP members can download attachments') . ' <a href="' . Catfish::url('user/Index/vipmember') . '?jumpto=' . urlencode(Catfish::url('index/Index/post', ['find' => $post['id']])) . '">' . Catfish::lang('Upgrade to VIP member immediately') . '</a>';
+                                $post['fujianurl'] = Catfish::lang('Only VIP members can download attachments') . ' <a href="' . $this->geturl('user/Index/vipmember') . '?jumpto=' . urlencode($this->geturl('index/Index/post', ['find' => $post['id']])) . '">' . Catfish::lang('Upgrade to VIP member immediately') . '</a>';
                             }
                         }
                     }
@@ -846,7 +847,7 @@ class CatfishCMS
                             $yuyan = $zhifufangshi == 1 ? Catfish::lang(' points to watch the video') : Catfish::lang(' forum coins to watch the video');
                             $post['shipin'] = Catfish::lang('You need to pay ') . $shuliang . $yuyan;
                             if(!Catfish::hasSession('user_id')){
-                                $post['shipin'] .= ' <a href="' . Catfish::url('login/Index/index') . '?jumpto=' . urlencode(Catfish::url('index/Index/post', ['find' => $post['id']])) . '">' . Catfish::lang('Please log in first') . '</a>';
+                                $post['shipin'] .= ' <a href="' . $this->geturl('login/Index/index') . '?jumpto=' . urlencode($this->geturl('index/Index/post', ['find' => $post['id']])) . '">' . Catfish::lang('Please log in first') . '</a>';
                             }
                             else{
                                 $post['shipin'] .= ' <button type="button" id="paypoints" class="btn btn-light">' . Catfish::lang('Pay immediately') . '<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button><span id="paypointsresult" style="color:#dd0000;margin-left:10px"></span><script src="' . Catfish::domain() . 'public/common/js/paypoints.js"></script>';
@@ -854,10 +855,10 @@ class CatfishCMS
                         }
                         elseif($ispaidsp == 2){
                             if(!Catfish::hasSession('user_id')){
-                                $post['shipin'] = Catfish::lang('VIP members can watch the video') . ' <a href="' . Catfish::url('login/Index/index') . '?jumpto=' . urlencode(Catfish::url('index/Index/post', ['find' => $post['id']])) . '">' . Catfish::lang('Please log in first') . '</a>';
+                                $post['shipin'] = Catfish::lang('VIP members can watch the video') . ' <a href="' . $this->geturl('login/Index/index') . '?jumpto=' . urlencode($this->geturl('index/Index/post', ['find' => $post['id']])) . '">' . Catfish::lang('Please log in first') . '</a>';
                             }
                             else{
-                                $post['shipin'] = Catfish::lang('VIP members can watch the video') . ' <a href="' . Catfish::url('user/Index/vipmember') . '?jumpto=' . urlencode(Catfish::url('index/Index/post', ['find' => $post['id']])) . '">' . Catfish::lang('Upgrade to VIP member immediately') . '</a>';
+                                $post['shipin'] = Catfish::lang('VIP members can watch the video') . ' <a href="' . $this->geturl('user/Index/vipmember') . '?jumpto=' . urlencode($this->geturl('index/Index/post', ['find' => $post['id']])) . '">' . Catfish::lang('Upgrade to VIP member immediately') . '</a>';
                             }
                         }
                     }
@@ -866,13 +867,14 @@ class CatfishCMS
             $post['yueduyifujifen'] = $ispaid;
             $post['xiazaiyifujifen'] = $ispaidown;
             $post['shipinyifujifen'] = $ispaidsp;
+            $this->getidentity($post['sid']);
         }
         $jianyu['zhutie'] = $post;
         $jianyu['gentie'] = $gentie;
         $jianyu['quanxian'] = $this->myforumpost();
         $daohang[] = [
             'label' => Catfish::lang('Home'),
-            'href' => Catfish::url('index/Index/index'),
+            'href' => $this->geturl('index/Index/index'),
             'icon' => '',
             'active' => 0
         ];
@@ -880,14 +882,14 @@ class CatfishCMS
             foreach($post['path'] as $key => $val){
                 $daohang[] = [
                     'label' => empty($val['bieming']) ? $val['sname'] : $val['bieming'],
-                    'href' => Catfish::url('index/Index/column', ['find'=>$val['id']]),
+                    'href' => $this->geturl('index/Index/column', ['find'=>$val['id']]),
                     'icon' => $val['icon'],
                     'active' => 0
                 ];
             }
             $daohang[] = [
                 'label' => $post['biaoti'],
-                'href' => Catfish::url('index/Index/post', ['find'=>$post['id']]),
+                'href' => $this->geturl('index/Index/post', ['find'=>$post['id']]),
                 'icon' => '',
                 'active' => 0
             ];
@@ -999,9 +1001,9 @@ class CatfishCMS
                 else{
                     $results[$key]['zuijinfangwen'] = '';
                 }
-                $results[$key]['href'] = Catfish::url('index/Index/post',['find'=>$val['id']]);
-                $results[$key]['fenleihref'] = Catfish::url('index/Index/column',['find'=>$val['sid']]);
-                $results[$key]['leixinghref'] = Catfish::url('index/Index/type',['find'=>$val['leixing']]);
+                $results[$key]['href'] = $this->geturl('index/Index/post',['find'=>$val['id']]);
+                $results[$key]['fenleihref'] = $this->geturl('index/Index/column',['find'=>$val['sid']]);
+                $results[$key]['leixinghref'] = $this->geturl('index/Index/type',['find'=>$val['leixing']]);
                 $results[$key]['fenlei'] = $fenlei[$val['sid']];
                 $results[$key]['leixing'] = $leixing[$val['leixing']];
                 $results[$key]['dengjiming'] = $dengji[$val['dengji']];
@@ -1165,8 +1167,8 @@ class CatfishCMS
         else{
             $post['zuijinfangwen'] = '';
         }
-        $post['href'] = Catfish::url('index/Index/post',['find'=>$post['id']]);
-        $post['fenleihref'] = Catfish::url('index/Index/column',['find'=>$post['sid']]);
+        $post['href'] = $this->geturl('index/Index/post',['find'=>$post['id']]);
+        $post['fenleihref'] = $this->geturl('index/Index/column',['find'=>$post['sid']]);
         $fenlei = $this->getsortidname(1);
         $leixing = $this->gettypeidname();
         $dengji = $this->getdjidname();
@@ -1507,7 +1509,7 @@ class CatfishCMS
         Catfish::allot('daohang', [
             [
                 'label' => Catfish::lang('Home'),
-                'href' => Catfish::url('index/Index/index'),
+                'href' => $this->geturl('index/Index/index'),
                 'icon' => '',
                 'active' => 0
             ],
@@ -1670,13 +1672,13 @@ class CatfishCMS
         Catfish::allot('daohang', [
             [
                 'label' => Catfish::lang('Home'),
-                'href' => Catfish::url('index/Index/index'),
+                'href' => $this->geturl('index/Index/index'),
                 'icon' => '',
                 'active' => 0
             ],
             [
                 'label' => $column['leixing'],
-                'href' => Catfish::url('index/Index/type',['find'=>$find]),
+                'href' => $this->geturl('index/Index/type',['find'=>$find]),
                 'icon' => '',
                 'active' => 0
             ]
@@ -1791,7 +1793,7 @@ class CatfishCMS
                     }
                     $module[$key]['mingcheng'] = empty($val['bieming']) ? $val['sname'] : $val['bieming'];
                     $mhref = empty($val['urlbm']) ? $val['id'] : $val['urlbm'];
-                    $module[$key]['href'] = Catfish::url('index/Index/column',['find'=>$mhref]);
+                    $module[$key]['href'] = $this->geturl('index/Index/column',['find'=>$mhref]);
                     $guanjianzi = empty($val['guanjianzi']) ? [] : explode(',', $val['guanjianzi']);
                     $module[$key]['guanjianzi'] = $guanjianzi;
                 }
@@ -2032,5 +2034,57 @@ class CatfishCMS
             }
         }
         return $tu;
+    }
+    protected function geturl($url = '', $vars = '', $suffix = true, $domain = null)
+    {
+        $fixdomain = Catfish::getConfig('fixdomain');
+        if($fixdomain == true && is_null($domain)){
+            $u = rtrim(Catfish::get('domain'), '/') . Catfish::url($url, $vars, $suffix, false);
+        }
+        elseif(is_null($domain)){
+            $u = Catfish::url($url, $vars, $suffix);
+        }
+        else{
+            $u = Catfish::url($url, $vars, $suffix, $domain);
+        }
+        return $u;
+    }
+    private function getidentity($section)
+    {
+        $banzhuji = Catfish::getCache('identity_info_' . $section);
+        if($banzhuji === false){
+            $modsec = Catfish::view('mod_sec_ontact','uid,mtype')
+                ->view('users','nicheng,touxiang,dengji','users.id=mod_sec_ontact.uid')
+                ->where('mod_sec_ontact.sid',$section)
+                ->select();
+            $banzhu = [];
+            $fubanzhu = [];
+            $shixibanzhu = [];
+            $dengji = $this->getdjidname();
+            foreach($modsec as $key => $val){
+                $val['touxiang'] = empty($val['touxiang']) ? $this->domain . 'public/common/images/avatar.png' : $this->domain . 'data/avatar/' . $val['touxiang'];
+                if($val['mtype'] == 15){
+                    $banzhu[] = ['nicheng' => $val['nicheng'], 'touxiang' => $val['touxiang'], 'dengji' => $val['dengji'], 'dengjiming' => $dengji[$val['dengji']]];
+                }
+                if($val['mtype'] == 10){
+                    $fubanzhu[] = ['nicheng' => $val['nicheng'], 'touxiang' => $val['touxiang'], 'dengji' => $val['dengji'], 'dengjiming' => $dengji[$val['dengji']]];
+                }
+                if($val['mtype'] == 5){
+                    $shixibanzhu[] = ['nicheng' => $val['nicheng'], 'touxiang' => $val['touxiang'], 'dengji' => $val['dengji'], 'dengjiming' => $dengji[$val['dengji']]];
+                }
+            }
+            $banzhuji = [];
+            if(count($banzhu) > 0){
+                $banzhuji['banzhu'] = $banzhu;
+            }
+            if(count($fubanzhu) > 0){
+                $banzhuji['fubanzhu'] = $fubanzhu;
+            }
+            if(count($shixibanzhu) > 0){
+                $banzhuji['shixibanzhu'] = $shixibanzhu;
+            }
+            Catfish::setCache('identity_info_' . $section, $banzhuji, $this->time);
+        }
+        Catfish::allot('banzhu', $banzhuji);
     }
 }

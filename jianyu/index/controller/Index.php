@@ -16,7 +16,7 @@ class Index extends CatfishCMS
         Catfish::allot('daohang', [
             [
                 'label' => Catfish::lang('Home'),
-                'href' => Catfish::url('index/Index/index'),
+                'href' => $this->geturl('index/Index/index'),
                 'icon' => '',
                 'active' => 0
             ]
@@ -158,7 +158,7 @@ class Index extends CatfishCMS
         Catfish::allot('daohang', [
             [
                 'label' => Catfish::lang('Home'),
-                'href' => Catfish::url('index/Index/index'),
+                'href' => $this->geturl('index/Index/index'),
                 'icon' => '',
                 'active' => 0
             ],
@@ -210,13 +210,13 @@ class Index extends CatfishCMS
         Catfish::allot('daohang', [
             [
                 'label' => Catfish::lang('Home'),
-                'href' => Catfish::url('index/Index/index'),
+                'href' => $this->geturl('index/Index/index'),
                 'icon' => '',
                 'active' => 0
             ],
             [
                 'label' => $title,
-                'href' => Catfish::url('index/Index/face', ['find' => $find]),
+                'href' => $this->geturl('index/Index/face', ['find' => $find]),
                 'icon' => '',
                 'active' => 0
             ]
@@ -1213,7 +1213,7 @@ class Index extends CatfishCMS
     public function newpost()
     {
         if(!Catfish::hasSession('user_id')){
-            Catfish::redirect(Catfish::url('login/Index/index') . '?jumpto=' . urlencode(Catfish::url('index/Index/newpost')));
+            Catfish::redirect($this->geturl('login/Index/index') . '?jumpto=' . urlencode($this->geturl('index/Index/newpost')));
             exit();
         }
         elseif(!Catfish::checkUser()){
@@ -1224,7 +1224,7 @@ class Index extends CatfishCMS
         Catfish::allot('daohang', [
             [
                 'label' => Catfish::lang('Home'),
-                'href' => Catfish::url('index/Index/index'),
+                'href' => $this->geturl('index/Index/index'),
                 'icon' => '',
                 'active' => 0
             ],

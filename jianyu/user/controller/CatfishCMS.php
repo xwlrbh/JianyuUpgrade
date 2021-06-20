@@ -37,6 +37,9 @@ class CatfishCMS
                 $jumpto = '?finalto=' . $jumpto;
                 $jumpto .= '&jumpto=' . Catfish::currentUrl();
             }
+            elseif($this->uritoarr('newpost')){
+                $jumpto = '?jumpto=' . Catfish::currentUrl();
+            }
             else{
                 $jumpto = '';
             }
@@ -666,5 +669,18 @@ class CatfishCMS
             Catfish::setCache('dengji_id_name', $dengji, $this->time);
         }
         return $dengji;
+    }
+    private function uritoarr($suburi)
+    {
+        $suffix = '.' . trim(Catfish::getConfig('url_html_suffix'), '.');
+        $suflen = strlen($suffix);
+        $uri = Catfish::getUrl(false);
+        if(substr($uri, - $suflen) == $suffix){
+            $uri = substr($uri, 0, - $suflen);
+        }
+        $uri = str_replace('\\', '/', $uri);
+        $uri = trim($uri, '/');
+        $arr = explode('/', $uri);
+        return in_array($suburi, $arr);
     }
 }
