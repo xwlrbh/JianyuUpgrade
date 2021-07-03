@@ -36,16 +36,23 @@
             <div class="card border-0">
                 <div class="card-body">
                     <h5 class="card-title">{:lang('Check in reward points')}</h5>
-                    <p class="card-text">{:lang('Check in to get points')}: {$qiandao.checkin}</p>
-                    <p class="card-text">{:lang('Check in consecutively to get extra points')}: {$qiandao.checkincontinu}</p>
-                    <p class="card-text">{:lang('Check in for 3 consecutive days to get extra points')}: {$qiandao.checkinthreedays}</p>
-                    <p class="card-text">{:lang('Check in for a week to get extra points')}: {$qiandao.checkinweek}</p>
-                    <p class="card-text">{:lang('Check in for two consecutive weeks to get extra points')}: {$qiandao.checkintwoweek}</p>
-                    <p class="card-text">{:lang('Check in for one consecutive month to get extra points')}: {$qiandao.checkinmonth}</p>
-                    <p class="card-text">{:lang('Check in for two consecutive months to get extra points')}: {$qiandao.checkintwomonth}</p>
-                    <p class="card-text">{:lang('Check in for three consecutive months to get extra points')}: {$qiandao.checkinthreemonth}</p>
-                    <p class="card-text">{:lang('Check in for half a year to get extra points')}: {$qiandao.checkinhalfyear}</p>
-                    <p class="card-text">{:lang('Check in for one consecutive year to get extra points')}: {$qiandao.checkinyear}</p>
+                    <p class="card-text my-2">{:lang('Check in to get points')}: {$qiandao.checkin}</p>
+                    <p class="card-text my-2">{:lang('Check in consecutively to get extra points')}: {$qiandao.checkincontinu}</p>
+                    <p class="card-text my-2">{:lang('Check in for 3 consecutive days to get extra points')}: {$qiandao.checkinthreedays}</p>
+                    <p class="card-text my-2">{:lang('Check in for a week to get extra points')}: {$qiandao.checkinweek}</p>
+                    <p class="card-text my-2">{:lang('Check in for two consecutive weeks to get extra points')}: {$qiandao.checkintwoweek}</p>
+                    <p class="card-text my-2">{:lang('Check in for one consecutive month to get extra points')}: {$qiandao.checkinmonth}</p>
+                    <p class="card-text my-2">{:lang('Check in for two consecutive months to get extra points')}: {$qiandao.checkintwomonth}</p>
+                    <p class="card-text my-2">{:lang('Check in for three consecutive months to get extra points')}: {$qiandao.checkinthreemonth}</p>
+                    <p class="card-text my-2">{:lang('Check in for half a year to get extra points')}: {$qiandao.checkinhalfyear}</p>
+                    <p class="card-text my-2">{:lang('Check in for one consecutive year to get extra points')}: {$qiandao.checkinyear}</p>
+                    {notempty name="qiandao.checkfirst"}
+                    <p class="card-text my-2">{:lang('The first person who checks in every day can get extra points')}: {$qiandao.checkfirst}</p>
+                    <p class="card-text my-2">{:lang('The second person who checks in every day can get extra points')}: {$qiandao.checksecond}</p>
+                    <p class="card-text my-2">{:lang('The third person who checks in every day will get extra points')}: {$qiandao.checkthird}</p>
+                    <p class="card-text my-2">{:lang('The fourth person who checks in every day will get extra points')}: {$qiandao.checkfourth}</p>
+                    <p class="card-text my-2">{:lang('The fifth person who checks in every day can get extra points')}: {$qiandao.checkfifth}</p>
+                    {/notempty}
                 </div>
             </div>
         </div>

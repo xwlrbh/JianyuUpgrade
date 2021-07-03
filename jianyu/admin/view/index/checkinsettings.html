@@ -40,6 +40,26 @@
         <label>{:lang('Check in for one consecutive year to get extra points')}</label>
         <input type="number" name="checkinyear" min="0" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" value="{$qiandao.checkinyear}">
     </div>
+    <div class="form-group mt-4">
+        <label>{:lang('The first person who checks in every day can get extra points')}</label>
+        <input type="number" name="checkfirst" min="0" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" value="{notempty name="qiandao.checkfirst"}{$qiandao.checkfirst}{else /}0{/notempty}">
+    </div>
+    <div class="form-group mt-4">
+        <label>{:lang('The second person who checks in every day can get extra points')}</label>
+        <input type="number" name="checksecond" min="0" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" value="{notempty name="qiandao.checksecond"}{$qiandao.checksecond}{else /}0{/notempty}">
+    </div>
+    <div class="form-group mt-4">
+        <label>{:lang('The third person who checks in every day will get extra points')}</label>
+        <input type="number" name="checkthird" min="0" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" value="{notempty name="qiandao.checkthird"}{$qiandao.checkthird}{else /}0{/notempty}">
+    </div>
+    <div class="form-group mt-4">
+        <label>{:lang('The fourth person who checks in every day will get extra points')}</label>
+        <input type="number" name="checkfourth" min="0" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" value="{notempty name="qiandao.checkfourth"}{$qiandao.checkfourth}{else /}0{/notempty}">
+    </div>
+    <div class="form-group mt-4">
+        <label>{:lang('The fifth person who checks in every day can get extra points')}</label>
+        <input type="number" name="checkfifth" min="0" class="form-control rounded-0 border-top-0 border-right-0 border-left-0" value="{notempty name="qiandao.checkfifth"}{$qiandao.checkfifth}{else /}0{/notempty}">
+    </div>
     <div class="text-center mb-5">
         <input type="hidden" name="verification" value="{$verification}">
         <button type="button" id="formsubmit" class="btn btn-info submit">{:lang('Submit')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>

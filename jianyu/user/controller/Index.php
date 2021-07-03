@@ -2174,6 +2174,11 @@ class Index extends CatfishCMS
                 'checkinthreemonth' => 0,
                 'checkinhalfyear' => 0,
                 'checkinyear' => 0,
+                'checkfirst' => 0,
+                'checksecond' => 0,
+                'checkthird' => 0,
+                'checkfourth' => 0,
+                'checkfifth' => 0,
             ];
         }
         else{
@@ -2221,6 +2226,22 @@ class Index extends CatfishCMS
                         'lianxu' => $lianxu
                     ]);
                     Catfish::setCookie('qiandao_' . $uid, $today, 86400);
+                    $rank = Catfish::get('qiandaopaiming');
+                    $paiming = 1;
+                    if(!empty($qiandao)){
+                        $rank = unserialize($rank);
+                        if($rank['date'] != date("Y-m-d")){
+                            $rank = ['date' => $today, 'rank' => 1];
+                        }
+                        else{
+                            $paiming = $rank['rank'] + 1;
+                            $rank['rank'] = $paiming;
+                        }
+                    }
+                    else{
+                        $rank = ['date' => $today, 'rank' => 1];
+                    }
+                    Catfish::set('qiandaopaiming', serialize($rank));
                     $qiandao = Catfish::get('qiandaojifen');
                     if(!empty($qiandao)){
                         $qiandao = unserialize($qiandao);
@@ -2254,6 +2275,25 @@ class Index extends CatfishCMS
                                 $jifen += intval($qiandao['checkinyear']);
                                 break;
                         }
+                        if(isset($qiandao['checkfirst'])){
+                            switch($paiming){
+                                case 1:
+                                    $jifen += intval($qiandao['checkfirst']);
+                                    break;
+                                case 2:
+                                    $jifen += intval($qiandao['checksecond']);
+                                    break;
+                                case 3:
+                                    $jifen += intval($qiandao['checkthird']);
+                                    break;
+                                case 4:
+                                    $jifen += intval($qiandao['checkfourth']);
+                                    break;
+                                case 5:
+                                    $jifen += intval($qiandao['checkfifth']);
+                                    break;
+                            }
+                        }
                         Catfish::db('users')
                             ->where('id', $uid)
                             ->update([
@@ -2267,7 +2307,28 @@ class Index extends CatfishCMS
                                 'miaoshu' => Catfish::lang('Check in')
                             ]);
                         }
+                        $statistics = Catfish::db('sign_in_statistics')->where('uid',$uid)->field('id')->find();
+                        if(empty($statistics)){
+                            Catfish::db('sign_in_statistics')->insert([
+                                'uid' => $uid,
+                                'qiandaoshijian' => date("Y-m-d H:i:s"),
+                                'leijiqiandao' => 1,
+                                'leijijiangli' => $jifen,
+                                'jinrijiangli' => $jifen,
+                                'lianxu' => $lianxu
+                            ]);
+                        }
+                        else{
+                            Catfish::db('sign_in_statistics')->where('uid',$uid)->update([
+                                'qiandaoshijian' => date("Y-m-d H:i:s"),
+                                'leijiqiandao' => Catfish::dbRaw('leijiqiandao+1'),
+                                'leijijiangli' => Catfish::dbRaw('leijijiangli+' . $jifen),
+                                'jinrijiangli' => $jifen,
+                                'lianxu' => $lianxu
+                            ]);
+                        }
                     }
+                    Catfish::clearCache('qiandao');
                     $result = [
                         'result' => 'ok',
                         'message' => ''

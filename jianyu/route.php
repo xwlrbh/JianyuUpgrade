@@ -48,4 +48,6 @@ return [
     'api' => 'api/Index/index',
     'lost' => 'index/Index/lost',
     'newpost' => 'index/Index/newpost',
+    'qiandaobiao' => 'index/Index/qiandaobiao',
+    'jinriqiandao' => 'index/Index/jinriqiandao',
 ];

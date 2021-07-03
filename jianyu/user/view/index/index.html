@@ -1,7 +1,7 @@
 {include file="index/header" /}
 <div class="row">
     <div class="col-12 col-sm-4 col-md-3 text-center">
-        <a href="{:Url('user/Index/myicon')}"><img src="{$touxiang}" class="rounded img-fluid" height="128"></a>
+        <a href="{:Url('user/Index/myicon')}"><img src="{$touxiang}" class="rounded img-fluid" style="max-height: 128px"></a>
     </div>
     <div class="col-12 col-sm-8 col-md-9">
         <div class="mb-2 h5"><span class="text-secondary">{:lang('Username')}：</span><span class="mr-3">{$user}</span>(<span class="ml-1 text-secondary h6">{$info.dengjiming}</span><span class="ml-2 mr-1 text-secondary">LV&nbsp;{$info.dengji}</span>){if condition="$info.isvip eq 1"}<span class="text-warning ml-3 font-weight-bold">VIP</span>{/if}</div>

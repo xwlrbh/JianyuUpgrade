@@ -3161,7 +3161,12 @@ class Index extends CatfishCMS
                     'checkintwomonth' => intval($data['checkintwomonth']),
                     'checkinthreemonth' => intval($data['checkinthreemonth']),
                     'checkinhalfyear' => intval($data['checkinhalfyear']),
-                    'checkinyear' => intval($data['checkinyear'])
+                    'checkinyear' => intval($data['checkinyear']),
+                    'checkfirst' => intval($data['checkfirst']),
+                    'checksecond' => intval($data['checksecond']),
+                    'checkthird' => intval($data['checkthird']),
+                    'checkfourth' => intval($data['checkfourth']),
+                    'checkfifth' => intval($data['checkfifth'])
                 ];
                 Catfish::set('qiandaojifen', serialize($qiandao));
                 echo 'ok';
@@ -3181,6 +3186,11 @@ class Index extends CatfishCMS
                 'checkinthreemonth' => 0,
                 'checkinhalfyear' => 0,
                 'checkinyear' => 0,
+                'checkfirst' => 0,
+                'checksecond' => 0,
+                'checkthird' => 0,
+                'checkfourth' => 0,
+                'checkfifth' => 0,
             ];
         }
         else{

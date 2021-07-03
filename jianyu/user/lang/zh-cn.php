@@ -306,4 +306,9 @@ return [
     'Now you can' => '现在，您可以',
     'Modify your information' => '修改您的资料',
     'User Center Home' => '用户中心首页',
+    'The first person who checks in every day can get extra points' => '每日签到的第一名可获得额外积分',
+    'The second person who checks in every day can get extra points' => '每日签到的第二名可获得额外积分',
+    'The third person who checks in every day will get extra points' => '每日签到的第三名可获得额外积分',
+    'The fourth person who checks in every day will get extra points' => '每日签到的第四名可获得额外积分',
+    'The fifth person who checks in every day can get extra points' => '每日签到的第五名可获得额外积分',
 ];

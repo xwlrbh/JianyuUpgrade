@@ -560,7 +560,12 @@ class CatfishCMS
             'checkintwomonth' => 'require|integer',
             'checkinthreemonth' => 'require|integer',
             'checkinhalfyear' => 'require|integer',
-            'checkinyear' => 'require|integer'
+            'checkinyear' => 'require|integer',
+            'checkfirst' => 'require|integer',
+            'checksecond' => 'require|integer',
+            'checkthird' => 'require|integer',
+            'checkfourth' => 'require|integer',
+            'checkfifth' => 'require|integer'
         ];
         $msg = [
             'checkin.require' => Catfish::lang('Input can not be empty'),
@@ -582,7 +587,17 @@ class CatfishCMS
             'checkinhalfyear.require' => Catfish::lang('Input can not be empty'),
             'checkinhalfyear.integer' => Catfish::lang('Only integers can be entered'),
             'checkinyear.require' => Catfish::lang('Input can not be empty'),
-            'checkinyear.integer' => Catfish::lang('Only integers can be entered')
+            'checkinyear.integer' => Catfish::lang('Only integers can be entered'),
+            'checkfirst.require' => Catfish::lang('Input can not be empty'),
+            'checkfirst.integer' => Catfish::lang('Only integers can be entered'),
+            'checksecond.require' => Catfish::lang('Input can not be empty'),
+            'checksecond.integer' => Catfish::lang('Only integers can be entered'),
+            'checkthird.require' => Catfish::lang('Input can not be empty'),
+            'checkthird.integer' => Catfish::lang('Only integers can be entered'),
+            'checkfourth.require' => Catfish::lang('Input can not be empty'),
+            'checkfourth.integer' => Catfish::lang('Only integers can be entered'),
+            'checkfifth.require' => Catfish::lang('Input can not be empty'),
+            'checkfifth.integer' => Catfish::lang('Only integers can be entered')
         ];
         $data = [
             'checkin' => Catfish::getPost('checkin'),
@@ -595,6 +610,11 @@ class CatfishCMS
             'checkinthreemonth' => Catfish::getPost('checkinthreemonth'),
             'checkinhalfyear' => Catfish::getPost('checkinhalfyear'),
             'checkinyear' => Catfish::getPost('checkinyear'),
+            'checkfirst' => Catfish::getPost('checkfirst'),
+            'checksecond' => Catfish::getPost('checksecond'),
+            'checkthird' => Catfish::getPost('checkthird'),
+            'checkfourth' => Catfish::getPost('checkfourth'),
+            'checkfifth' => Catfish::getPost('checkfifth'),
         ];
         return $this->validatePost($rule, $msg, $data);
     }

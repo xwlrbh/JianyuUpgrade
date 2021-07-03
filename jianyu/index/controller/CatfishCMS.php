@@ -216,6 +216,8 @@ class CatfishCMS
                 'feedback' => $this->geturl('index/Index/feedback'),
                 'qiandao' => $this->geturl('index/Index/qiandao'),
                 'fajiantie' => $this->geturl('index/Index/newpost'),
+                'qiandaobiao' => $this->geturl('index/Index/qiandaobiao'),
+                'jinriqiandao' => $this->geturl('index/Index/jinriqiandao'),
                 'face' => $faceUrl
             ];
             Catfish::setCache('urlarr_'.$order,$urlarr,$this->time);
@@ -1568,6 +1570,7 @@ class CatfishCMS
             $jiezhi = time() - 900;
             $zaixian = Catfish::db('online')->where('onlinetime', '>', $jiezhi)->count();
             $tongji['zaixian'] = $zaixian;
+            $tongji['qiandao'] = $this->jinriqiandao();
             Catfish::setCache('tongji',$tongji,600);
         }
         Catfish::allot('tongji', $tongji);
@@ -2086,5 +2089,153 @@ class CatfishCMS
             Catfish::setCache('identity_info_' . $section, $banzhuji, $this->time);
         }
         Catfish::allot('banzhu', $banzhuji);
+    }
+    protected function getqiandao()
+    {
+        $page = Catfish::getGet('page');
+        if($page == false){
+            $page = 0;
+        }
+        $qiandaobiao = Catfish::getCache('qiandaobiao_' . $page);
+        if($qiandaobiao === false){
+            $data = Catfish::view('sign_in_statistics','id,uid,qiandaoshijian,leijiqiandao,leijijiangli,jinrijiangli,lianxu')
+                ->view('users','nicheng,touxiang','users.id=sign_in_statistics.uid')
+                ->order('sign_in_statistics.leijiqiandao desc')
+                ->paginate($this->everyPageShows);
+            $qiandaobiao['qiandao'] = $data->items();
+            if($page <= 1){
+                $paiming = 1;
+            }
+            else{
+                $paiming = ($page - 1) * $this->everyPageShows + 1;
+            }
+            $now = time();
+            foreach($qiandaobiao['qiandao'] as $key => $val){
+                $qiandaobiao['qiandao'][$key]['qiandaoshicha'] = $this->timedif($val['qiandaoshijian'], $now);
+                $qiandaobiao['qiandao'][$key]['paiming'] = $paiming ++;
+                $qiandaobiao['qiandao'][$key]['touxiang'] = empty($val['touxiang']) ? Catfish::domain() . 'public/common/images/avatar.png' : Catfish::domain() . 'data/avatar/' . $val['touxiang'];
+            }
+            $pages= $data->render();
+            if(empty($pages)){
+                $pages = '';
+            }
+            $qiandaobiao['pages'] = $pages;
+            Catfish::tagCache('qiandao')->set('qiandaobiao_' . $page,$qiandaobiao,$this->time);
+        }
+        return $qiandaobiao;
+    }
+    protected function getjinriqiandao()
+    {
+        $page = Catfish::getGet('page');
+        if($page == false){
+            $page = 0;
+        }
+        $start = date('Y-m-d 00:00:00');
+        $end = Catfish::now();
+        $jinriqiandao = Catfish::getCache('jinriqiandao_' . $page);
+        if($jinriqiandao === false){
+            $data = Catfish::view('sign_in_statistics','id,uid,qiandaoshijian,leijiqiandao,leijijiangli,jinrijiangli,lianxu')
+                ->view('users','nicheng,touxiang','users.id=sign_in_statistics.uid')
+                ->whereTime('sign_in_statistics.qiandaoshijian', 'between', [$start, $end])
+                ->order('sign_in_statistics.qiandaoshijian asc')
+                ->paginate($this->everyPageShows);
+            $jinriqiandao['qiandao'] = $data->items();
+            if($page <= 1){
+                $paiming = 1;
+            }
+            else{
+                $paiming = ($page - 1) * $this->everyPageShows + 1;
+            }
+            $now = time();
+            foreach($jinriqiandao['qiandao'] as $key => $val){
+                $jinriqiandao['qiandao'][$key]['qiandaoshicha'] = $this->timedif($val['qiandaoshijian'], $now);
+                $jinriqiandao['qiandao'][$key]['paiming'] = $paiming ++;
+                $jinriqiandao['qiandao'][$key]['touxiang'] = empty($val['touxiang']) ? Catfish::domain() . 'public/common/images/avatar.png' : Catfish::domain() . 'data/avatar/' . $val['touxiang'];
+            }
+            $pages= $data->render();
+            if(empty($pages)){
+                $pages = '';
+            }
+            $jinriqiandao['pages'] = $pages;
+            Catfish::tagCache('qiandao')->set('jinriqiandao_' . $page,$jinriqiandao,$this->time);
+        }
+        return $jinriqiandao;
+    }
+    protected function qiandaotongji()
+    {
+        $start = date('Y-m-d 00:00:00');
+        $end = Catfish::now();
+        $qiandaotongji = Catfish::getCache('qiandaotongji');
+        if($qiandaotongji === false){
+            $qiandaozongshu = Catfish::db('sign_in_statistics')->count();
+            $jinriqiandaozongshu = $this->jinriqiandao();
+            $diyi = Catfish::db('sign_in_statistics')->whereTime('qiandaoshijian', 'between', [$start, $end])->field('uid')->order('qiandaoshijian asc')->find();
+            if(!empty($diyi)){
+                $diyiming = Catfish::db('users')->where('id', $diyi['uid'])->field('id,nicheng,touxiang')->find();
+                $diyiming['touxiang'] = empty($diyiming['touxiang']) ? Catfish::domain() . 'public/common/images/avatar.png' : Catfish::domain() . 'data/avatar/' . $diyiming['touxiang'];
+            }
+            else{
+                $diyiming['id'] = '';
+                $diyiming['nicheng'] = '';
+                $diyiming['touxiang'] = '';
+            }
+            $qiandaotongji['qiandaozongshu'] = $qiandaozongshu;
+            $qiandaotongji['jinriqiandaozongshu'] = $jinriqiandaozongshu;
+            $qiandaotongji['diyiming'] = $diyiming;
+            $qiandaoguize = Catfish::get('qiandaojifen');
+            if(empty($qiandaoguize)){
+                $qiandaoguize = [
+                    'checkin' => 0,
+                    'checkincontinu' => 0,
+                    'checkinthreedays' => 0,
+                    'checkinweek' => 0,
+                    'checkintwoweek' => 0,
+                    'checkinmonth' => 0,
+                    'checkintwomonth' => 0,
+                    'checkinthreemonth' => 0,
+                    'checkinhalfyear' => 0,
+                    'checkinyear' => 0,
+                    'checkfirst' => 0,
+                    'checksecond' => 0,
+                    'checkthird' => 0,
+                    'checkfourth' => 0,
+                    'checkfifth' => 0,
+                ];
+            }
+            else{
+                $qiandaoguize = unserialize($qiandaoguize);
+            }
+            $guize = [
+                'qiandao' => $qiandaoguize['checkin'],
+                'lianxuqiandao' => $qiandaoguize['checkincontinu'],
+                'lianxusantian' => $qiandaoguize['checkinthreedays'],
+                'lianxuyizhou' => $qiandaoguize['checkinweek'],
+                'lianxuliangzhou' => $qiandaoguize['checkintwoweek'],
+                'lianxuyiyue' => $qiandaoguize['checkinmonth'],
+                'lianxuliangyue' => $qiandaoguize['checkintwomonth'],
+                'lianxusanyue' => $qiandaoguize['checkinthreemonth'],
+                'lianxubannian' => $qiandaoguize['checkinhalfyear'],
+                'lianxuyinian' => $qiandaoguize['checkinyear'],
+                'diyiming' => $qiandaoguize['checkfirst'],
+                'dierming' => $qiandaoguize['checksecond'],
+                'disanming' => $qiandaoguize['checkthird'],
+                'disiming' => $qiandaoguize['checkfourth'],
+                'diwuming' => $qiandaoguize['checkfifth'],
+            ];
+            $qiandaotongji['guize'] = $guize;
+            Catfish::tagCache('qiandao')->set('qiandaotongji',$qiandaotongji,$this->time);
+        }
+        return $qiandaotongji;
+    }
+    private function jinriqiandao()
+    {
+        $jinriqiandaozongshu = Catfish::getCache('jinriqiandaotongji');
+        if($jinriqiandaozongshu === false){
+            $start = date('Y-m-d 00:00:00');
+            $end = Catfish::now();
+            $jinriqiandaozongshu = Catfish::db('sign_in_statistics')->whereTime('qiandaoshijian', 'between', [$start, $end])->count();
+            Catfish::tagCache('qiandao')->set('jinriqiandaotongji',$jinriqiandaozongshu,$this->time);
+        }
+        return $jinriqiandaozongshu;
     }
 }
