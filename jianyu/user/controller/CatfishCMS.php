@@ -544,7 +544,12 @@ class CatfishCMS
                 ->limit(3)
                 ->select();
             foreach($leixingarr as $key => $val){
-                $leixing[$val['id']] = Catfish::lang(ucfirst($val['tpname']));
+                if(!empty($val['tpname'])){
+                    $leixing[$val['id']] = Catfish::lang(ucfirst($val['tpname']));
+                }
+                else{
+                    $leixing[$val['id']] = $val['tpname'];
+                }
             }
             Catfish::setCache('leixing_id_name', $leixing, $this->time);
         }

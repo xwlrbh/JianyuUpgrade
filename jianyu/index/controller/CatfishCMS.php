@@ -380,6 +380,7 @@ class CatfishCMS
                 ->where('tie.id','in',$subQuery)
                 ->where('tie.status','=',1)
                 ->where('tie.review','=',1)
+                ->where('tie.chentie','=',0)
                 ->order($orderstr.'tie.id desc')
                 ->select();
             $shouye['zhiding'] = $this->filterResults($zhiding);
@@ -388,6 +389,7 @@ class CatfishCMS
                 ->where('tie.status','=',1)
                 ->where('tie.review','=',1)
                 ->where('tie.fstop','=',0)
+                ->where('tie.chentie','=',0)
                 ->order($orderstr.'tie.id desc')
                 ->paginate($this->everyPageShows,false,[
                     'query' => [
@@ -477,6 +479,7 @@ class CatfishCMS
                 ->where('tie.id','in',$subQuery)
                 ->where('tie.status','=',1)
                 ->where('tie.review','=',1)
+                ->where('tie.chentie','=',0)
                 ->order($orderstr.'tie.id desc')
                 ->select();
             $column['zhiding'] = $this->filterResults($zhiding);
@@ -486,6 +489,7 @@ class CatfishCMS
                 ->where('tie.status','=',1)
                 ->where('tie.review','=',1)
                 ->where('tie.istop','=',0)
+                ->where('tie.chentie','=',0)
                 ->order($orderstr.'tie.id desc')
                 ->paginate($this->everyPageShows,false,[
                     'query' => [
@@ -1657,6 +1661,7 @@ class CatfishCMS
                 ->where('tie.tietype','=',$find)
                 ->where('tie.status','=',1)
                 ->where('tie.review','=',1)
+                ->where('tie.chentie','=',0)
                 ->order($orderstr.'tie.id desc')
                 ->paginate($this->everyPageShows,false,[
                     'query' => [
@@ -1816,6 +1821,7 @@ class CatfishCMS
                             ->where('tie.sid','in',$val['idstr'])
                             ->where('tie.status','=',1)
                             ->where('tie.review','=',1)
+                            ->where('tie.chentie','=',0)
                             ->order($orderstr.'tie.id desc')
                             ->limit(20)
                             ->select();

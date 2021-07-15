@@ -69,7 +69,7 @@ class Index extends CatfishCMS
             $yonghuming = '';
         }
         $query = [];
-        $catfish = Catfish::view('tie','id,fabushijian,biaoti,review,yuedu,fstop,fsrecommended,jingpin,tietype,annex,video')
+        $catfish = Catfish::view('tie','id,fabushijian,biaoti,review,yuedu,fstop,fsrecommended,jingpin,tietype,annex,video,chentie')
             ->view('users','yonghu,nicheng,touxiang','users.id=tie.uid');
         if($guanjianzi != ''){
             $catfish = $catfish->where('tie.biaoti','like','%'.$guanjianzi.'%');
@@ -96,7 +96,7 @@ class Index extends CatfishCMS
     public function manamainpost()
     {
         if(Catfish::isPost(5)){
-            $chkarr = ['review', 'fstop', 'fsrecommended', 'jingpin'];
+            $chkarr = ['review', 'fstop', 'fsrecommended', 'jingpin', 'chentie'];
             $id = intval(Catfish::getPost('id'));
             $chk = intval(Catfish::getPost('chk'));
             if($chk > 1){
@@ -1248,6 +1248,8 @@ class Index extends CatfishCMS
                 }
                 $spare['notfollow'] = Catfish::getPost('notfollow') == 'on' ? 1 : 0;
                 $spare['guanbizhuce'] = Catfish::getPost('guanbizhuce') == 'on' ? 1 : 0;
+                $data['domain'] = str_replace('\\', '/', $data['domain']);
+                $data['domain'] = rtrim($data['domain'], '/') . '/';
                 Catfish::dbStartTrans();
                 try{
                     Catfish::db('options')
@@ -3228,5 +3230,23 @@ class Index extends CatfishCMS
         else{
             return json([]);
         }
+    }
+    public function chentie()
+    {
+        $this->checkUser();
+        $catfish = Catfish::view('tie','id,fabushijian,biaoti,review,yuedu,tietype,annex,chentie')
+            ->view('users','nicheng,touxiang','users.id=tie.uid')
+            ->where('tie.status','=',1)
+            ->where('tie.chentie','=',1)
+            ->order('tie.id desc')
+            ->paginate(20);
+        Catfish::allot('pages', $catfish->render());
+        $catfish = $catfish->items();
+        $typeidnm = $this->gettypeidname();
+        foreach($catfish as $key => $val){
+            $catfish[$key]['tietype'] = $typeidnm[$val['tietype']];
+        }
+        Catfish::allot('catfishcms', $catfish);
+        return $this->show(Catfish::lang('Sink the posts'), 5, 'chentie');
     }
 }

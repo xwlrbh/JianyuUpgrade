@@ -1,0 +1,1 @@
+ALTER TABLE `jianyu_tie` ADD `chentie` TINYINT( 1 ) NOT NULL DEFAULT '0';
