@@ -1483,6 +1483,12 @@ class Index extends CatfishCMS
         Catfish::allot('yifabu', $yifabu);
         Catfish::allot('error', $error);
         Catfish::allot('fatie', $fatie);
+        $newposttop = '';
+        $this->plantHook('newposttop', $newposttop);
+        Catfish::allot('newposttop', $newposttop);
+        $newpostbottom = '';
+        $this->plantHook('newpostbottom', $newpostbottom);
+        Catfish::allot('newpostbottom', $newpostbottom);
         return $this->show('newpost');
     }
     public function qiandaobiao()
@@ -1505,6 +1511,12 @@ class Index extends CatfishCMS
         Catfish::allot('biaoti',Catfish::lang('Check in'));
         Catfish::allot('jianyu', $this->getqiandao());
         Catfish::allot('qiandaotongji', $this->qiandaotongji());
+        $qiandaotop = '';
+        $this->plantHook('qiandaotop', $qiandaotop);
+        Catfish::allot('qiandaotop', $qiandaotop);
+        $qiandaobottom = '';
+        $this->plantHook('qiandaobottom', $qiandaobottom);
+        Catfish::allot('qiandaobottom', $qiandaobottom);
         return $this->show('qiandaobiao');
     }
     public function jinriqiandao()
@@ -1527,6 +1539,37 @@ class Index extends CatfishCMS
         Catfish::allot('biaoti',Catfish::lang('Check in'));
         Catfish::allot('jianyu', $this->getjinriqiandao());
         Catfish::allot('qiandaotongji', $this->qiandaotongji());
+        $jinriqiandaotop = '';
+        $this->plantHook('jinriqiandaotop', $jinriqiandaotop);
+        Catfish::allot('jinriqiandaotop', $jinriqiandaotop);
+        $jinriqiandaobottom = '';
+        $this->plantHook('jinriqiandaobottom', $jinriqiandaobottom);
+        Catfish::allot('jinriqiandaobottom', $jinriqiandaobottom);
         return $this->show('jinriqiandao');
+    }
+    public function pluginpost($plugin, $method)
+    {
+        if(Catfish::isPost(20, false)){
+            $post = Catfish::getPost();
+            if(isset($post['verification'])){
+                unset($post['verification']);
+            }
+            $ufplugin = ucfirst($plugin);
+            if(empty($theme)){
+                Catfish::execHook('plugin\\' . $plugin . '\\' . $ufplugin, $method . 'Post', $post);
+            }
+            else{
+                Catfish::execHook('theme\\' . $plugin . '\\' . $ufplugin, $method . 'Post', $post);
+            }
+            if(isset($post['result'])){
+                echo $post['result'];
+                exit();
+            }
+        }
+        $ref = Catfish::referer();
+        if(!empty($ref)){
+            Catfish::redirect($ref);
+            exit();
+        }
     }
 }

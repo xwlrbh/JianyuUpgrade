@@ -1403,4 +1403,13 @@ class Catfish
             }
         }
     }
+    public static function referer()
+    {
+        if(!is_null(Request::instance()->server('HTTP_REFERER'))){
+            return Request::instance()->server('HTTP_REFERER');
+        }
+        else{
+            return '';
+        }
+    }
 }

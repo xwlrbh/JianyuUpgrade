@@ -9,6 +9,7 @@
 namespace catfishcms;
 class Plugin
 {
+    private static $plugin = [];
     public static function add(&$params, $name, $alias = '', $func = '', $way = 'append')
     {
         $calltrace = debug_backtrace();
@@ -176,5 +177,94 @@ class Plugin
         }else{
             return false;
         }
+    }
+    public static function newTable($name, $fields)
+    {
+        $names = Catfish::get('plugin_new_tables');
+        $namearr = ['users', 'users_tongji', 'users_info', 'online', 'options', 'tie', 'tie_zan', 'gentie_zan', 'tie_cai', 'gentie_cai', 'tietype', 'dengji', 'chengzhang', 'forum', 'tienr', 'tie_top', 'tie_fstop', 'tie_tuijian', 'tie_fstuijian', 'tie_comm_ontact', 'tie_comments', 'tie_favorites', 'links', 'msort', 'mod_sec_ontact', 'tongji', 'banned', 'tie_jifen', 'tie_access', 'points_book', 'coin_bill', 'sign_in', 'sign_in_statistics'];
+        if(!empty($names)){
+            $names = unserialize($names);
+            if(is_array($names)){
+                $namearr = array_merge($namearr, $names);
+            }
+        }
+        if(in_array($name, $namearr)){
+            return false;
+        }
+        $statement = '';
+        $indexs = '';
+        foreach($fields as $item){
+            $index = '';
+            if(strtoupper($item['type']) == 'AUTO'){
+                $field = '`' . $item['name'] . '` int(11) unsigned NOT NULL AUTO_INCREMENT';
+                $index = 'PRIMARY KEY (`' . $item['name'] . '`)';
+            }
+            elseif(strtoupper($item['type']) == 'UINT'){
+                $field = '`' . $item['name'] . '` int(11) unsigned DEFAULT 0';
+                if(isset($item['index'])){
+                    $index = 'KEY `' . $item['index'] . '` (`' . $item['name'] . '`)';
+                }
+            }
+            else{
+                $field = '`' . $item['name'] . '` ' . $item['type'];
+                if(isset($item['length'])){
+                    $field .= '(' . $item['length'] . ')';
+                }
+                if(isset($item['notnull']) && $item['notnull']){
+                    $field .= ' NOT NULL';
+                }
+                if(isset($item['default'])){
+                    if(is_numeric($item['default'])){
+                        $field .= ' DEFAULT ' . $item['default'];
+                    }
+                    else{
+                        $field .= ' DEFAULT \'' . $item['default'] . '\'';
+                    }
+                }
+                if(isset($item['index'])){
+                    $index = 'KEY `' . $item['index'] . '` (`' . $item['name'] . '`)';
+                }
+            }
+            $statement .= $field . ',';
+            if(!empty($index)){
+                $indexs .= $index . ',';
+            }
+        }
+        $statement .= $indexs;
+        $statement = 'CREATE TABLE `' . Catfish::prefix() . $name . '` (' . rtrim($statement, ',') . ') ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;';
+        try{
+            $re = Catfish::dbExecute($statement);
+            if(!empty($names) && is_array($names)){
+                $names[] = $name;
+            }
+            else{
+                $names = [$name];
+            }
+            Catfish::set('plugin_new_tables', serialize($names));
+            return $re;
+        }
+        catch(\Exception $e){
+            return false;
+        }
+    }
+    public static function sendmail($email, $name, $subject, $body)
+    {
+        return Catfish::sendmail($email, $name, $subject, $body);
+    }
+    public static function assign($name, $value = '')
+    {
+        if(isset(self::$plugin[$name])){
+            self::$plugin[$name] .= $value;
+        }
+        else{
+            self::$plugin[$name] = $value;
+        }
+        return self::$plugin[$name];
+    }
+    public static function append($content)
+    {
+        $calltrace = debug_backtrace();
+        $name = $calltrace[1]['function'];
+        return self::assign($name, $content);
     }
 }

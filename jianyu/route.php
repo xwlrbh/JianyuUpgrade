@@ -50,4 +50,5 @@ return [
     'newpost' => 'index/Index/newpost',
     'qiandaobiao' => 'index/Index/qiandaobiao',
     'jinriqiandao' => 'index/Index/jinriqiandao',
+    'pluginpost/:plugin/:method' => 'index/Index/pluginpost',
 ];

@@ -237,6 +237,15 @@ class CatfishCMS
             'template' => $this->template
         ];
         $this->plantHook('all', $params);
+        $footer = '';
+        $this->plantHook('footer', $footer);
+        Catfish::allot('footer', $footer);
+        $sidetop = '';
+        $this->plantHook('sidetop', $sidetop);
+        Catfish::allot('sidetop', $sidetop);
+        $sidebottom = '';
+        $this->plantHook('sidebottom', $sidebottom);
+        Catfish::allot('sidebottom', $sidebottom);
         $tempath = ROOT_PATH.$this->tempPath.$this->template;
         if(!Catfish::cj($tempath) && $template != '404.html'){
             Catfish::toError();
@@ -409,6 +418,12 @@ class CatfishCMS
             'shouye' => $shouye
         ];
         $this->plantHook('index', $params);
+        $indextop = '';
+        $this->plantHook('indextop', $indextop);
+        Catfish::allot('indextop', $indextop);
+        $indexbottom = '';
+        $this->plantHook('indexbottom', $indexbottom);
+        Catfish::allot('indexbottom', $indexbottom);
         Catfish::allot('jianyu', $params['shouye']);
     }
     protected function getcolumn($find)
@@ -527,6 +542,12 @@ class CatfishCMS
             'jianyu' => $column
         ];
         $this->plantHook('column', $params);
+        $columntop = '';
+        $this->plantHook('columntop', $columntop);
+        Catfish::allot('columntop', $columntop);
+        $columnbottom = '';
+        $this->plantHook('columnbottom', $columnbottom);
+        Catfish::allot('columnbottom', $columnbottom);
         $this->getidentity($find);
         Catfish::allot('biaoti', $params['biaoti']);
         Catfish::allot('keyword', $params['keyword']);
@@ -914,6 +935,24 @@ class CatfishCMS
         Catfish::allot('description', $params['description']);
         Catfish::allot('jianyu', $params['jianyu']);
         Catfish::allot('daohang', $params['daohang']);
+        $posttop = [
+            'postId' => $find,
+            'content' => ''
+        ];
+        $this->plantHook('posttop', $posttop);
+        Catfish::allot('posttop', $posttop['content']);
+        $postbottom = [
+            'postId' => $find,
+            'content' => ''
+        ];
+        $this->plantHook('postbottom', $postbottom);
+        Catfish::allot('postbottom', $postbottom['content']);
+        $commenttop = '';
+        $this->plantHook('commenttop', $commenttop);
+        Catfish::allot('commenttop', $commenttop);
+        $commentbottom = '';
+        $this->plantHook('commentbottom', $commentbottom);
+        Catfish::allot('commentbottom', $commentbottom);
         Catfish::allot('needvcode', $this->needvcode());
         if(isset($post['path'])){
             $pfl = end($post['path']);
@@ -1628,6 +1667,12 @@ class CatfishCMS
             'jianyu' => $column
         ];
         $this->plantHook('search', $params);
+		$columntop = '';
+        $this->plantHook('columntop', $columntop);
+        Catfish::allot('columntop', $columntop);
+        $columnbottom = '';
+        $this->plantHook('columnbottom', $columnbottom);
+        Catfish::allot('columnbottom', $columnbottom);
         Catfish::allot('jianyu', $params['jianyu']);
     }
     protected function gettype($find)
