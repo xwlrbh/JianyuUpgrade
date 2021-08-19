@@ -218,7 +218,7 @@ class CatfishCMS
     }
     private function jibie($chengzhang)
     {
-        $jibie = 0;
+        $jibie = 1;
         $dengji = Catfish::getCache('dengji_jibie_chengzhang');
         if($dengji == false){
             $dengji = [];

@@ -20,7 +20,7 @@ class Index extends CatfishCMS
                 $user[$key] = date('Y-m-d', strtotime($val));
             }
             if($key == 'dengji'){
-                $user['dengjiming'] = $dengji[$val];
+                $user['dengjiming'] = $dengji[$val > 0 ? $val : 1];
             }
             if($key == 'utype'){
                 if($val == 15){

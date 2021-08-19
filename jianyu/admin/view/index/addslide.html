@@ -1,0 +1,84 @@
+{include file="index/header" /}
+<link href="{$domain}public/common/uploadify/uploadify.css" type="text/css" rel="stylesheet">
+<div class="row">
+    <div class="col-sm">
+        <small class="float-left text-muted">{:lang('The size of the slideshow picture will be determined according to its group.')}</small>
+        <button type="button" class="btn btn-outline-info btn-sm float-right" data-toggle="modal" data-target="#addslidemodal">{:lang('Default group settings')}</button>
+    </div>
+</div>
+<form>
+    <div class="form-group">
+        <label>{:lang('Slide name')}</label>
+        <input type="text" class="form-control" name="mingcheng" placeholder="{:lang('Slide name')}">
+    </div>
+    <div class="form-group">
+        <label>{:lang('Slide group')}</label>
+        <select class="form-control" name="gid" id="gid">
+            <option value="0">{:lang('Default group')}</option>
+            {volist name="slidesgroup" id="vo"}
+            <option value="{$vo.id}">{$vo.zuming}</option>
+            {/volist}
+        </select>
+    </div>
+    <div class="form-group">
+        <label>{:lang('Slide link')}</label>
+        <input type="text" class="form-control" name="lianjie" value="" placeholder="http://">
+        <small class="form-text text-muted">{:lang('The slide address should start with "http://" or "https://".')}</small>
+    </div>
+    <div class="form-group">
+        <label>{:lang('Slide description')}</label>
+        <textarea class="form-control" name="miaoshu" rows="3"></textarea>
+    </div>
+    <div class="form-group">
+        <label>{:lang('Slide picture')}&nbsp;<b><span class="text-danger">*</span></b></label>
+        <img src="{$domain}public/common/images/default-thumbnail.png" class="img-fluid" id="tupianImg">
+        <input type="hidden" value="" name="tupian" id="tupian">
+        <div id="upload"></div>
+    </div>
+    <div class="text-center mb-5">
+        <input type="hidden" name="verification" value="{$verification}">
+        <button type="button" id="formsubmit" class="btn btn-info submit">{:lang('Submit')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+    </div>
+</form>
+<div class="modal fade" id="addslidemodal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">{:lang('Default group settings')}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="width">{:lang('Picture width')}</label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="width" name="width" value="{$defaultgroup.width}" placeholder="{:lang('Picture width')}">
+                            <div class="input-group-append">
+                                <span class="input-group-text" id="width-unit">px</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="width">{:lang('Picture height')}</label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="height" name="height" value="{$defaultgroup.height}" placeholder="{:lang('Picture height')}">
+                            <div class="input-group-append">
+                                <span class="input-group-text" id="height-unit">px</span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{:lang('Cancel')}</button>
+                <button type="button" class="btn btn-primary" id="defaultgroup">{:lang('Ok')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="d-none" id="buttonText">{:lang('Select Image')}</div>
+<script type="text/javascript" src="{$domain}public/common/uploadify/jquery.uploadify.js"></script>
+<script src="{$domain}public/common/js/addslide.js"></script>
+{include file="index/footer" /}

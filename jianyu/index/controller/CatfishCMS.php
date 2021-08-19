@@ -172,6 +172,7 @@ class CatfishCMS
         }
         Catfish::allot('caidan', $this->getMenu($sort));
         Catfish::allot('mokuai', $this->getModule());
+        Catfish::allot('huandeng', $this->getSlides());
         $this->getlinks($page);
         $this->tongji();
         $order = '';
@@ -1051,7 +1052,7 @@ class CatfishCMS
                 $results[$key]['leixinghref'] = $this->geturl('index/Index/type',['find'=>$val['leixing']]);
                 $results[$key]['fenlei'] = $fenlei[$val['sid']];
                 $results[$key]['leixing'] = $leixing[$val['leixing']];
-                $results[$key]['dengjiming'] = $dengji[$val['dengji']];
+                $results[$key]['dengjiming'] = $dengji[$val['dengji'] > 0 ? $val['dengji'] : 1];
                 $results[$key]['gentieren'] = '';
                 if(!empty($val['luid'])){
                     $luids .= ($luids == '') ? $val['luid'] : ','.$val['luid'];
@@ -1219,7 +1220,7 @@ class CatfishCMS
         $dengji = $this->getdjidname();
         $post['fenlei'] = $fenlei[$post['sid']];
         $post['leixing'] = $leixing[$post['leixing']];
-        $post['dengjiming'] = $dengji[$post['dengji']];
+        $post['dengjiming'] = $dengji[$post['dengji'] > 0 ? $post['dengji'] : 1];
         if(empty($post['touxiang'])){
             $post['touxiang'] = $domain.'public/common/images/avatar.png';
         }
@@ -2288,5 +2289,35 @@ class CatfishCMS
             Catfish::tagCache('qiandao')->set('jinriqiandaotongji',$jinriqiandaozongshu,$this->time);
         }
         return $jinriqiandaozongshu;
+    }
+    private function getSlides()
+    {
+        $slides = Catfish::getCache('huandeng_getslides');
+        if($slides === false){
+            $slides = Catfish::view('slides','id,gid,mingcheng,tupian,lianjie,miaoshu')
+                ->view('slides_group','zuming','slides_group.id=slides.gid', 'LEFT')
+                ->where('slides.status',1)
+                ->order('slides_group.listorder asc,slides.listorder asc')
+                ->select();
+            $slidesarr = [];
+            foreach($slides as $key => $val){
+                if(empty($val['zuming'])){
+                    $val['zuming'] = Catfish::lang('Default group');
+                }
+                $slidesarr[$val['gid']][] = [
+                    'mingcheng' => $val['mingcheng'],
+                    'tupian' => $val['tupian'],
+                    'lianjie' => $val['lianjie'],
+                    'miaoshu' => $val['miaoshu']
+                ];
+            }
+            $slides = [];
+            $order = 0;
+            while(count($slidesarr) > 0){
+                $slides['zu' . $order++] = array_shift($slidesarr);
+            }
+            Catfish::tagCache('slides')->set('huandeng_getslides',$slides,$this->time);
+        }
+        return $slides;
     }
 }

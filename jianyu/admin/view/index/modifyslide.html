@@ -1,0 +1,41 @@
+{include file="index/header" /}
+<link href="{$domain}public/common/uploadify/uploadify.css" type="text/css" rel="stylesheet">
+<form>
+    <div class="form-group">
+        <label>{:lang('Slide name')}</label>
+        <input type="text" class="form-control" value="{$slide.mingcheng}" name="mingcheng" placeholder="{:lang('Slide name')}">
+    </div>
+    <div class="form-group">
+        <label>{:lang('Slide group')}</label>
+        <select class="form-control" name="gid" id="gid" disabled>
+            <option value="0">{:lang('Default group')}</option>
+            {volist name="slidesgroup" id="vo"}
+            <option value="{$vo.id}"{if condition="$slide.gid eq $vo.id"} selected{/if}>{$vo.zuming}</option>
+            {/volist}
+        </select>
+    </div>
+    <div class="form-group">
+        <label>{:lang('Slide link')}</label>
+        <input type="text" class="form-control" value="{$slide.lianjie}" name="lianjie" value="" placeholder="http://">
+        <small class="form-text text-muted">{:lang('The slide address should start with "http://" or "https://".')}</small>
+    </div>
+    <div class="form-group">
+        <label>{:lang('Slide description')}</label>
+        <textarea class="form-control" name="miaoshu" rows="3">{$slide.miaoshu}</textarea>
+    </div>
+    <div class="form-group">
+        <label>{:lang('Slide picture')}&nbsp;<b><span class="text-danger">*</span></b></label>
+        <img src="{$domain}public/common/images/default-thumbnail.png" class="img-fluid" id="tupianImg">
+        <input type="hidden" value="{$slide.tupian}" name="tupian" id="tupian">
+        <div id="upload"></div>
+    </div>
+    <div class="text-center mb-5">
+        <input type="hidden" name="id" value="{$slide.id}">
+        <input type="hidden" name="verification" value="{$verification}">
+        <button type="button" class="btn btn-info submit notrefreshing">{:lang('Submit')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+    </div>
+</form>
+<div class="d-none" id="buttonText">{:lang('Select Image')}</div>
+<script type="text/javascript" src="{$domain}public/common/uploadify/jquery.uploadify.js"></script>
+<script src="{$domain}public/common/js/modifyslide.js"></script>
+{include file="index/footer" /}

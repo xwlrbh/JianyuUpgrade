@@ -803,4 +803,56 @@ class CatfishCMS
             return false;
         }
     }
+    protected function defaultgroupPost()
+    {
+        $rule = [
+            'width' => 'require|integer',
+            'height' => 'require|integer'
+        ];
+        $msg = [
+            'width.require' => Catfish::lang('Input can not be empty'),
+            'width.integer' => Catfish::lang('Only integers can be entered'),
+            'height.require' => Catfish::lang('Input can not be empty'),
+            'height.integer' => Catfish::lang('Only integers can be entered')
+        ];
+        $data = [
+            'width' => Catfish::getPost('width'),
+            'height' => Catfish::getPost('height')
+        ];
+        return $this->validatePost($rule, $msg, $data);
+    }
+    protected function addslidePost()
+    {
+        $rule = [
+            'tupian' => 'require'
+        ];
+        $msg = [
+            'tupian.require' => Catfish::lang('Image must be uploaded'),
+        ];
+        $data = [
+            'tupian' => Catfish::getPost('tupian')
+        ];
+        return $this->validatePost($rule, $msg, $data);
+    }
+    protected function addslidegroupPost()
+    {
+        $rule = [
+            'zuming' => 'require',
+            'width' => 'require|integer',
+            'height' => 'require|integer'
+        ];
+        $msg = [
+            'zuming.require' => Catfish::lang('The name of the slide group must be filled in'),
+            'width.require' => Catfish::lang('Picture width must be filled'),
+            'width.integer' => Catfish::lang('Only integers can be entered'),
+            'height.require' => Catfish::lang('Picture height must be filled'),
+            'height.integer' => Catfish::lang('Only integers can be entered')
+        ];
+        $data = [
+            'zuming' => Catfish::getPost('zuming'),
+            'width' => Catfish::getPost('width'),
+            'height' => Catfish::getPost('height')
+        ];
+        return $this->validatePost($rule, $msg, $data);
+    }
 }

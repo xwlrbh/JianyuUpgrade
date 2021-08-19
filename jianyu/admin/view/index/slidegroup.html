@@ -1,0 +1,49 @@
+{include file="index/header" /}
+<div class="row mb-3">
+    <div class="col-sm">
+        <a class="btn btn-outline-info btn-sm" href="{:Url('admin/Index/addslidegroup')}">{:lang('Add slide group')}</a>
+    </div>
+</div>
+<form>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th scope="col" class="text-center" style="width: 90px;">
+                <input type="hidden" name="paixu" value="paixu">
+                <input type="hidden" name="verification" value="{$verification}">
+                <button type="button" class="btn btn-info btn-sm submit"><i class="fa fa-sort-numeric-asc"></i>&nbsp;{:lang('Sort')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+            </th>
+            <th scope="col" class="text-center">{:lang('Slide group name')}</th>
+            <th scope="col" class="text-center">{:lang('Picture width')}</th>
+            <th scope="col" class="text-center">{:lang('Picture height')}</th>
+            <th scope="col" class="text-center">{:lang('Slide group description')}</th>
+            <th scope="col" class="text-center">{:lang('Modify')}</th>
+            <th scope="col" class="text-center">{:lang('Delete')}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name="slidesgroup" id="vo"}
+        <tr>
+            <td class="align-middle">
+                <input type="text" value="{$vo.listorder}" name="{$vo.id}" class="form-control form-control-sm" maxlength="8" style="width: 90px;">
+            </td>
+            <th class="align-middle text-center">{$vo.zuming}</th>
+            <td class="text-break text-center align-middle">{$vo.width}</td>
+            <td class="text-break text-center align-middle">{$vo.height}</td>
+            <td class="align-middle text-center">{$vo.description}</td>
+            <td class="text-center align-middle">
+                <a class="text-info" href="{:Url('admin/Index/modifyslidegroup')}?c={$vo.id}"><i class="fa fa-edit"></i></a>
+            </td>
+            <td class="text-center align-middle">
+                <a class="confirm text-info" href="#!"><i class="fa fa-trash-o"></i><i class="fa fa-refresh fa-spin ml-2 d-none"></i></a>
+                <input type="hidden" value="{$vo.id}">
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+</form>
+<div class="d-none" id="quedingshanchu">{:lang('Confirm to delete?')}</div>
+<div class="d-none" id="bukehuifu">{:lang('Are you sure you want to delete it? It cannot be recovered after deletion!')}</div>
+<script src="{$domain}public/common/js/slidegroup.js"></script>
+{include file="index/footer" /}

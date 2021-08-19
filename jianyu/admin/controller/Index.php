@@ -3249,4 +3249,293 @@ class Index extends CatfishCMS
         Catfish::allot('catfishcms', $catfish);
         return $this->show(Catfish::lang('Sink the posts'), 5, 'chentie');
     }
+    public function addslide()
+    {
+        $this->checkUser();
+        if(Catfish::isPost(3)){
+            $data = $this->addslidePost();
+            if(!is_array($data)){
+                echo $data;
+                exit();
+            }
+            else{
+                Catfish::db('slides')->insert([
+                    'gid' => Catfish::getPost('gid'),
+                    'mingcheng' => Catfish::getPost('mingcheng'),
+                    'tupian' => $data['tupian'],
+                    'lianjie' => Catfish::getPost('lianjie'),
+                    'miaoshu' => Catfish::getPost('miaoshu')
+                ]);
+                echo 'ok';
+                exit();
+            }
+        }
+        $slides_group = Catfish::db('slides_group')->field('id,zuming')->select();
+        Catfish::allot('slidesgroup', $slides_group);
+        $morenchicun = Catfish::get('slides_default_group_settings');
+        if(empty($morenchicun)){
+            $morenchicun = [
+                'width' => 1920,
+                'height' => 700
+            ];
+        }
+        else{
+            $morenchicun = unserialize($morenchicun);
+        }
+        Catfish::allot('defaultgroup', $morenchicun);
+        return $this->show(Catfish::lang('Add slide'), 3, 'addslide', '', true);
+    }
+    public function defaultgroup()
+    {
+        if(Catfish::isPost(3)){
+            $data = $this->defaultgroupPost();
+            if(!is_array($data)){
+                echo $data;
+                exit();
+            }
+            else{
+                $morenchicun = [
+                    'width' => $data['width'],
+                    'height' => $data['height']
+                ];
+                Catfish::set('slides_default_group_settings', serialize($morenchicun));
+                echo 'ok';
+                exit();
+            }
+        }
+        else{
+            echo Catfish::lang('Your operation is illegal');
+            exit();
+        }
+    }
+    public function uploadslide()
+    {
+        if(Catfish::isPost(3)){
+            $file = request()->file('file');
+            $validate = [
+                'ext' => 'jpg,png,gif,jpeg'
+            ];
+            $info = $file->validate($validate)->move(ROOT_PATH . 'data' . DS . 'uploads');
+            if($info){
+                $image = \think\Image::open(ROOT_PATH . 'data' . DS . 'uploads' . DS . $info->getSaveName());
+                $gid = intval(Catfish::getPost('gid'));
+                $width = 1920;
+                $height = 700;
+                if($gid == 0){
+                    $morenchicun = Catfish::get('slides_default_group_settings');
+                    if(!empty($morenchicun)){
+                        $morenchicun = unserialize($morenchicun);
+                        $width = $morenchicun['width'];
+                        $height = $morenchicun['height'];
+                    }
+                }
+                else{
+                    $slidesgroup = Catfish::db('slides_group')->where('id', $gid)->field('width,height')->find();
+                    if(!empty($slidesgroup)){
+                        $width = $slidesgroup['width'];
+                        $height = $slidesgroup['height'];
+                    }
+                }
+                @$image->thumb($width, $height, \think\Image::THUMB_FIXED)->save(ROOT_PATH . 'data' . DS . 'uploads' . DS . $info->getSaveName());
+                $upd = Catfish::getPost('upd');
+                if(!empty($upd)){
+                    $this->deletefile($upd);
+                }
+                echo 'data/uploads/'.str_replace('\\','/',$info->getSaveName());
+            }else{
+                echo $file->getError();
+            }
+        }
+        exit();
+    }
+    public function allslides()
+    {
+        $this->checkUser();
+        if(Catfish::isPost(3)){
+            $this->order('slides');
+            Catfish::removeCache('slides');
+            echo 'ok';
+            exit();
+        }
+        $slides = Catfish::view('slides','id,gid,mingcheng,tupian,lianjie,miaoshu,status,listorder')
+            ->view('slides_group','zuming,width,height','slides_group.id=slides.gid', 'LEFT')
+            ->order('listorder asc')
+            ->paginate(20);
+        Catfish::allot('pages', $slides->render());
+        $slides = $slides->items();
+        $width = 1920;
+        $height = 700;
+        $morenchicun = Catfish::get('slides_default_group_settings');
+        if(!empty($morenchicun)){
+            $morenchicun = unserialize($morenchicun);
+            $width = $morenchicun['width'];
+            $height = $morenchicun['height'];
+        }
+        foreach($slides as $key => $val){
+            if(!empty($val['tupian'])){
+                $slides[$key]['tupian'] = Catfish::domain() . $val['tupian'];
+            }
+            if(empty($val['zuming'])){
+                $slides[$key]['zuming'] = Catfish::lang('Default group');
+            }
+            if(empty($val['width'])){
+                $slides[$key]['width'] = $width;
+            }
+            if(empty($val['height'])){
+                $slides[$key]['height'] = $height;
+            }
+        }
+        Catfish::allot('slides', $slides);
+        return $this->show(Catfish::lang('All slides'), 3, 'allslides');
+    }
+    public function manaslide()
+    {
+        if(Catfish::isPost(3)){
+            $chkarr = ['status'];
+            $id = intval(Catfish::getPost('id'));
+            $chk = intval(Catfish::getPost('chk'));
+            if($chk > 1){
+                $chk = 1;
+            }
+            $opt = Catfish::getPost('opt');
+            if(in_array($opt, $chkarr)){
+                Catfish::db('slides')->where('id',$id)->update([
+                    $opt => $chk
+                ]);
+                Catfish::removeCache('slides');
+                echo 'ok';
+            }
+            else{
+                echo Catfish::lang('Your operation is illegal');
+            }
+            exit();
+        }
+        else{
+            echo Catfish::lang('Your operation is illegal');
+            exit();
+        }
+    }
+    public function delslide()
+    {
+        if(Catfish::isPost(3)){
+            $id = Catfish::getPost('id');
+            $slide = Catfish::db('slides')->where('id', $id)->find();
+            Catfish::db('slides')->where('id', $id)->delete();
+            if(!empty($slide['tupian']) && Catfish::isDataPath($slide['tupian'])){
+                @unlink(ROOT_PATH . str_replace('/', DS, $slide['tupian']));
+            }
+            echo 'ok';
+            exit();
+        }
+        else{
+            echo Catfish::lang('Your operation is illegal');
+            exit();
+        }
+    }
+    public function modifyslide()
+    {
+        $this->checkUser();
+        if(Catfish::isPost(3)){
+            $data = $this->addslidePost();
+            if(!is_array($data)){
+                echo $data;
+                exit();
+            }
+            else{
+                Catfish::db('slides')->where('id', Catfish::getPost('id'))->update([
+                    'mingcheng' => Catfish::getPost('mingcheng'),
+                    'tupian' => $data['tupian'],
+                    'lianjie' => Catfish::getPost('lianjie'),
+                    'miaoshu' => Catfish::getPost('miaoshu')
+                ]);
+                echo 'ok';
+                exit();
+            }
+        }
+        $slides_group = Catfish::db('slides_group')->field('id,zuming')->select();
+        Catfish::allot('slidesgroup', $slides_group);
+        $id = Catfish::getGet('c');
+        $slide = Catfish::db('slides')->where('id',$id)->find();
+        Catfish::allot('slide', $slide);
+        return $this->show(Catfish::lang('Modify slide'), 3, 'allslides', '', true);
+    }
+    public function slidegroup()
+    {
+        $this->checkUser();
+        if(Catfish::isPost(3)){
+            $this->order('slides_group');
+            Catfish::removeCache('slides');
+            echo 'ok';
+            exit();
+        }
+        $slidesgroup = Catfish::db('slides_group')
+            ->field('id,zuming,width,height,listorder,description')
+            ->order('listorder asc')
+            ->select();
+        Catfish::allot('slidesgroup', $slidesgroup);
+        return $this->show(Catfish::lang('Slide group'), 3, 'slidegroup');
+    }
+    public function addslidegroup()
+    {
+        $this->checkUser();
+        if(Catfish::isPost(3)){
+            $data = $this->addslidegroupPost();
+            if(!is_array($data)){
+                echo $data;
+                exit();
+            }
+            else{
+                Catfish::db('slides_group')->insert([
+                    'zuming' => $data['zuming'],
+                    'width' => $data['width'],
+                    'height' => $data['height'],
+                    'description' => Catfish::getPost('description')
+                ]);
+                echo 'ok';
+                exit();
+            }
+        }
+        return $this->show(Catfish::lang('Add slide group'), 3, 'slidegroup', '', true);
+    }
+    public function delslidegroup()
+    {
+        if(Catfish::isPost(3)){
+            $id = Catfish::getPost('id');
+            Catfish::db('slides_group')->where('id', $id)->delete();
+            Catfish::db('slides')->where('gid', $id)->update([
+                'gid' => 0
+            ]);
+            echo 'ok';
+            exit();
+        }
+        else{
+            echo Catfish::lang('Your operation is illegal');
+            exit();
+        }
+    }
+    public function modifyslidegroup()
+    {
+        $this->checkUser();
+        if(Catfish::isPost(3)){
+            $data = $this->addslidegroupPost();
+            if(!is_array($data)){
+                echo $data;
+                exit();
+            }
+            else{
+                Catfish::db('slides_group')->where('id', Catfish::getPost('id'))->update([
+                    'zuming' => $data['zuming'],
+                    'width' => $data['width'],
+                    'height' => $data['height'],
+                    'description' => Catfish::getPost('description')
+                ]);
+                echo 'ok';
+                exit();
+            }
+        }
+        $id = Catfish::getGet('c');
+        $slidegroup = Catfish::db('slides_group')->where('id',$id)->find();
+        Catfish::allot('slidegroup', $slidegroup);
+        return $this->show(Catfish::lang('Modify slide group'), 3, 'slidegroup', '', true);
+    }
 }

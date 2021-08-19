@@ -101,4 +101,5 @@ return [
     'Can only upload images in gif, png, jpg, jpeg format' => '只能上传gif,png,jpg,jpeg格式的图片',
     'Post title must be filled in' => '帖子标题必须填写',
     'Post content must be filled in' => '帖子内容必须填写',
+    'Default group' => '默认组',
 ];

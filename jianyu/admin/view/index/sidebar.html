@@ -148,6 +148,9 @@
         {if condition="$ugroup <= 3"}
         <a href="{:Url('admin/Index/addfriendshiplink')}" class="nav-link{if $option == 'addfriendshiplink'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Add a friendship link')}</a>
         <a href="{:Url('admin/Index/alllinks')}" class="nav-link{if $option == 'alllinks'} bg-secondary text-white{else /} text-dark{/if}">{:lang('All links')}</a>
+        <a href="{:Url('admin/Index/addslide')}" class="nav-link{if $option == 'addslide'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Add slide')}</a>
+        <a href="{:Url('admin/Index/allslides')}" class="nav-link{if $option == 'allslides'} bg-secondary text-white{else /} text-dark{/if}">{:lang('All slides')}</a>
+        <a href="{:Url('admin/Index/slidegroup')}" class="nav-link{if $option == 'slidegroup'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Slide group')}</a>
         <a href="{:Url('admin/Index/dbbackup')}" class="nav-link{if $option == 'dbbackup'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Database backup')}</a>
         {/if}
         {if condition="$ugroup == 1"}

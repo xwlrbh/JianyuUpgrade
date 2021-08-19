@@ -1,0 +1,35 @@
+{include file="index/header" /}
+<form>
+    <div class="form-group">
+        <label>{:lang('Slide group name')}&nbsp;<b><span class="text-danger">*</span></b></label>
+        <input type="text" class="form-control" value="{$slidegroup.zuming}" name="zuming" placeholder="{:lang('Slide group name')}">
+    </div>
+    <div class="form-group">
+        <label for="width">{:lang('Picture width')}&nbsp;<b><span class="text-danger">*</span></b></label>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" value="{$slidegroup.width}" id="width" name="width" value="1920" placeholder="{:lang('Picture width')}">
+            <div class="input-group-append">
+                <span class="input-group-text" id="width-unit">px</span>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="width">{:lang('Picture height')}&nbsp;<b><span class="text-danger">*</span></b></label>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" value="{$slidegroup.height}" id="height" name="height" value="700" placeholder="{:lang('Picture height')}">
+            <div class="input-group-append">
+                <span class="input-group-text" id="height-unit">px</span>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>{:lang('Slide group description')}</label>
+        <textarea class="form-control" name="description" rows="3">{$slidegroup.description}</textarea>
+    </div>
+    <div class="text-center mb-5">
+        <input type="hidden" name="id" value="{$slidegroup.id}">
+        <input type="hidden" name="verification" value="{$verification}">
+        <button type="button" class="btn btn-info submit notrefreshing">{:lang('Submit')}<i class="fa fa-refresh fa-spin ml-2 d-none"></i></button>
+    </div>
+</form>
+{include file="index/footer" /}
