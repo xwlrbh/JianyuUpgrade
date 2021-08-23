@@ -1743,6 +1743,12 @@ class CatfishCMS
             'jianyu' => $column
         ];
         $this->plantHook('type', $params);
+		$columntop = '';
+        $this->plantHook('columntop', $columntop);
+        Catfish::allot('columntop', $columntop);
+        $columnbottom = '';
+        $this->plantHook('columnbottom', $columnbottom);
+        Catfish::allot('columnbottom', $columnbottom);
         Catfish::allot('biaoti', $params['biaoti']);
         Catfish::allot('jianyu', $params['jianyu']);
     }
