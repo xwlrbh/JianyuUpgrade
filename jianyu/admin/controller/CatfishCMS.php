@@ -344,6 +344,7 @@ class CatfishCMS
             $dbrec = Catfish::get('dbbackup');
             $dbnm = Catfish::getConfig('database.database');
             $dbPrefix = Catfish::getConfig('database.prefix');
+            $dbPrefix = str_replace('_', '\_', $dbPrefix);
             $sql = "SHOW TABLES FROM {$dbnm} LIKE '{$dbPrefix}%'";
             $renm = Catfish::dbExecute($sql);
             foreach($renm as $nmval){

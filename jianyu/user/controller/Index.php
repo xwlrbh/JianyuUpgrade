@@ -499,6 +499,7 @@ class Index extends CatfishCMS
                     try{
                         Catfish::db('tie')->where('id', $tid)->update([
                             'sid' => $sid,
+                            'xiugai' => Catfish::now(),
                             'biaoti' => $data['biaoti'],
                             'zhaiyao' => Catfish::getPost('zhaiyao'),
                             'review' => $review,

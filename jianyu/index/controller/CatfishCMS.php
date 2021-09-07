@@ -381,19 +381,27 @@ class CatfishCMS
         else{
             $orderstr = 'tie.ordertime desc,';
         }
+        $cachezongjilu = 'shouye_'.$order.'_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
         $cachename = 'shouye_'.$order.'_'.$page;
         $shouye = Catfish::getCache($cachename);
         if($shouye === false){
-            $subQuery = $this->getfstop();
-            $zhiding = Catfish::view('tie','id,uid,sid,fabushijian,xiugai as xiugaishijian,biaoti,zhaiyao,isclose as jietie,lastvisit as zuijinfangwen,commentime as zuijinpinglun,luid,pinglunshu as gentieliang,yuedu,zan,cai,shoucang,cangtime as zuijinshoucang,fstop as zhiding,fsrecommended as tuijian,jingpin,tietype as leixing,annex as daifujian,video as daishipin,shipin,tu,pinglun,jifenleixing,jinbileixing,huiyuanleixing,zhifufangshi')
-                ->view('users','nicheng,touxiang,qianming,createtime as jiaru,lastlogin as zuijindenglu,lastonline as zuijinzaixian,dengji,fatie as uzhutie,pinglun as ugentie','users.id=tie.uid')
-                ->where('tie.id','in',$subQuery)
-                ->where('tie.status','=',1)
-                ->where('tie.review','=',1)
-                ->where('tie.chentie','=',0)
-                ->order($orderstr.'tie.id desc')
-                ->select();
-            $shouye['zhiding'] = $this->filterResults($zhiding);
+            $cachezhiding = 'shouye_'.$order.'_zhiding';
+            $zhiding = Catfish::getCache($cachezhiding);
+            if($zhiding === false){
+                $subQuery = $this->getfstop();
+                $zhiding = Catfish::view('tie','id,uid,sid,fabushijian,xiugai as xiugaishijian,biaoti,zhaiyao,isclose as jietie,lastvisit as zuijinfangwen,commentime as zuijinpinglun,luid,pinglunshu as gentieliang,yuedu,zan,cai,shoucang,cangtime as zuijinshoucang,fstop as zhiding,fsrecommended as tuijian,jingpin,tietype as leixing,annex as daifujian,video as daishipin,shipin,tu,pinglun,jifenleixing,jinbileixing,huiyuanleixing,zhifufangshi')
+                    ->view('users','nicheng,touxiang,qianming,createtime as jiaru,lastlogin as zuijindenglu,lastonline as zuijinzaixian,dengji,fatie as uzhutie,pinglun as ugentie','users.id=tie.uid')
+                    ->where('tie.id','in',$subQuery)
+                    ->where('tie.status','=',1)
+                    ->where('tie.review','=',1)
+                    ->where('tie.chentie','=',0)
+                    ->order($orderstr.'tie.id desc')
+                    ->select();
+                $zhiding = $this->filterResults($zhiding);
+                Catfish::tagCache('shouye')->set($cachezhiding,$zhiding,$this->time);
+            }
+            $shouye['zhiding'] = $zhiding;
             $data = Catfish::view('tie','id,uid,sid,fabushijian,xiugai as xiugaishijian,biaoti,zhaiyao,isclose as jietie,lastvisit as zuijinfangwen,commentime as zuijinpinglun,luid,pinglunshu as gentieliang,yuedu,zan,cai,shoucang,cangtime as zuijinshoucang,fstop as zhiding,fsrecommended as tuijian,jingpin,tietype as leixing,annex as daifujian,video as daishipin,shipin,tu,pinglun,jifenleixing,jinbileixing,huiyuanleixing,zhifufangshi')
                 ->view('users','nicheng,touxiang,qianming,createtime as jiaru,lastlogin as zuijindenglu,lastonline as zuijinzaixian,dengji,fatie as uzhutie,pinglun as ugentie','users.id=tie.uid')
                 ->where('tie.status','=',1)
@@ -401,11 +409,15 @@ class CatfishCMS
                 ->where('tie.fstop','=',0)
                 ->where('tie.chentie','=',0)
                 ->order($orderstr.'tie.id desc')
-                ->paginate($this->everyPageShows,false,[
+                ->paginate($this->everyPageShows,$zongjilu,[
                     'query' => [
                         'order' => $order
                     ]
                 ]);
+            if($zongjilu === false){
+                $zongjilu = $data->total();
+                Catfish::tagCache('shouye')->set($cachezongjilu,$zongjilu,$this->time);
+            }
             $shouye['tie'] = $this->filterResults($data->items());
             $pages= $data->render();
             if(empty($pages)){
@@ -486,19 +498,27 @@ class CatfishCMS
         else{
             $orderstr = 'tie.ordertime desc,';
         }
+        $cachezongjilu = 'column_'.$order.'_'.$find.'_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
         $cachename = 'column_'.$order.'_'.$find.'_'.$page;
         $column = Catfish::getCache($cachename);
         if($column === false){
-            $subQuery = $this->gettop($find, $subSort['idstr']);
-            $zhiding = Catfish::view('tie','id,uid,sid,fabushijian,xiugai as xiugaishijian,biaoti,zhaiyao,isclose as jietie,lastvisit as zuijinfangwen,commentime as zuijinpinglun,luid,pinglunshu as gentieliang,yuedu,zan,cai,shoucang,cangtime as zuijinshoucang,istop as zhiding,recommended as tuijian,jingpin,tietype as leixing,annex as daifujian,video as daishipin,shipin,tu,pinglun,jifenleixing,jinbileixing,huiyuanleixing,zhifufangshi')
-                ->view('users','nicheng,touxiang,qianming,createtime as jiaru,lastlogin as zuijindenglu,lastonline as zuijinzaixian,dengji,fatie as uzhutie,pinglun as ugentie','users.id=tie.uid')
-                ->where('tie.id','in',$subQuery)
-                ->where('tie.status','=',1)
-                ->where('tie.review','=',1)
-                ->where('tie.chentie','=',0)
-                ->order($orderstr.'tie.id desc')
-                ->select();
-            $column['zhiding'] = $this->filterResults($zhiding);
+            $cachezhiding = 'column_'.$order.'_'.$find.'_zhiding';
+            $zhiding = Catfish::getCache($cachezhiding);
+            if($zhiding === false){
+                $subQuery = $this->gettop($find, $subSort['idstr']);
+                $zhiding = Catfish::view('tie','id,uid,sid,fabushijian,xiugai as xiugaishijian,biaoti,zhaiyao,isclose as jietie,lastvisit as zuijinfangwen,commentime as zuijinpinglun,luid,pinglunshu as gentieliang,yuedu,zan,cai,shoucang,cangtime as zuijinshoucang,istop as zhiding,recommended as tuijian,jingpin,tietype as leixing,annex as daifujian,video as daishipin,shipin,tu,pinglun,jifenleixing,jinbileixing,huiyuanleixing,zhifufangshi')
+                    ->view('users','nicheng,touxiang,qianming,createtime as jiaru,lastlogin as zuijindenglu,lastonline as zuijinzaixian,dengji,fatie as uzhutie,pinglun as ugentie','users.id=tie.uid')
+                    ->where('tie.id','in',$subQuery)
+                    ->where('tie.status','=',1)
+                    ->where('tie.review','=',1)
+                    ->where('tie.chentie','=',0)
+                    ->order($orderstr.'tie.id desc')
+                    ->select();
+                $zhiding = $this->filterResults($zhiding);
+                Catfish::tagCache('column')->set($cachezhiding,$zhiding,$this->time);
+            }
+            $column['zhiding'] = $zhiding;
             $data = Catfish::view('tie','id,uid,sid,fabushijian,xiugai as xiugaishijian,biaoti,zhaiyao,isclose as jietie,lastvisit as zuijinfangwen,commentime as zuijinpinglun,luid,pinglunshu as gentieliang,yuedu,zan,cai,shoucang,cangtime as zuijinshoucang,istop as zhiding,recommended as tuijian,jingpin,tietype as leixing,annex as daifujian,video as daishipin,shipin,tu,pinglun,jifenleixing,jinbileixing,huiyuanleixing,zhifufangshi')
                 ->view('users','nicheng,touxiang,qianming,createtime as jiaru,lastlogin as zuijindenglu,lastonline as zuijinzaixian,dengji,fatie as uzhutie,pinglun as ugentie','users.id=tie.uid')
                 ->where('tie.sid','in',$subSort['idstr'])
@@ -507,11 +527,15 @@ class CatfishCMS
                 ->where('tie.istop','=',0)
                 ->where('tie.chentie','=',0)
                 ->order($orderstr.'tie.id desc')
-                ->paginate($this->everyPageShows,false,[
+                ->paginate($this->everyPageShows,$zongjilu,[
                     'query' => [
                         'order' => $order
                     ]
                 ]);
+            if($zongjilu === false){
+                $zongjilu = $data->total();
+                Catfish::tagCache('column')->set($cachezongjilu,$zongjilu,$this->time);
+            }
             $column['tie'] = $this->filterResults($data->items());
             $pages= $data->render();
             if(empty($pages)){
@@ -617,6 +641,8 @@ class CatfishCMS
         else{
             $orderstr = 'id asc';
         }
+        $cachezongjilu = 'postgentie_'.$find.'_'.$order.'_zongjilu';
+        $total = Catfish::getCache($cachezongjilu);
         $subcachename = $order.'_'.$page;
         $cachename = 'postgentie_'.$find.'_'.$subcachename;
         $gentie = Catfish::getCache($cachename);
@@ -626,13 +652,16 @@ class CatfishCMS
                 ->where('status',1)
                 ->field('cid')
                 ->order($orderstr)
-                ->paginate($this->postEveryPageShows,false,[
+                ->paginate($this->postEveryPageShows,$total,[
                     'query' => [
                         'order' => $order
                     ]
                 ]);
             $currentPage = $cdata->currentPage();
-            $total = $cdata->total();
+            if($total === false){
+                $total = $cdata->total();
+                Catfish::tagCache('postgentie_'.$find)->set($cachezongjilu,$total,$this->time);
+            }
             if($order == 'latest'){
                 $lou = ($total + 1) - ($currentPage - 1) * $this->postEveryPageShows;
             }
@@ -1639,6 +1668,8 @@ class CatfishCMS
             $orderstr = 'tie.ordertime desc,';
         }
         $find = htmlspecialchars($find, ENT_QUOTES);
+        $cachezongjilu = 'search_'.$order.'_'.$find.'_zongjilu';
+        $total = Catfish::getCache($cachezongjilu);
         $cachename = 'search_'.$order.'_'.$find.'_'.$page;
         $column = Catfish::getCache($cachename);
         if($column === false){
@@ -1649,12 +1680,16 @@ class CatfishCMS
                 ->where('tie.status','=',1)
                 ->where('tie.review','=',1)
                 ->order($orderstr.'tie.id desc')
-                ->paginate($this->everyPageShows,false,[
+                ->paginate($this->everyPageShows,$total,[
                     'query' => [
                         'order' => $order,
                         'find' => $find
                     ]
                 ]);
+            if($total === false){
+                $total = $data->total();
+                Catfish::tagCache('search')->set($cachezongjilu,$total,$this->time);
+            }
             $column['tie'] = $this->filterResults($data->items());
             $pages= $data->render();
             if(empty($pages)){
@@ -1668,7 +1703,7 @@ class CatfishCMS
             'jianyu' => $column
         ];
         $this->plantHook('search', $params);
-		$columntop = '';
+        $columntop = '';
         $this->plantHook('columntop', $columntop);
         Catfish::allot('columntop', $columntop);
         $columnbottom = '';
@@ -1695,6 +1730,8 @@ class CatfishCMS
         else{
             $orderstr = 'tie.ordertime desc,';
         }
+        $cachezongjilu = 'type_'.$order.'_'.$find.'_zongjilu';
+        $total = Catfish::getCache($cachezongjilu);
         $cachename = 'type_'.$order.'_'.$find.'_'.$page;
         $column = Catfish::getCache($cachename);
         if($column === false){
@@ -1709,12 +1746,16 @@ class CatfishCMS
                 ->where('tie.review','=',1)
                 ->where('tie.chentie','=',0)
                 ->order($orderstr.'tie.id desc')
-                ->paginate($this->everyPageShows,false,[
+                ->paginate($this->everyPageShows,$total,[
                     'query' => [
                         'order' => $order,
                         'find' => $find
                     ]
                 ]);
+            if($total === false){
+                $total = $data->total();
+                Catfish::tagCache('type')->set($cachezongjilu,$total,$this->time);
+            }
             $column['tie'] = $this->filterResults($data->items());
             $pages= $data->render();
             if(empty($pages)){
@@ -2154,12 +2195,18 @@ class CatfishCMS
         if($page == false){
             $page = 0;
         }
+        $cachezongjilu = 'qiandaobiao_zongjilu';
+        $total = Catfish::getCache($cachezongjilu);
         $qiandaobiao = Catfish::getCache('qiandaobiao_' . $page);
         if($qiandaobiao === false){
             $data = Catfish::view('sign_in_statistics','id,uid,qiandaoshijian,leijiqiandao,leijijiangli,jinrijiangli,lianxu')
                 ->view('users','nicheng,touxiang','users.id=sign_in_statistics.uid')
                 ->order('sign_in_statistics.leijiqiandao desc')
-                ->paginate($this->everyPageShows);
+                ->paginate($this->everyPageShows, $total);
+            if($total === false){
+                $total = $data->total();
+                Catfish::tagCache('qiandao')->set($cachezongjilu,$total,$this->time);
+            }
             $qiandaobiao['qiandao'] = $data->items();
             if($page <= 1){
                 $paiming = 1;
@@ -2190,13 +2237,19 @@ class CatfishCMS
         }
         $start = date('Y-m-d 00:00:00');
         $end = Catfish::now();
+        $cachezongjilu = 'jinriqiandao_zongjilu';
+        $total = Catfish::getCache($cachezongjilu);
         $jinriqiandao = Catfish::getCache('jinriqiandao_' . $page);
         if($jinriqiandao === false){
             $data = Catfish::view('sign_in_statistics','id,uid,qiandaoshijian,leijiqiandao,leijijiangli,jinrijiangli,lianxu')
                 ->view('users','nicheng,touxiang','users.id=sign_in_statistics.uid')
                 ->whereTime('sign_in_statistics.qiandaoshijian', 'between', [$start, $end])
                 ->order('sign_in_statistics.qiandaoshijian asc')
-                ->paginate($this->everyPageShows);
+                ->paginate($this->everyPageShows, $total);
+            if($total === false){
+                $total = $data->total();
+                Catfish::tagCache('qiandao')->set($cachezongjilu,$total,$this->time);
+            }
             $jinriqiandao['qiandao'] = $data->items();
             if($page <= 1){
                 $paiming = 1;
