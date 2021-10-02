@@ -10,7 +10,7 @@ namespace app\user\controller;
 use catfishcms\Catfish;
 class CatfishCMS
 {
-    private $time = 1200;
+    protected $time = 1200;
     protected $template = 'default';
     protected function checkUser()
     {

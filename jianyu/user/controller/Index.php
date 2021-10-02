@@ -313,7 +313,14 @@ class Index extends CatfishCMS
     public function mymainpost()
     {
         $this->checkUser();
-        $data = Catfish::db('tie')->where('uid', Catfish::getSession('user_id'))->where('status', 1)->field('id,fabushijian,biaoti,isclose,pinglunshu,yuedu,zan,cai,annex,video')->order('id desc')->paginate(20);
+        $uid = Catfish::getSession('user_id');
+        $cachezongjilu = 'user_mymainpost_' . $uid . '_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
+        $data = Catfish::db('tie')->where('uid', $uid)->where('status', 1)->field('id,fabushijian,biaoti,isclose,pinglunshu,yuedu,zan,cai,annex,video')->order('id desc')->paginate(20, $zongjilu);
+        if($zongjilu === false){
+            $zongjilu = $data->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
         Catfish::allot('data', $data->items());
         Catfish::allot('pages', $data->render());
         return $this->show(Catfish::lang('My main post'), 'mymainpost');
@@ -652,7 +659,14 @@ class Index extends CatfishCMS
     public function recyclebin()
     {
         $this->checkUser();
-        $data = Catfish::db('tie')->where('uid', Catfish::getSession('user_id'))->where('status', 0)->field('id,fabushijian,biaoti,pinglunshu,yuedu,zan,cai,annex,video')->order('recoverytime desc')->paginate(20);
+        $uid = Catfish::getSession('user_id');
+        $cachezongjilu = 'user_recyclebin_' . $uid . '_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
+        $data = Catfish::db('tie')->where('uid', $uid)->where('status', 0)->field('id,fabushijian,biaoti,pinglunshu,yuedu,zan,cai,annex,video')->order('recoverytime desc')->paginate(20, $zongjilu);
+        if($zongjilu === false){
+            $zongjilu = $data->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
         Catfish::allot('data', $data->items());
         Catfish::allot('pages', $data->render());
         return $this->show(Catfish::lang('Recycle bin'), 'recyclebin');
@@ -820,12 +834,19 @@ class Index extends CatfishCMS
     public function myfollowuppost()
     {
         $this->checkUser();
+        $uid = Catfish::getSession('user_id');
+        $cachezongjilu = 'user_myfollowuppost_' . $uid . '_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
         $data = Catfish::view('tie_comments','id,createtime,zan,cai,status,content')
             ->view('tie_comm_ontact','tid','tie_comm_ontact.cid=tie_comments.id')
             ->view('tie','biaoti','tie.id=tie_comm_ontact.tid')
-            ->where('tie_comments.uid', Catfish::getSession('user_id'))
+            ->where('tie_comments.uid', $uid)
             ->order('id desc')
-            ->paginate(20);
+            ->paginate(20, $zongjilu);
+        if($zongjilu === false){
+            $zongjilu = $data->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
         Catfish::allot('pages', $data->render());
         $data = $data->items();
         foreach($data as $key => $val){
@@ -1329,11 +1350,17 @@ class Index extends CatfishCMS
             $catfish = $catfish->where('tie.biaoti','like','%'.$guanjianzi.'%');
             $query['guanjianzi'] = $guanjianzi;
         }
+        $cachezongjilu = 'user_forummainpost_'.md5($sidstr.'_'.serialize($query)).'_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
         $catfish = $catfish->where('tie.status','=',1)
             ->order('tie.id desc')
-            ->paginate(20,false,[
+            ->paginate(20,$zongjilu,[
                 'query' => $query
             ]);
+        if($zongjilu === false){
+            $zongjilu = $catfish->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
         Catfish::allot('pages', $catfish->render());
         $catfish = $catfish->items();
         $typeidnm = $this->gettypeidname();
@@ -1552,12 +1579,18 @@ class Index extends CatfishCMS
         }
         $section = Catfish::db('msort')->where('id','in',$sidstr)->field('id,sname')->select();
         Catfish::allot('section', $section);
+        $cachezongjilu = 'user_followingupsection_'.md5($sidstr).'_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
         $catfish = Catfish::view('tie_comments','id,uid,sid,createtime,status,content')
             ->view('tie_comm_ontact','tid','tie_comm_ontact.cid=tie_comments.id', 'LEFT')
             ->view('users','nicheng','users.id=tie_comments.uid', 'LEFT')
             ->where('tie_comments.sid','in',$sidstr)
             ->order('tie_comments.xiugai desc')
-            ->paginate(20);
+            ->paginate(20, $zongjilu);
+        if($zongjilu === false){
+            $zongjilu = $catfish->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
         Catfish::allot('pages', $catfish->render());
         $catfish = $catfish->items();
         foreach($catfish as $key => $val){
@@ -1746,13 +1779,19 @@ class Index extends CatfishCMS
         }
         $section = Catfish::db('msort')->where('id','in',$sidstr)->field('id,sname')->select();
         Catfish::allot('section', $section);
+        $cachezongjilu = 'user_toppost_'.md5($sidstr).'_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
         $catfish = Catfish::view('tie','id,sid,fabushijian,biaoti,review,yuedu,istop,recommended,jingpin,tietype,annex')
             ->view('users','nicheng,touxiang','users.id=tie.uid')
             ->where('tie.sid','in',$sidstr)
             ->where('tie.istop','=',1)
             ->where('tie.status','=',1)
             ->order('tie.id desc')
-            ->paginate(20);
+            ->paginate(20, $zongjilu);
+        if($zongjilu === false){
+            $zongjilu = $catfish->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
         Catfish::allot('pages', $catfish->render());
         $catfish = $catfish->items();
         $typeidnm = $this->gettypeidname();
@@ -1776,13 +1815,19 @@ class Index extends CatfishCMS
         }
         $section = Catfish::db('msort')->where('id','in',$sidstr)->field('id,sname')->select();
         Catfish::allot('section', $section);
+        $cachezongjilu = 'user_recommendedpost_'.md5($sidstr).'_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
         $catfish = Catfish::view('tie','id,sid,fabushijian,biaoti,review,yuedu,istop,recommended,jingpin,tietype,annex')
             ->view('users','nicheng,touxiang','users.id=tie.uid')
             ->where('tie.sid','in',$sidstr)
             ->where('tie.recommended','=',1)
             ->where('tie.status','=',1)
             ->order('tie.id desc')
-            ->paginate(20);
+            ->paginate(20, $zongjilu);
+        if($zongjilu === false){
+            $zongjilu = $catfish->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
         Catfish::allot('pages', $catfish->render());
         $catfish = $catfish->items();
         $typeidnm = $this->gettypeidname();
@@ -1806,13 +1851,19 @@ class Index extends CatfishCMS
         }
         $section = Catfish::db('msort')->where('id','in',$sidstr)->field('id,sname')->select();
         Catfish::allot('section', $section);
+        $cachezongjilu = 'user_finepost_'.md5($sidstr).'_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
         $catfish = Catfish::view('tie','id,sid,fabushijian,biaoti,review,yuedu,istop,recommended,jingpin,tietype,annex')
             ->view('users','nicheng,touxiang','users.id=tie.uid')
             ->where('tie.sid','in',$sidstr)
             ->where('tie.jingpin','=',1)
             ->where('tie.status','=',1)
             ->order('tie.id desc')
-            ->paginate(20);
+            ->paginate(20, $zongjilu);
+        if($zongjilu === false){
+            $zongjilu = $catfish->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
         Catfish::allot('pages', $catfish->render());
         $catfish = $catfish->items();
         $typeidnm = $this->gettypeidname();
@@ -1962,7 +2013,14 @@ class Index extends CatfishCMS
     public function pointsbill()
     {
         $this->checkUser();
-        $data = Catfish::db('points_book')->where('uid', Catfish::getSession('user_id'))->field('id,zengjian,booktime,miaoshu')->order('id desc')->paginate(20);
+        $uid = Catfish::getSession('user_id');
+        $cachezongjilu = 'user_pointsbill_'.$uid.'_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
+        $data = Catfish::db('points_book')->where('uid', $uid)->field('id,zengjian,booktime,miaoshu')->order('id desc')->paginate(20, $zongjilu);
+        if($zongjilu === false){
+            $zongjilu = $data->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
         Catfish::allot('pages', $data->render());
         $datarr = $data->items();
         foreach($datarr as $key => $val){
@@ -2081,7 +2139,14 @@ class Index extends CatfishCMS
     public function forumcoinbill()
     {
         $this->checkUser();
-        $data = Catfish::db('coin_bill')->where('uid', Catfish::getSession('user_id'))->field('id,zengjian,booktime,miaoshu')->order('id desc')->paginate(20);
+        $uid = Catfish::getSession('user_id');
+        $cachezongjilu = 'user_forumcoinbill_'.$uid.'_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
+        $data = Catfish::db('coin_bill')->where('uid', $uid)->field('id,zengjian,booktime,miaoshu')->order('id desc')->paginate(20, $zongjilu);
+        if($zongjilu === false){
+            $zongjilu = $data->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
         Catfish::allot('pages', $data->render());
         $datarr = $data->items();
         foreach($datarr as $key => $val){
@@ -2364,11 +2429,18 @@ class Index extends CatfishCMS
     public function mycollection()
     {
         $this->checkUser();
+        $uid = Catfish::getSession('user_id');
+        $cachezongjilu = 'user_mycollection_'.$uid.'_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
         $catfish = Catfish::view('tie_favorites','id,tid,createtime')
             ->view('tie','biaoti,annex,review,status','tie.id=tie_favorites.tid')
-            ->where('tie_favorites.uid',Catfish::getSession('user_id'))
+            ->where('tie_favorites.uid',$uid)
             ->order('tie_favorites.id desc')
-            ->paginate(20);
+            ->paginate(20, $zongjilu);
+        if($zongjilu === false){
+            $zongjilu = $catfish->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
         Catfish::allot('pages', $catfish->render());
         $catfish = $catfish->items();
         Catfish::allot('catfishcms', $catfish);
@@ -2416,11 +2488,18 @@ class Index extends CatfishCMS
     public function likedposts()
     {
         $this->checkUser();
+        $uid = Catfish::getSession('user_id');
+        $cachezongjilu = 'user_likedposts_'.$uid.'_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
         $catfish = Catfish::view('tie_zan','id,tid,accesstime')
             ->view('tie','biaoti,annex,review,status','tie.id=tie_zan.tid')
-            ->where('tie_zan.uid',Catfish::getSession('user_id'))
+            ->where('tie_zan.uid',$uid)
             ->order('tie_zan.id desc')
-            ->paginate(20);
+            ->paginate(20, $zongjilu);
+        if($zongjilu === false){
+            $zongjilu = $catfish->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
         Catfish::allot('pages', $catfish->render());
         $catfish = $catfish->items();
         Catfish::allot('catfishcms', $catfish);
@@ -2468,11 +2547,18 @@ class Index extends CatfishCMS
     public function dislikedpost()
     {
         $this->checkUser();
+        $uid = Catfish::getSession('user_id');
+        $cachezongjilu = 'user_dislikedpost_'.$uid.'_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
         $catfish = Catfish::view('tie_cai','id,tid,accesstime')
             ->view('tie','biaoti,annex,review,status','tie.id=tie_cai.tid')
-            ->where('tie_cai.uid',Catfish::getSession('user_id'))
+            ->where('tie_cai.uid',$uid)
             ->order('tie_cai.id desc')
-            ->paginate(20);
+            ->paginate(20, $zongjilu);
+        if($zongjilu === false){
+            $zongjilu = $catfish->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
         Catfish::allot('pages', $catfish->render());
         $catfish = $catfish->items();
         Catfish::allot('catfishcms', $catfish);
@@ -2520,12 +2606,19 @@ class Index extends CatfishCMS
     public function likedfollow()
     {
         $this->checkUser();
+        $uid = Catfish::getSession('user_id');
+        $cachezongjilu = 'user_likedfollow_'.$uid.'_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
         $catfish = Catfish::view('gentie_zan','id,accesstime')
             ->view('tie_comments','status,content','tie_comments.id=gentie_zan.cid')
             ->view('tie_comm_ontact','tid','tie_comm_ontact.cid=tie_comments.id')
-            ->where('gentie_zan.uid',Catfish::getSession('user_id'))
+            ->where('gentie_zan.uid',$uid)
             ->order('gentie_zan.id desc')
-            ->paginate(20);
+            ->paginate(20, $zongjilu);
+        if($zongjilu === false){
+            $zongjilu = $catfish->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
         Catfish::allot('pages', $catfish->render());
         $catfish = $catfish->items();
         Catfish::allot('catfishcms', $catfish);
@@ -2573,12 +2666,19 @@ class Index extends CatfishCMS
     public function dislikedfollow()
     {
         $this->checkUser();
+        $uid = Catfish::getSession('user_id');
+        $cachezongjilu = 'user_dislikedfollow_'.$uid.'_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
         $catfish = Catfish::view('gentie_cai','id,accesstime')
             ->view('tie_comments','status,content','tie_comments.id=gentie_cai.cid')
             ->view('tie_comm_ontact','tid','tie_comm_ontact.cid=tie_comments.id')
-            ->where('gentie_cai.uid',Catfish::getSession('user_id'))
+            ->where('gentie_cai.uid',$uid)
             ->order('gentie_cai.id desc')
-            ->paginate(20);
+            ->paginate(20, $zongjilu);
+        if($zongjilu === false){
+            $zongjilu = $catfish->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
         Catfish::allot('pages', $catfish->render());
         $catfish = $catfish->items();
         Catfish::allot('catfishcms', $catfish);
@@ -2626,11 +2726,18 @@ class Index extends CatfishCMS
     public function pointspaidposts()
     {
         $this->checkUser();
+        $uid = Catfish::getSession('user_id');
+        $cachezongjilu = 'user_pointspaidposts_'.$uid.'_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
         $catfish = Catfish::view('tie_jifen','id,tid,paytime')
             ->view('tie','biaoti,annex,review,status','tie.id=tie_jifen.tid')
-            ->where('tie_jifen.uid',Catfish::getSession('user_id'))
+            ->where('tie_jifen.uid',$uid)
             ->order('tie_jifen.id desc')
-            ->paginate(20);
+            ->paginate(20, $zongjilu);
+        if($zongjilu === false){
+            $zongjilu = $catfish->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
         Catfish::allot('pages', $catfish->render());
         $catfish = $catfish->items();
         foreach($catfish as $key => $val){
@@ -2644,11 +2751,18 @@ class Index extends CatfishCMS
     public function postsvisited()
     {
         $this->checkUser();
+        $uid = Catfish::getSession('user_id');
+        $cachezongjilu = 'user_postsvisited_'.$uid.'_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
         $catfish = Catfish::view('tie_access','id,tid,accesstime')
             ->view('tie','biaoti,annex,review,status','tie.id=tie_access.tid')
-            ->where('tie_access.uid',Catfish::getSession('user_id'))
+            ->where('tie_access.uid',$uid)
             ->order('tie_access.id desc')
-            ->paginate(20);
+            ->paginate(20, $zongjilu);
+        if($zongjilu === false){
+            $zongjilu = $catfish->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
         Catfish::allot('pages', $catfish->render());
         $catfish = $catfish->items();
         Catfish::allot('catfishcms', $catfish);

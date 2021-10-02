@@ -79,11 +79,17 @@ class Index extends CatfishCMS
             $catfish = $catfish->where('users.yonghu','=',$yonghuming);
             $query['yonghuming'] = $yonghuming;
         }
+        $cachezongjilu = 'admin_mainpost_'.md5(serialize($query)).'_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
          $catfish = $catfish->where('tie.status','=',1)
             ->order('tie.id desc')
-            ->paginate(20,false,[
+            ->paginate(20,$zongjilu,[
                 'query' => $query
             ]);
+        if($zongjilu === false){
+            $zongjilu = $catfish->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
         Catfish::allot('pages', $catfish->render());
         $catfish = $catfish->items();
         $typeidnm = $this->gettypeidname();
@@ -286,10 +292,16 @@ class Index extends CatfishCMS
             $catfish = $catfish->where('users.yonghu','=',$yonghuming);
             $query['yonghuming'] = $yonghuming;
         }
+        $cachezongjilu = 'admin_followpost_'.md5(serialize($query)).'_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
         $catfish = $catfish->order('tie_comments.xiugai desc')
-            ->paginate(20,false,[
+            ->paginate(20,$zongjilu,[
                 'query' => $query
             ]);
+        if($zongjilu === false){
+            $zongjilu = $catfish->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
         Catfish::allot('pages', $catfish->render());
         $catfish = $catfish->items();
         Catfish::allot('catfishcms', $catfish);
@@ -788,11 +800,17 @@ class Index extends CatfishCMS
             $catfish = $catfish->where('yonghu','=',$yonghuming);
             $query['yonghuming'] = $yonghuming;
         }
+        $cachezongjilu = 'admin_generaluser_'.$utp.'_'.md5(serialize($query)).'_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
         $catfish = $catfish->field('id,yonghu,nicheng,email,shouji,touxiang,qianming,status,utype,mtype')
             ->order('id desc')
-            ->paginate(20,false,[
+            ->paginate(20,$zongjilu,[
                 'query' => $query
             ]);
+        if($zongjilu === false){
+            $zongjilu = $catfish->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
         Catfish::allot('pages', $catfish->render());
         $catfish = $catfish->items();
         Catfish::allot('catfishcms', $catfish);
@@ -952,11 +970,17 @@ class Index extends CatfishCMS
             $catfish = $catfish->where('yonghu','=',$yonghuming);
             $query['yonghuming'] = $yonghuming;
         }
+        $cachezongjilu = 'admin_vipmember_'.md5(serialize($query)).'_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
         $catfish = $catfish->field('id,yonghu,nicheng,email,shouji,touxiang,utype,vipend,viptype')
             ->order('id desc')
-            ->paginate(20,false,[
+            ->paginate(20,$zongjilu,[
                 'query' => $query
             ]);
+        if($zongjilu === false){
+            $zongjilu = $catfish->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
         Catfish::allot('pages', $catfish->render());
         $catfish = $catfish->items();
         foreach($catfish as $key => $val){
@@ -1056,12 +1080,18 @@ class Index extends CatfishCMS
     public function moderator()
     {
         $this->checkUser();
+        $cachezongjilu = 'admin_moderator_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
         $catfish = Catfish::db('users')
             ->where('id', '>', 1)
             ->where('mtype', '>', 0)
             ->field('id,yonghu,nicheng,email,shouji,touxiang,qianming,status,utype,mtype')
             ->order('id desc')
-            ->paginate(20);
+            ->paginate(20, $zongjilu);
+        if($zongjilu === false){
+            $zongjilu = $catfish->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
         Catfish::allot('pages', $catfish->render());
         $catfish = $catfish->items();
         $idstr = '';
@@ -2527,12 +2557,18 @@ class Index extends CatfishCMS
     public function finepost()
     {
         $this->checkUser();
+        $cachezongjilu = 'admin_finepost_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
         $catfish = Catfish::view('tie','id,fabushijian,biaoti,review,yuedu,fstop,fsrecommended,jingpin,tietype,annex')
             ->view('users','nicheng,touxiang','users.id=tie.uid')
             ->where('tie.jingpin','=',1)
             ->where('tie.status','=',1)
             ->order('tie.id desc')
-            ->paginate(20);
+            ->paginate(20, $zongjilu);
+        if($zongjilu === false){
+            $zongjilu = $catfish->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
         Catfish::allot('pages', $catfish->render());
         $catfish = $catfish->items();
         $typeidnm = $this->gettypeidname();
@@ -2892,11 +2928,17 @@ class Index extends CatfishCMS
             $catfish = $catfish->where('yonghu','=',$yonghuming);
             $query['yonghuming'] = $yonghuming;
         }
+        $cachezongjilu = 'admin_userpoints_'.$utp.'_'.md5(serialize($query)).'_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
         $catfish = $catfish->field('id,yonghu,nicheng,email,jifen')
             ->order('id desc')
-            ->paginate(20,false,[
+            ->paginate(20,$zongjilu,[
                 'query' => $query
             ]);
+        if($zongjilu === false){
+            $zongjilu = $catfish->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
         Catfish::allot('pages', $catfish->render());
         $catfish = $catfish->items();
         Catfish::allot('catfishcms', $catfish);
@@ -3029,11 +3071,17 @@ class Index extends CatfishCMS
             $catfish = $catfish->where('yonghu','=',$yonghuming);
             $query['yonghuming'] = $yonghuming;
         }
+        $cachezongjilu = 'admin_userforumcoin_'.$utp.'_'.md5(serialize($query)).'_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
         $catfish = $catfish->field('id,yonghu,nicheng,email,jinbi')
             ->order('id desc')
-            ->paginate(20,false,[
+            ->paginate(20,$zongjilu,[
                 'query' => $query
             ]);
+        if($zongjilu === false){
+            $zongjilu = $catfish->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
         Catfish::allot('pages', $catfish->render());
         $catfish = $catfish->items();
         Catfish::allot('catfishcms', $catfish);
@@ -3234,12 +3282,18 @@ class Index extends CatfishCMS
     public function chentie()
     {
         $this->checkUser();
+        $cachezongjilu = 'admin_chentie_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
         $catfish = Catfish::view('tie','id,fabushijian,biaoti,review,yuedu,tietype,annex,chentie')
             ->view('users','nicheng,touxiang','users.id=tie.uid')
             ->where('tie.status','=',1)
             ->where('tie.chentie','=',1)
             ->order('tie.id desc')
-            ->paginate(20);
+            ->paginate(20, $zongjilu);
+        if($zongjilu === false){
+            $zongjilu = $catfish->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
         Catfish::allot('pages', $catfish->render());
         $catfish = $catfish->items();
         $typeidnm = $this->gettypeidname();
@@ -3357,10 +3411,16 @@ class Index extends CatfishCMS
             echo 'ok';
             exit();
         }
+        $cachezongjilu = 'admin_allslides_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
         $slides = Catfish::view('slides','id,gid,mingcheng,tupian,lianjie,miaoshu,status,listorder')
             ->view('slides_group','zuming,width,height','slides_group.id=slides.gid', 'LEFT')
             ->order('listorder asc')
-            ->paginate(20);
+            ->paginate(20, $zongjilu);
+        if($zongjilu === false){
+            $zongjilu = $slides->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
         Catfish::allot('pages', $slides->render());
         $slides = $slides->items();
         $width = 1920;
