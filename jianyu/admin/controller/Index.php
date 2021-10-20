@@ -69,7 +69,7 @@ class Index extends CatfishCMS
             $yonghuming = '';
         }
         $query = [];
-        $catfish = Catfish::view('tie','id,fabushijian,biaoti,review,yuedu,fstop,fsrecommended,jingpin,tietype,annex,video,chentie')
+        $catfish = Catfish::view('tie','id,fabushijian,biaoti,review,yuedu,istop,recommended,fstop,fsrecommended,jingpin,tietype,annex,video,chentie')
             ->view('users','yonghu,nicheng,touxiang','users.id=tie.uid');
         if($guanjianzi != ''){
             $catfish = $catfish->where('tie.biaoti','like','%'.$guanjianzi.'%');
@@ -102,7 +102,7 @@ class Index extends CatfishCMS
     public function manamainpost()
     {
         if(Catfish::isPost(5)){
-            $chkarr = ['review', 'fstop', 'fsrecommended', 'jingpin', 'chentie'];
+            $chkarr = ['review', 'fstop', 'fsrecommended', 'jingpin', 'chentie', 'istop', 'recommended'];
             $id = intval(Catfish::getPost('id'));
             $chk = intval(Catfish::getPost('chk'));
             if($chk > 1){
@@ -110,6 +110,11 @@ class Index extends CatfishCMS
             }
             $opt = Catfish::getPost('opt');
             if(in_array($opt, $chkarr)){
+                $sid = 0;
+                if($opt == 'istop' || $opt == 'recommended'){
+                    $tmp = Catfish::db('tie')->where('id',$id)->field('sid')->find();
+                    $sid = $tmp['sid'];
+                }
                 Catfish::dbStartTrans();
                 try{
                     Catfish::db('tie')->where('id',$id)->update([
@@ -139,14 +144,46 @@ class Index extends CatfishCMS
                                 ->delete();
                         }
                     }
+                    if($opt == 'istop'){
+                        if($chk == 1){
+                            Catfish::db('tie_top')->insert([
+                                'tid' => $id,
+                                'sid' => $sid
+                            ]);
+                        }
+                        elseif($chk == 0){
+                            Catfish::db('tie_top')
+                                ->where('tid',$id)
+                                ->delete();
+                        }
+                    }
+                    if($opt == 'recommended'){
+                        if($chk == 1){
+                            Catfish::db('tie_tuijian')->insert([
+                                'tid' => $id,
+                                'sid' => $sid
+                            ]);
+                        }
+                        elseif($chk == 0){
+                            Catfish::db('tie_tuijian')
+                                ->where('tid',$id)
+                                ->delete();
+                        }
+                    }
                     Catfish::dbCommit();
                 } catch (\Exception $e) {
                     Catfish::dbRollback();
                     echo Catfish::lang('The operation failed, please try again later');
                     exit();
                 }
-                Catfish::clearCache('shouye_zhiding_tuijian');
-                Catfish::clearCache('shouye');
+                if($opt == 'istop' || $opt == 'recommended'){
+                    Catfish::clearCache('column_zhiding_tuijian');
+                    Catfish::clearCache('column');
+                }
+                else{
+                    Catfish::clearCache('shouye_zhiding_tuijian');
+                    Catfish::clearCache('shouye');
+                }
                 if($opt == 'review'){
                     Catfish::removeCache('post_' . $id);
                 }
@@ -3285,7 +3322,7 @@ class Index extends CatfishCMS
         $cachezongjilu = 'admin_chentie_zongjilu';
         $zongjilu = Catfish::getCache($cachezongjilu);
         $catfish = Catfish::view('tie','id,fabushijian,biaoti,review,yuedu,tietype,annex,chentie')
-            ->view('users','nicheng,touxiang','users.id=tie.uid')
+            ->view('users','yonghu,nicheng,touxiang','users.id=tie.uid')
             ->where('tie.status','=',1)
             ->where('tie.chentie','=',1)
             ->order('tie.id desc')
@@ -3302,6 +3339,54 @@ class Index extends CatfishCMS
         }
         Catfish::allot('catfishcms', $catfish);
         return $this->show(Catfish::lang('Sink the posts'), 5, 'chentie');
+    }
+    public function sectiontop()
+    {
+        $this->checkUser();
+        $cachezongjilu = 'admin_sectiontop_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
+        $catfish = Catfish::view('tie','id,fabushijian,biaoti,review,yuedu,istop,tietype,annex')
+            ->view('msort','sname','msort.id=tie.sid')
+            ->where('tie.status','=',1)
+            ->where('tie.istop','=',1)
+            ->order('tie.id desc')
+            ->paginate(20, $zongjilu);
+        if($zongjilu === false){
+            $zongjilu = $catfish->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
+        Catfish::allot('pages', $catfish->render());
+        $catfish = $catfish->items();
+        $typeidnm = $this->gettypeidname();
+        foreach($catfish as $key => $val){
+            $catfish[$key]['tietype'] = $typeidnm[$val['tietype']];
+        }
+        Catfish::allot('catfishcms', $catfish);
+        return $this->show(Catfish::lang('Section top'), 5, 'sectiontop');
+    }
+    public function sectionrecommendation()
+    {
+        $this->checkUser();
+        $cachezongjilu = 'admin_sectionrecommendation_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
+        $catfish = Catfish::view('tie','id,fabushijian,biaoti,review,yuedu,recommended,tietype,annex')
+            ->view('msort','sname','msort.id=tie.sid')
+            ->where('tie.status','=',1)
+            ->where('tie.recommended','=',1)
+            ->order('tie.id desc')
+            ->paginate(20, $zongjilu);
+        if($zongjilu === false){
+            $zongjilu = $catfish->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
+        Catfish::allot('pages', $catfish->render());
+        $catfish = $catfish->items();
+        $typeidnm = $this->gettypeidname();
+        foreach($catfish as $key => $val){
+            $catfish[$key]['tietype'] = $typeidnm[$val['tietype']];
+        }
+        Catfish::allot('catfishcms', $catfish);
+        return $this->show(Catfish::lang('Section recommendation'), 5, 'sectionrecommendation');
     }
     public function addslide()
     {

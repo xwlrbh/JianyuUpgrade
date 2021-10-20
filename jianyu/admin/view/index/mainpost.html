@@ -28,12 +28,13 @@
         <tr>
             <th scope="col">{:lang('Title')}</th>
             <th scope="col" class="text-center">{:lang('Release time')}</th>
-            <th scope="col" class="text-center">{:lang('Reading volume')}</th>
             <th scope="col" class="text-center">{:lang('Review')}</th>
             <th scope="col" class="text-center">{:lang('Home page top')}</th>
             <th scope="col" class="text-center">{:lang('Home recommendation')}</th>
             <th scope="col" class="text-center">{:lang('Add fine')}</th>
             <th scope="col" class="text-center">{:lang('Sink the posts')}</th>
+            <th scope="col" class="text-center">{:lang('Section top')}</th>
+            <th scope="col" class="text-center">{:lang('Section recommendation')}</th>
             <th scope="col" class="text-center">{:lang('Delete')}</th>
         </tr>
         </thead>
@@ -42,10 +43,9 @@
         <tr>
             <td>
                 <a class="text-info" href="{:Url('index/Index/post',['find'=>$vo.id])}" target="_blank">{$vo.biaoti}</a>{if condition="$vo.annex eq 1"}&nbsp;<i class="fa fa-paperclip text-info"></i>{/if}{if condition="$vo.video eq 1"}&nbsp;<i class="fa fa-film text-info"></i>{/if}{notempty name="vo.tietype"}<span class="ml-2 text-muted">[{$vo.tietype}]</span>{/notempty}<i class="fa fa-eye ml-2 text-info viewpost" aria-hidden="true" data-toggle="modal" data-target="#postModal" title="{:lang('View post')}" data-pid="{$vo.id}" style="cursor: pointer"></i>
-                <div><small><span class="text-muted">{:lang('Author')}：</span>{$vo.yonghu}</small><small class="ml-2"><span class="text-muted">{:lang('Nickname')}：</span>{$vo.nicheng}</small></div>
+                <div><small><span class="text-muted">{:lang('Author')}：</span>{$vo.yonghu}</small><small class="ml-2"><span class="text-muted">{:lang('Nickname')}：</span>{$vo.nicheng}</small><small class="ml-2"><span class="text-muted">{:lang('Reading volume')}：</span>{$vo.yuedu}</small></div>
             </td>
             <td class="text-center align-middle">{$vo.fabushijian}</td>
-            <td class="text-center align-middle">{$vo.yuedu}</td>
             <td class="text-center align-middle">
                 <div class="custom-control custom-switch">
                     <input type="checkbox" id="review_{$vo.id}" class="custom-control-input"{if $vo.review == 1} checked{/if}><label class="custom-control-label" for="review_{$vo.id}"></label>
@@ -70,6 +70,16 @@
                 <div class="custom-control custom-checkbox">
                     <input type="checkbox" class="custom-control-input" id="chentie_{$vo.id}"{if $vo.chentie == 1} checked{/if}>
                     <label class="custom-control-label" for="chentie_{$vo.id}"></label>
+                </div>
+            </td>
+            <td class="text-center align-middle">
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" id="istop_{$vo.id}" class="custom-control-input"{if $vo.istop == 1} checked{/if}><label class="custom-control-label" for="istop_{$vo.id}"></label>
+                </div>
+            </td>
+            <td class="text-center align-middle">
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" id="recommended_{$vo.id}" class="custom-control-input"{if $vo.recommended == 1} checked{/if}><label class="custom-control-label" for="recommended_{$vo.id}"></label>
                 </div>
             </td>
             <td class="text-center align-middle">

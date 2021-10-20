@@ -5,10 +5,10 @@
         <tr>
             <th scope="col">{:lang('Title')}</th>
             <th scope="col" class="text-center">{:lang('Type')}</th>
-            <th scope="col" class="text-center">{:lang('Author')}</th>
             <th scope="col" class="text-center">{:lang('Release time')}</th>
             <th scope="col" class="text-center">{:lang('Reading volume')}</th>
-            <th scope="col" class="text-center">{:lang('Sink the posts')}</th>
+            <th scope="col" class="text-center">{:lang('Section')}</th>
+            <th scope="col" class="text-center">{:lang('Section recommendation')}</th>
             <th scope="col" class="text-center">{:lang('Delete')}</th>
         </tr>
         </thead>
@@ -17,13 +17,12 @@
         <tr>
             <td><a class="text-info" href="{:Url('index/Index/post',['find'=>$vo.id])}" target="_blank">{$vo.biaoti}</a>{if condition="$vo.annex eq 1"}&nbsp;<i class="fa fa-paperclip text-info"></i>{/if}</td>
             <td class="text-center">{$vo.tietype}</td>
-            <td class="text-center">{$vo.yonghu}</td>
             <td class="text-center">{$vo.fabushijian}</td>
             <td class="text-center">{$vo.yuedu}</td>
+            <td class="text-center">{$vo.sname}</td>
             <td class="text-center align-middle">
-                <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="chentie_{$vo.id}"{if $vo.chentie == 1} checked{/if}>
-                    <label class="custom-control-label" for="chentie_{$vo.id}"></label>
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" id="recommended_{$vo.id}" class="custom-control-input"{if $vo.recommended == 1} checked{/if}><label class="custom-control-label" for="recommended_{$vo.id}"></label>
                 </div>
             </td>
             <td class="text-center">
@@ -43,5 +42,5 @@
 <div class="d-none" id="quedingshanchu">{:lang('Confirm to delete?')}</div>
 <div class="d-none" id="bukehuifu">{:lang('Are you sure you want to delete it? It cannot be recovered after deletion!')}</div>
 <script src="{$domain}public/common/js/list.js"></script>
-<script src="{$domain}public/common/js/chentie.js"></script>
+<script src="{$domain}public/common/js/sectionrecommendation.js"></script>
 {include file="index/footer" /}

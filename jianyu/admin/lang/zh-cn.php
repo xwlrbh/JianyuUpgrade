@@ -545,4 +545,6 @@ return [
     'Picture width must be filled' => '图片宽度必须填写',
     'Picture height must be filled' => '图片高度必须填写',
     'Modify slide group' => '修改幻灯片组',
+    'Section top' => '版块置顶',
+    'Section recommendation' => '版块推荐',
 ];
