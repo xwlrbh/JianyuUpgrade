@@ -84,6 +84,22 @@
             </div>
             <small class="form-text text-muted">{:lang('In order to ensure the front-end display effect, the width and height ratio of the pictures uploaded in each section should be as consistent as possible')}</small>
         </div>
+        <div class="form-group">
+            <label>{:lang('Whether posting requires pre-review')}</label>
+            <select class="form-control" name="preaudit">
+                <option value="0"{if condition="$sort.preaudit eq 0"} selected{/if}>{:lang('Use forum default settings')}</option>
+                <option value="1"{if condition="$sort.preaudit eq 1"} selected{/if}>{:lang('Pre-review required')}</option>
+                <option value="2"{if condition="$sort.preaudit eq 2"} selected{/if}>{:lang('No pre-audit required')}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>{:lang('Does follow-up post require pre-review')}</label>
+            <select class="form-control" name="fpreaudit">
+                <option value="0"{if condition="$sort.fpreaudit eq 0"} selected{/if}>{:lang('Use forum default settings')}</option>
+                <option value="1"{if condition="$sort.fpreaudit eq 1"} selected{/if}>{:lang('Pre-review required')}</option>
+                <option value="2"{if condition="$sort.fpreaudit eq 2"} selected{/if}>{:lang('No pre-audit required')}</option>
+            </select>
+        </div>
         <div class="form-group mt-4">
             <label>{:lang('Whether it is used for modules')}</label>
             <div class="custom-control custom-checkbox">

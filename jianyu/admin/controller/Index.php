@@ -548,7 +548,9 @@ class Index extends CatfishCMS
                     'linkurl' => $linkurl,
                     'ismodule' => $ismodule,
                     'subclasses' => $subclasses,
-                    'parentid' => Catfish::getPost('parentid')
+                    'parentid' => Catfish::getPost('parentid'),
+                    'preaudit' => Catfish::getPost('preaudit'),
+                    'fpreaudit' => Catfish::getPost('fpreaudit')
                 ]);
                 if($re == 1){
                     Catfish::clearCache('fenlei_id_name');
@@ -733,7 +735,9 @@ class Index extends CatfishCMS
                     'linkurl' => $linkurl,
                     'ismodule' => $ismodule,
                     'subclasses' => $subclasses,
-                    'parentid' => Catfish::getPost('parentid')
+                    'parentid' => Catfish::getPost('parentid'),
+                    'preaudit' => Catfish::getPost('preaudit'),
+                    'fpreaudit' => Catfish::getPost('fpreaudit')
                 ]);
                 if($re == 1){
                     Catfish::clearCache('fenlei_id_name');

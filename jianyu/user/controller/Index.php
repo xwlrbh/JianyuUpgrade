@@ -180,8 +180,9 @@ class Index extends CatfishCMS
                 $this->newtongjitb();
                 $now = Catfish::now();
                 $chengzhang = Catfish::getGrowing();
+                $secreview = Catfish::db('msort')->where('id',$sid)->field('preaudit')->find();
                 $review = 1;
-                if($forum['preaudit'] == 1){
+                if($secreview['preaudit'] != 2 && ($secreview['preaudit'] == 1 || $forum['preaudit'] == 1)){
                     $review = 0;
                 }
                 $tus = $this->extractPics($zhengwen);
@@ -316,13 +317,33 @@ class Index extends CatfishCMS
         $uid = Catfish::getSession('user_id');
         $cachezongjilu = 'user_mymainpost_' . $uid . '_zongjilu';
         $zongjilu = Catfish::getCache($cachezongjilu);
-        $data = Catfish::db('tie')->where('uid', $uid)->where('status', 1)->field('id,fabushijian,biaoti,isclose,pinglunshu,yuedu,zan,cai,annex,video')->order('id desc')->paginate(20, $zongjilu);
+        $data = Catfish::db('tie')->where('uid', $uid)->where('status', 1)->field('id,fabushijian,xiugai,biaoti,review,isclose,pinglunshu,yuedu,zan,cai,annex,video')->order('id desc')->paginate(20, $zongjilu);
         if($zongjilu === false){
             $zongjilu = $data->total();
             Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
         }
-        Catfish::allot('data', $data->items());
-        Catfish::allot('pages', $data->render());
+        $pages = $data->render();
+        $data = $data->items();
+        foreach($data as $key => $val){
+            if($val['review'] == 1){
+                $data[$key]['review'] = '<i class="fa fa-check text-success" data-container="body" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="'.Catfish::lang('Approved').'"></i>';
+            }
+            else{
+                if($val['xiugai'] == '2000-01-01 00:00:00'){
+                    $xiugai = $val['fabushijian'];
+                }
+                else{
+                    $xiugai = $val['xiugai'];
+                }
+                $tishi = Catfish::lang('Under review...');
+                if(strtotime($xiugai) - time() > 259200){
+                    $tishi = Catfish::lang('Did not pass');
+                }
+                $data[$key]['review'] = '<i class="fa fa-times text-black-50" data-container="body" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="'.$tishi.'"></i>';
+            }
+        }
+        Catfish::allot('data', $data);
+        Catfish::allot('pages', $pages);
         return $this->show(Catfish::lang('My main post'), 'mymainpost');
     }
     public function delmymainpost()
@@ -837,7 +858,7 @@ class Index extends CatfishCMS
         $uid = Catfish::getSession('user_id');
         $cachezongjilu = 'user_myfollowuppost_' . $uid . '_zongjilu';
         $zongjilu = Catfish::getCache($cachezongjilu);
-        $data = Catfish::view('tie_comments','id,createtime,zan,cai,status,content')
+        $data = Catfish::view('tie_comments','id,createtime,xiugai,zan,cai,status,content')
             ->view('tie_comm_ontact','tid','tie_comm_ontact.cid=tie_comments.id')
             ->view('tie','biaoti','tie.id=tie_comm_ontact.tid')
             ->where('tie_comments.uid', $uid)
@@ -854,7 +875,11 @@ class Index extends CatfishCMS
                 $data[$key]['status'] = '<i class="fa fa-check text-success" data-container="body" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="'.Catfish::lang('Approved').'"></i>';
             }
             else{
-                $data[$key]['status'] = '<i class="fa fa-times text-black-50" data-container="body" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="'.Catfish::lang('Did not pass').'"></i>';
+                $tishi = Catfish::lang('Under review...');
+                if(strtotime($val['xiugai']) - time() > 259200){
+                    $tishi = Catfish::lang('Did not pass');
+                }
+                $data[$key]['status'] = '<i class="fa fa-times text-black-50" data-container="body" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="'.$tishi.'"></i>';
             }
         }
         Catfish::allot('data', $data);

@@ -547,4 +547,5 @@ return [
     'Modify slide group' => '修改幻灯片组',
     'Section top' => '版块置顶',
     'Section recommendation' => '版块推荐',
+    'Use forum default settings' => '使用论坛默认设置',
 ];

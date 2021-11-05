@@ -270,8 +270,9 @@ class Index extends CatfishCMS
                     return json($re);
                 }
                 $chengzhang = Catfish::getGrowing();
+                $secreview = Catfish::db('msort')->where('id',$tiefl['sid'])->field('fpreaudit')->find();
                 $review = 1;
-                if($forum['fpreaudit'] == 1){
+                if($secreview['fpreaudit'] != 2 && ($secreview['fpreaudit'] == 1 || $forum['fpreaudit'] == 1)){
                     $review = 0;
                 }
                 if($review == 1){
@@ -426,8 +427,9 @@ class Index extends CatfishCMS
                     return json($re);
                 }
                 $chengzhang = Catfish::getGrowing();
+                $secreview = Catfish::db('msort')->where('id',$tiefl['sid'])->field('fpreaudit')->find();
                 $review = 1;
-                if($forum['fpreaudit'] == 1){
+                if($secreview['fpreaudit'] != 2 && ($secreview['fpreaudit'] == 1 || $forum['fpreaudit'] == 1)){
                     $review = 0;
                 }
                 if($review == 1){
@@ -885,15 +887,21 @@ class Index extends CatfishCMS
                     $re['message'] = Catfish::lang('Your operation is illegal');
                     return json($re);
                 }
+                $tiepl = Catfish::db('tie')->where('id', $tid)->field('sid,pinglun')->find();
+                $resmz = Catfish::getForum();
+                $secreview = Catfish::db('msort')->where('id',$tiepl['sid'])->field('fpreaudit')->find();
+                $review = 1;
+                if($secreview['fpreaudit'] != 2 && ($secreview['fpreaudit'] == 1 || $resmz['fpreaudit'] == 1)){
+                    $review = 0;
+                }
                 Catfish::db('tie_comments')->where('id', $cid)->update([
                     'xiugai' => $now,
-                    'content' => $gentie
+                    'content' => $gentie,
+                    'status' => $review
                 ]);
-                $tiepl = Catfish::db('tie')->where('id', $tid)->field('pinglun')->find();
                 if(!empty($tiepl['pinglun'])){
                     $pinglun = unserialize($tiepl['pinglun']);
-                    $resmz = Catfish::getForum();
-                    if($resmz['fpreaudit'] == 0){
+                    if($review == 1){
                         foreach($pinglun as $key => $val){
                             if($val['id'] == $cid){
                                 $pinglun[$key]['shijian'] = $now;
@@ -1353,8 +1361,9 @@ class Index extends CatfishCMS
                 $this->newtongjitb();
                 $now = Catfish::now();
                 $chengzhang = Catfish::getGrowing();
+                $secreview = Catfish::db('msort')->where('id',$sid)->field('preaudit')->find();
                 $review = 1;
-                if($forum['preaudit'] == 1){
+                if($secreview['preaudit'] != 2 && ($secreview['preaudit'] == 1 || $forum['preaudit'] == 1)){
                     $review = 0;
                 }
                 $tus = $this->extractPics($zhengwen);
