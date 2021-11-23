@@ -5,12 +5,11 @@
         <tr>
             <th scope="col">{:lang('Post content')}</th>
             <th scope="col">{:lang('Follow-up time')}</th>
+            <th scope="col">{:lang('Username')}</th>
             <th scope="col">{:lang('Nickname')}</th>
             <th scope="col" class="text-center">{:lang('Main post')}</th>
             <th scope="col" class="text-center">{:lang('Review')}</th>
-            {if condition="$mtype >= 10"}
             <th scope="col" class="text-center">{:lang('Delete')}</th>
-            {/if}
         </tr>
         </thead>
         <tbody>
@@ -18,6 +17,7 @@
         <tr>
             <td>{$vo.content}</td>
             <td class="align-middle">{$vo.createtime}</td>
+            <td class="align-middle">{$vo.yonghu}</td>
             <td class="align-middle">{$vo.nicheng}</td>
             <td class="text-center align-middle"><a class="text-info" href="{:Url('index/Index/post',['find'=>$vo.tid])}" target="_blank"><i class="fa fa-eye"></i></a></td>
             <td class="text-center align-middle">
@@ -26,24 +26,22 @@
                 </div>
                 <div class="d-none">{$vo.content}</div>
             </td>
-            {if condition="$mtype >= 10"}
             <td class="text-center align-middle">
-                <a class="{if condition="$vo.banzhu >= 10"}confirm text-info{else /}text-black-50{/if}" href="#!"><i class="fa fa-trash-o"></i><i class="fa fa-refresh fa-spin ml-2 d-none"></i></a>
+                <a class="confirm text-info" href="#!"><i class="fa fa-trash-o"></i><i class="fa fa-refresh fa-spin ml-2 d-none"></i></a>
                 <input type="hidden" value="{$vo.id}">
             </td>
-            {/if}
         </tr>
         {/volist}
         </tbody>
     </table>
 </form>
 <nav>
-    <ul class="pagination justify-content-center mb-4">
+    <ul class="pagination justify-content-center my-4">
         {$pages}
     </ul>
 </nav>
 <div class="d-none" id="quedingshanchu">{:lang('Confirm to delete?')}</div>
 <div class="d-none" id="bukehuifu">{:lang('Are you sure you want to delete it? It cannot be recovered after deletion!')}</div>
 <script src="{$domain}public/common/js/list.js"></script>
-<script src="{$domain}public/common/js/user/followingupsection.js"></script>
+<script src="{$domain}public/common/js/followpost.js"></script>
 {include file="index/footer" /}

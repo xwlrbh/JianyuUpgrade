@@ -39,17 +39,17 @@
         {volist name="catfishcms" id="vo"}
         <tr>
             <td>{$vo.content}</td>
-            <td>{$vo.createtime}</td>
-            <td>{$vo.yonghu}</td>
-            <td>{$vo.nicheng}</td>
-            <td class="text-center"><a class="text-info" href="{:Url('index/Index/post',['find'=>$vo.tid])}" target="_blank"><i class="fa fa-eye"></i></a></td>
-            <td class="text-center">
+            <td class="align-middle">{$vo.createtime}</td>
+            <td class="align-middle">{$vo.yonghu}</td>
+            <td class="align-middle">{$vo.nicheng}</td>
+            <td class="text-center align-middle"><a class="text-info" href="{:Url('index/Index/post',['find'=>$vo.tid])}" target="_blank"><i class="fa fa-eye"></i></a></td>
+            <td class="text-center align-middle">
                 <div class="custom-control custom-switch">
                     <input type="checkbox" id="status_{$vo.id}" data-tid="{$vo.tid}" data-nicheng="{$vo.nicheng}" data-createtime="{$vo.createtime}" class="custom-control-input"{if $vo.status == 1} checked{/if}><label class="custom-control-label" for="status_{$vo.id}"></label>
                 </div>
                 <div class="d-none">{$vo.content}</div>
             </td>
-            <td class="text-center">
+            <td class="text-center align-middle">
                 <a class="confirm text-info" href="#!"><i class="fa fa-trash-o"></i><i class="fa fa-refresh fa-spin ml-2 d-none"></i></a>
                 <input type="hidden" value="{$vo.id}">
             </td>

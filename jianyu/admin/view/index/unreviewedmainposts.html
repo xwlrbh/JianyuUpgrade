@@ -1,0 +1,70 @@
+{include file="index/header" /}
+<form>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th scope="col">{:lang('Title')}</th>
+            <th scope="col" class="text-center">{:lang('Type')}</th>
+            <th scope="col" class="text-center">{:lang('Author')}</th>
+            <th scope="col" class="text-center">{:lang('Nickname')}</th>
+            <th scope="col" class="text-center">{:lang('Release time')}</th>
+            <th scope="col" class="text-center">{:lang('Review')}</th>
+            <th scope="col" class="text-center">{:lang('Delete')}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name="catfishcms" id="vo"}
+        <tr>
+            <td><a class="text-info viewpost" href="#!"  aria-hidden="true" data-toggle="modal" data-target="#postModal" title="{:lang('View post')}" data-pid="{$vo.id}">{$vo.biaoti}</a>{if condition="$vo.annex eq 1"}&nbsp;<i class="fa fa-paperclip text-info"></i>{/if}</td>
+            <td class="text-center">{$vo.tietype}</td>
+            <td class="text-center">{$vo.yonghu}</td>
+            <td class="text-center">{$vo.nicheng}</td>
+            <td class="text-center">{$vo.fabushijian}</td>
+            <td class="text-center align-middle">
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" id="review_{$vo.id}" class="custom-control-input"{if $vo.review == 1} checked{/if}><label class="custom-control-label" for="review_{$vo.id}"></label>
+                </div>
+            </td>
+            <td class="text-center align-middle">
+                <a class="confirm text-info" href="#!"><i class="fa fa-trash-o"></i><i class="fa fa-refresh fa-spin ml-2 d-none"></i></a>
+                <input type="hidden" value="{$vo.id}">
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+</form>
+<nav>
+    <ul class="pagination justify-content-center my-4">
+        {$pages}
+    </ul>
+</nav>
+<div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="postModalLabel"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="postModalBody">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{:lang('Close')}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="loading" class="d-none">
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border text-info" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
+<div class="d-none" id="quedingshanchu">{:lang('Confirm to delete?')}</div>
+<div class="d-none" id="bukehuifu">{:lang('Are you sure you want to delete it? It cannot be recovered after deletion!')}</div>
+<script src="{$domain}public/common/js/list.js"></script>
+<script src="{$domain}public/common/js/unreviewedmainposts.js"></script>
+{include file="index/footer" /}

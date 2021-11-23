@@ -88,7 +88,7 @@ class Index extends CatfishCMS
             ]);
         if($zongjilu === false){
             $zongjilu = $catfish->total();
-            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+            Catfish::tagCache('adminzhutie')->set($cachezongjilu,$zongjilu,$this->time);
         }
         Catfish::allot('pages', $catfish->render());
         $catfish = $catfish->items();
@@ -98,6 +98,30 @@ class Index extends CatfishCMS
         }
         Catfish::allot('catfishcms', $catfish);
         return $this->show(Catfish::lang('Main post'), 5, 'mainpost');
+    }
+    public function unreviewedmainposts()
+    {
+        $this->checkUser();
+        $cachezongjilu = 'admin_unreviewedmainposts_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
+        $catfish = Catfish::view('tie','id,fabushijian,biaoti,review,tietype,annex')
+            ->view('users','yonghu,nicheng,touxiang','users.id=tie.uid')
+            ->where('tie.status','=',1)
+            ->where('tie.review','=',0)
+            ->order('tie.id desc')
+            ->paginate(20, $zongjilu);
+        if($zongjilu === false){
+            $zongjilu = $catfish->total();
+            Catfish::tagCache('adminzhutie')->set($cachezongjilu,$zongjilu,$this->time);
+        }
+        Catfish::allot('pages', $catfish->render());
+        $catfish = $catfish->items();
+        $typeidnm = $this->gettypeidname();
+        foreach($catfish as $key => $val){
+            $catfish[$key]['tietype'] = $typeidnm[$val['tietype']];
+        }
+        Catfish::allot('catfishcms', $catfish);
+        return $this->show(Catfish::lang('Unreviewed main posts'), 5, 'unreviewedmainposts');
     }
     public function manamainpost()
     {
@@ -298,6 +322,7 @@ class Index extends CatfishCMS
             $this->plantHook('deleteMainPost', $params);
             Catfish::removeCache('post_'.$id);
             Catfish::clearCache('postgentie_'.$id);
+            Catfish::clearCache('adminzhutie');
             echo 'ok';
             exit();
         }
@@ -337,12 +362,32 @@ class Index extends CatfishCMS
             ]);
         if($zongjilu === false){
             $zongjilu = $catfish->total();
-            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+            Catfish::tagCache('admingentie')->set($cachezongjilu,$zongjilu,$this->time);
         }
         Catfish::allot('pages', $catfish->render());
         $catfish = $catfish->items();
         Catfish::allot('catfishcms', $catfish);
         return $this->show(Catfish::lang('Follow post'), 5, 'followpost');
+    }
+    public function unreviewedfollowposts()
+    {
+        $this->checkUser();
+        $cachezongjilu = 'admin_unreviewedfollowposts_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
+        $catfish = Catfish::view('tie_comments','id,uid,createtime,status,content')
+            ->view('tie_comm_ontact','tid','tie_comm_ontact.cid=tie_comments.id', 'LEFT')
+            ->view('users','yonghu,nicheng','users.id=tie_comments.uid', 'LEFT')
+            ->order('tie_comments.xiugai desc')
+            ->where('tie_comments.status','=',0)
+            ->paginate(20,$zongjilu);
+        if($zongjilu === false){
+            $zongjilu = $catfish->total();
+            Catfish::tagCache('admingentie')->set($cachezongjilu,$zongjilu,$this->time);
+        }
+        Catfish::allot('pages', $catfish->render());
+        $catfish = $catfish->items();
+        Catfish::allot('catfishcms', $catfish);
+        return $this->show(Catfish::lang('Unreviewed follow posts'), 5, 'unreviewedfollowposts');
     }
     public function manafollowpost()
     {
@@ -481,6 +526,7 @@ class Index extends CatfishCMS
                 exit();
             }
             Catfish::clearCache('postgentie_'.$tid);
+            Catfish::clearCache('admingentie');
             echo 'ok';
             exit();
         }

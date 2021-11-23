@@ -9,6 +9,8 @@
     <nav class="nav flex-column">
         <a href="{:Url('admin/Index/mainpost')}" class="nav-link{if $option == 'mainpost'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Main post')}</a>
         <a href="{:Url('admin/Index/followpost')}" class="nav-link{if $option == 'followpost'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Follow post')}</a>
+        <a href="{:Url('admin/Index/unreviewedmainposts')}" class="nav-link{if $option == 'unreviewedmainposts'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Unreviewed main posts')}</a>
+        <a href="{:Url('admin/Index/unreviewedfollowposts')}" class="nav-link{if $option == 'unreviewedfollowposts'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Unreviewed follow posts')}</a>
         <a href="{:Url('admin/Index/homepagetop')}" class="nav-link{if $option == 'homepagetop'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Home page top')}</a>
         <a href="{:Url('admin/Index/homerecommendation')}" class="nav-link{if $option == 'homerecommendation'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Home recommendation')}</a>
         <a href="{:Url('admin/Index/finepost')}" class="nav-link{if $option == 'finepost'} bg-secondary text-white{else /} text-dark{/if}">{:lang('Fine post')}</a>

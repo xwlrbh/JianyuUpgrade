@@ -38,34 +38,34 @@
         {volist name="catfishcms" id="vo"}
         <tr>
             <td><a class="text-info" href="{:Url('index/Index/post',['find'=>$vo.id])}" target="_blank">{$vo.biaoti}</a>{if condition="$vo.annex eq 1"}&nbsp;<i class="fa fa-paperclip text-info"></i>{/if}<i class="fa fa-eye ml-2 text-info viewpost" aria-hidden="true" data-toggle="modal" data-target="#postModal" title="{:lang('View post')}" data-pid="{$vo.id}" style="cursor: pointer"></i></td>
-            <td class="text-center">{$vo.tietype}</td>
-            <td>{$vo.nicheng}</td>
-            <td class="text-center">{$vo.fabushijian}</td>
-            <td class="text-center">{$vo.yuedu}</td>
-            <td class="text-center">
+            <td class="text-center align-middle">{$vo.tietype}</td>
+            <td class="align-middle">{$vo.nicheng}</td>
+            <td class="text-center align-middle">{$vo.fabushijian}</td>
+            <td class="text-center align-middle">{$vo.yuedu}</td>
+            <td class="text-center align-middle">
                 <div class="custom-control custom-switch">
                     <input type="checkbox" id="review_{$vo.id}" class="custom-control-input"{if $vo.review == 1} checked{/if}><label class="custom-control-label" for="review_{$vo.id}"></label>
                 </div>
             </td>
             {if condition="$mtype >= 10"}
-            <td class="text-center">
+            <td class="text-center align-middle">
                 <div class="custom-control custom-switch">
                     <input type="checkbox" id="istop_{$vo.id}" class="custom-control-input"{if $vo.istop == 1} checked{/if}{if condition="$vo.banzhu < 10"} disabled{/if}><label class="custom-control-label" for="istop_{$vo.id}"></label>
                 </div>
             </td>
-            <td class="text-center">
+            <td class="text-center align-middle">
                 <div class="custom-control custom-switch">
                     <input type="checkbox" id="recommended_{$vo.id}" class="custom-control-input"{if $vo.recommended == 1} checked{/if}{if condition="$vo.banzhu < 10"} disabled{/if}><label class="custom-control-label" for="recommended_{$vo.id}"></label>
                 </div>
             </td>
-            <td class="text-center">
+            <td class="text-center align-middle">
                 <div class="custom-control custom-switch">
                     <input type="checkbox" id="jingpin_{$vo.id}" class="custom-control-input"{if $vo.jingpin == 1} checked{/if}{if condition="$vo.banzhu < 10"} disabled{/if}><label class="custom-control-label" for="jingpin_{$vo.id}"></label>
                 </div>
             </td>
             {/if}
             {if condition="$mtype >= 15"}
-            <td class="text-center">
+            <td class="text-center align-middle">
                 <a class="{if condition="$vo.banzhu >= 15"}confirm text-info{else /}text-black-50{/if}" href="#!"><i class="fa fa-trash-o"></i><i class="fa fa-refresh fa-spin ml-2 d-none"></i></a>
                 <input type="hidden" value="{$vo.id}">
             </td>
