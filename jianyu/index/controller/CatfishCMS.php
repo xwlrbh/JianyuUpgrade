@@ -2141,7 +2141,10 @@ class CatfishCMS
     {
         $fixdomain = Catfish::getConfig('fixdomain');
         if($fixdomain == true && is_null($domain)){
-            $u = rtrim(Catfish::get('domain'), '/') . Catfish::url($url, $vars, $suffix, false);
+            $ua = explode('/', rtrim(Catfish::get('domain'), '/'));
+            $na = array_slice($ua, 0, 3);
+            $ud = implode('/', $na);
+            $u = $ud . Catfish::url($url, $vars, $suffix, false);
         }
         elseif(is_null($domain)){
             $u = Catfish::url($url, $vars, $suffix);

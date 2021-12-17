@@ -646,7 +646,7 @@ class Catfish
                 $domain = str_replace('://','://www.',$domain);
             }
         }
-        $isssl = Request::instance()->isSsl();
+        $isssl = self::isSsl();
         if($isssl && stripos($domain,'http://') !== false){
             $domain = str_replace('http://','https://',$domain);
         }
@@ -654,6 +654,14 @@ class Catfish
             $domain = str_replace('https://','http://',$domain);
         }
         return $domain;
+    }
+	public static function isSsl()
+    {
+        $isSsl = Request::instance()->isSsl();
+        if(!$isSsl && isset($_SERVER['HTTP_X_CLIENT_SCHEME']) && strtolower($_SERVER['HTTP_X_CLIENT_SCHEME']) == 'https'){
+            return true;
+        }
+        return $isSsl;
     }
     public static function view($table, $field)
     {
