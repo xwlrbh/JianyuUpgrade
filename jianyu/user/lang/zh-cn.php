@@ -312,4 +312,6 @@ return [
     'The fourth person who checks in every day will get extra points' => '每日签到的第四名可获得额外积分',
     'The fifth person who checks in every day can get extra points' => '每日签到的第五名可获得额外积分',
     'Under review...' => '审核中...',
+    'Unreviewed main posts' => '未审主帖',
+    'Unreviewed follow posts' => '未审跟帖',
 ];

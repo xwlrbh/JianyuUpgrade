@@ -1397,6 +1397,42 @@ class Index extends CatfishCMS
         Catfish::allot('mtype', Catfish::getSession('mtype'));
         return $this->show(Catfish::lang('Forum main post'), 'forummainpost');
     }
+    public function unreviewedmainposts()
+    {
+        $this->checkUser();
+        $umod = $this->isModerator(Catfish::getSession('user_id'));
+        $sidstr = '';
+        $sidarr = [];
+        foreach($umod as $key => $val){
+            $sidstr .= empty($sidstr)? $val['sid'] : ',' . $val['sid'];
+            $sidarr[$val['sid']] = $val['mtype'];
+        }
+        $section = Catfish::db('msort')->where('id','in',$sidstr)->field('id,sname')->select();
+        Catfish::allot('section', $section);
+        $cachezongjilu = 'user_unreviewedmainposts_'.md5($sidstr).'_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
+        $catfish = Catfish::view('tie','id,sid,fabushijian,biaoti,review,yuedu,tietype,annex')
+            ->view('users','nicheng,touxiang','users.id=tie.uid')
+            ->where('tie.sid','in',$sidstr)
+            ->where('tie.status','=',1)
+            ->where('tie.review','=',0)
+            ->order('tie.id desc')
+            ->paginate(20,$zongjilu);
+        if($zongjilu === false){
+            $zongjilu = $catfish->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
+        Catfish::allot('pages', $catfish->render());
+        $catfish = $catfish->items();
+        $typeidnm = $this->gettypeidname();
+        foreach($catfish as $key => $val){
+            $catfish[$key]['tietype'] = $typeidnm[$val['tietype']];
+            $catfish[$key]['banzhu'] = $sidarr[$val['sid']];
+        }
+        Catfish::allot('catfishcms', $catfish);
+        Catfish::allot('mtype', Catfish::getSession('mtype'));
+        return $this->show(Catfish::lang('Unreviewed main posts'), 'unreviewedmainposts');
+    }
     public function delforummainpost()
     {
         if(Catfish::isPost(20)){
@@ -1624,6 +1660,40 @@ class Index extends CatfishCMS
         Catfish::allot('catfishcms', $catfish);
         Catfish::allot('mtype', Catfish::getSession('mtype'));
         return $this->show(Catfish::lang('Following-up of the section'), 'followingupsection');
+    }
+    public function unreviewedfollowposts()
+    {
+        $this->checkUser();
+        $umod = $this->isModerator(Catfish::getSession('user_id'));
+        $sidstr = '';
+        $sidarr = [];
+        foreach($umod as $key => $val){
+            $sidstr .= empty($sidstr)? $val['sid'] : ',' . $val['sid'];
+            $sidarr[$val['sid']] = $val['mtype'];
+        }
+        $section = Catfish::db('msort')->where('id','in',$sidstr)->field('id,sname')->select();
+        Catfish::allot('section', $section);
+        $cachezongjilu = 'user_unreviewedfollowposts_'.md5($sidstr).'_zongjilu';
+        $zongjilu = Catfish::getCache($cachezongjilu);
+        $catfish = Catfish::view('tie_comments','id,uid,sid,createtime,status,content')
+            ->view('tie_comm_ontact','tid','tie_comm_ontact.cid=tie_comments.id', 'LEFT')
+            ->view('users','nicheng','users.id=tie_comments.uid', 'LEFT')
+            ->where('tie_comments.sid','in',$sidstr)
+            ->where('tie_comments.status','=',0)
+            ->order('tie_comments.xiugai desc')
+            ->paginate(20, $zongjilu);
+        if($zongjilu === false){
+            $zongjilu = $catfish->total();
+            Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
+        }
+        Catfish::allot('pages', $catfish->render());
+        $catfish = $catfish->items();
+        foreach($catfish as $key => $val){
+            $catfish[$key]['banzhu'] = $sidarr[$val['sid']];
+        }
+        Catfish::allot('catfishcms', $catfish);
+        Catfish::allot('mtype', Catfish::getSession('mtype'));
+        return $this->show(Catfish::lang('Unreviewed follow posts'), 'unreviewedfollowposts');
     }
     public function manafollowpost()
     {
