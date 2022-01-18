@@ -314,4 +314,7 @@ return [
     'Under review...' => '审核中...',
     'Unreviewed main posts' => '未审主帖',
     'Unreviewed follow posts' => '未审跟帖',
+    'Starting time' => '开始时间',
+    'End time' => '结束时间',
+    'End post' => '结帖',
 ];

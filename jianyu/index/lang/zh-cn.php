@@ -102,4 +102,5 @@ return [
     'Post title must be filled in' => '帖子标题必须填写',
     'Post content must be filled in' => '帖子内容必须填写',
     'Default group' => '默认组',
+    'This post is closed' => '这个帖子已经结帖',
 ];

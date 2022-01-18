@@ -315,9 +315,44 @@ class Index extends CatfishCMS
     {
         $this->checkUser();
         $uid = Catfish::getSession('user_id');
-        $cachezongjilu = 'user_mymainpost_' . $uid . '_zongjilu';
+        $guanjianzi = Catfish::getGet('guanjianzi');
+        if($guanjianzi === false){
+            $guanjianzi = '';
+        }
+        $startime = Catfish::getGet('startime');
+        if($startime === false){
+            $startime = '';
+        }
+        $endtime = Catfish::getGet('endtime');
+        if($endtime === false){
+            $endtime = '';
+        }
+        $query = [
+            'guanjianzi' => $guanjianzi,
+            'startime' => $startime,
+            'endtime' => $endtime,
+        ];
+        $cachezongjilu = 'user_mymainpost_' . $uid . '_' . md5(serialize($query)) . '_zongjilu';
         $zongjilu = Catfish::getCache($cachezongjilu);
-        $data = Catfish::db('tie')->where('uid', $uid)->where('status', 1)->field('id,fabushijian,xiugai,biaoti,review,isclose,pinglunshu,yuedu,zan,cai,annex,video')->order('id desc')->paginate(20, $zongjilu);
+        $data = Catfish::db('tie')->where('uid', $uid)->where('status', 1);
+        if($guanjianzi != ''){
+            $data = $data->where('biaoti','like','%'.$guanjianzi.'%');
+        }
+        if($startime != '' || $endtime != ''){
+            if(empty($startime)){
+                $startime = '2000-01-01';
+            }
+            if(empty($endtime)){
+                $endtime = date('Y-m-d');
+            }
+            if($startime == $endtime){
+                $endtime = date('Y-m-d', strtotime('+1 day', strtotime($endtime)));
+            }
+            $data = $data->where('fabushijian','between time',[$startime,$endtime]);
+        }
+        $data = $data->field('id,fabushijian,xiugai,biaoti,review,isclose,pinglunshu,yuedu,zan,cai,annex,video')->order('id desc')->paginate(20, $zongjilu,[
+            'query' => $query
+        ]);
         if($zongjilu === false){
             $zongjilu = $data->total();
             Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
@@ -856,14 +891,48 @@ class Index extends CatfishCMS
     {
         $this->checkUser();
         $uid = Catfish::getSession('user_id');
-        $cachezongjilu = 'user_myfollowuppost_' . $uid . '_zongjilu';
+        $guanjianzi = Catfish::getGet('guanjianzi');
+        if($guanjianzi === false){
+            $guanjianzi = '';
+        }
+        $startime = Catfish::getGet('startime');
+        if($startime === false){
+            $startime = '';
+        }
+        $endtime = Catfish::getGet('endtime');
+        if($endtime === false){
+            $endtime = '';
+        }
+        $query = [
+            'guanjianzi' => $guanjianzi,
+            'startime' => $startime,
+            'endtime' => $endtime,
+        ];
+        $cachezongjilu = 'user_myfollowuppost_' . $uid . '_' . md5(serialize($query)) . '_zongjilu';
         $zongjilu = Catfish::getCache($cachezongjilu);
         $data = Catfish::view('tie_comments','id,createtime,xiugai,zan,cai,status,content')
             ->view('tie_comm_ontact','tid','tie_comm_ontact.cid=tie_comments.id')
             ->view('tie','biaoti','tie.id=tie_comm_ontact.tid')
-            ->where('tie_comments.uid', $uid)
-            ->order('id desc')
-            ->paginate(20, $zongjilu);
+            ->where('tie_comments.uid', $uid);
+        if($guanjianzi != ''){
+            $data = $data->where('content','like','%'.$guanjianzi.'%');
+        }
+        if($startime != '' || $endtime != ''){
+            if(empty($startime)){
+                $startime = '2000-01-01';
+            }
+            if(empty($endtime)){
+                $endtime = date('Y-m-d');
+            }
+            if($startime == $endtime){
+                $endtime = date('Y-m-d', strtotime('+1 day', strtotime($endtime)));
+            }
+            $data = $data->where('createtime','between time',[$startime,$endtime]);
+        }
+        $data = $data->order('id desc')
+            ->paginate(20, $zongjilu,[
+                'query' => $query
+            ]);
         if($zongjilu === false){
             $zongjilu = $data->total();
             Catfish::setCache($cachezongjilu,$zongjilu,$this->time);
@@ -3061,6 +3130,47 @@ class Index extends CatfishCMS
                 echo Catfish::lang('Your operation is illegal');
                 exit();
             }
+        }
+        else{
+            echo Catfish::lang('Your operation is illegal');
+            exit();
+        }
+    }
+    public function manamymainpost()
+    {
+        if(Catfish::isPost(20)){
+            $id = intval(Catfish::getPost('id'));
+            $uid = Catfish::getSession('user_id');
+            $tmp = Catfish::db('tie')->where('id',$id)->field('uid')->find();
+            if($tmp['uid'] != $uid){
+                echo Catfish::lang('Your operation is illegal');
+                exit();
+            }
+            $chkarr = ['isclose'];
+            $chk = intval(Catfish::getPost('chk'));
+            if($chk > 1){
+                $chk = 1;
+            }
+            $opt = Catfish::getPost('opt');
+            if(in_array($opt, $chkarr)){
+                Catfish::dbStartTrans();
+                try{
+                    Catfish::db('tie')->where('id',$id)->update([
+                        $opt => $chk
+                    ]);
+                    Catfish::dbCommit();
+                } catch (\Exception $e) {
+                    Catfish::dbRollback();
+                    echo Catfish::lang('The operation failed, please try again later');
+                    exit();
+                }
+                Catfish::removeCache('post_'.$id);
+                echo 'ok';
+            }
+            else{
+                echo Catfish::lang('Your operation is illegal');
+            }
+            exit();
         }
         else{
             echo Catfish::lang('Your operation is illegal');

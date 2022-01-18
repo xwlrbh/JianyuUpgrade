@@ -1,4 +1,36 @@
 {include file="index/header" /}
+<link href="{$domain}public/common/datetimepicker/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet">
+<form method="get">
+    <div class="form-row align-items-center">
+        <div class="col-auto">
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text bg-light">{:lang('Keyword')}</div>
+                </div>
+                <input type="text" name="guanjianzi" class="form-control">
+            </div>
+        </div>
+        <div class="col-auto">
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text bg-light">{:lang('Starting time')}</div>
+                </div>
+                <input type="text" name="startime" id="startime" class="form-control">
+            </div>
+        </div>
+        <div class="col-auto">
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text bg-light">{:lang('End time')}</div>
+                </div>
+                <input type="text" name="endtime" id="endtime" class="form-control">
+            </div>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-light mb-2">{:lang('Search')}</button>
+        </div>
+    </div>
+</form>
 <form>
     <table class="table table-bordered table-hover">
         <thead>
@@ -10,6 +42,7 @@
             <th scope="col" class="text-center">{:lang('Follow up quantity')}</th>
             <th scope="col" class="text-center">{:lang('Praise')}</th>
             <th scope="col" class="text-center">{:lang('Bad review')}</th>
+            <th scope="col" class="text-center">{:lang('End post')}</th>
             <th scope="col" class="text-center">{:lang('Modify')}</th>
             <th scope="col" class="text-center">{:lang('Delete')}</th>
         </tr>
@@ -24,6 +57,12 @@
             <td class="text-center">{$vo.pinglunshu}</td>
             <td class="text-center">{$vo.zan}</td>
             <td class="text-center">{$vo.cai}</td>
+            <td class="text-center align-middle">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="isclose_{$vo.id}"{if $vo.isclose == 1} checked{/if}>
+                    <label class="custom-control-label" for="isclose_{$vo.id}"></label>
+                </div>
+            </td>
             <td class="text-center">
                 <a class="text-info" target="_blank" href="{:Url('user/Index/modifymainpost')}?c={$vo.id}"><i class="fa fa-edit"></i></a>
             </td>
@@ -44,5 +83,6 @@
 <div class="d-none" id="quedingshanchu">{:lang('Confirm to delete?')}</div>
 <div class="d-none" id="bukehuifu">{:lang('Are you sure you want to delete it? You can retrieve it from the recycling bin after deleting it')}</div>
 <script src="{$domain}public/common/js/list.js"></script>
+<script type="text/javascript" src="{$domain}public/common/datetimepicker/js/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
 <script src="{$domain}public/common/js/user/mymainpost.js"></script>
 {include file="index/footer" /}

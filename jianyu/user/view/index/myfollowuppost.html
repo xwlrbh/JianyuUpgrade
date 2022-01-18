@@ -1,4 +1,36 @@
 {include file="index/header" /}
+<link href="{$domain}public/common/datetimepicker/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet">
+<form method="get">
+    <div class="form-row align-items-center">
+        <div class="col-auto">
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text bg-light">{:lang('Keyword')}</div>
+                </div>
+                <input type="text" name="guanjianzi" class="form-control">
+            </div>
+        </div>
+        <div class="col-auto">
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text bg-light">{:lang('Starting time')}</div>
+                </div>
+                <input type="text" name="startime" id="startime" class="form-control">
+            </div>
+        </div>
+        <div class="col-auto">
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text bg-light">{:lang('End time')}</div>
+                </div>
+                <input type="text" name="endtime" id="endtime" class="form-control">
+            </div>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-light mb-2">{:lang('Search')}</button>
+        </div>
+    </div>
+</form>
 <form>
     <table class="table table-bordered table-hover">
         <thead>
@@ -59,5 +91,6 @@
 <div class="d-none" id="bukehuifu">{:lang('Are you sure you want to delete it? It cannot be recovered after deletion!')}</div>
 <script type="text/javascript" src="{$domain}public/common/HandyEditor/HandyEditor.min.js"></script>
 <script src="{$domain}public/common/js/list.js"></script>
+<script type="text/javascript" src="{$domain}public/common/datetimepicker/js/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
 <script src="{$domain}public/common/js/user/myfollowuppost.js"></script>
 {include file="index/footer" /}

@@ -263,10 +263,15 @@ class Index extends CatfishCMS
                 $now = Catfish::now();
                 $tid = intval(Catfish::getPost('pid'));
                 $uid = Catfish::getSession('user_id');
-                $tiefl = Catfish::db('tie')->where('id', $tid)->field('sid,pinglun')->find();
+                $tiefl = Catfish::db('tie')->where('id', $tid)->field('sid,isclose,pinglun')->find();
                 if(empty($tiefl)){
                     $re['result'] = 'error';
                     $re['message'] = Catfish::lang('Follow-up has been closed');
+                    return json($re);
+                }
+                if($tiefl['isclose'] == 1){
+                    $re['result'] = 'error';
+                    $re['message'] = Catfish::lang('This post is closed');
                     return json($re);
                 }
                 $chengzhang = Catfish::getGrowing();
@@ -420,10 +425,15 @@ class Index extends CatfishCMS
                     $re['message'] = Catfish::lang('The operation failed, please try again later');
                     return json($re);
                 }
-                $tiefl = Catfish::db('tie')->where('id', $tid)->field('sid,pinglun')->find();
+                $tiefl = Catfish::db('tie')->where('id', $tid)->field('sid,isclose,pinglun')->find();
                 if(empty($tiefl)){
                     $re['result'] = 'error';
                     $re['message'] = Catfish::lang('Follow-up has been closed');
+                    return json($re);
+                }
+                if($tiefl['isclose'] == 1){
+                    $re['result'] = 'error';
+                    $re['message'] = Catfish::lang('This post is closed');
                     return json($re);
                 }
                 $chengzhang = Catfish::getGrowing();
@@ -887,7 +897,12 @@ class Index extends CatfishCMS
                     $re['message'] = Catfish::lang('Your operation is illegal');
                     return json($re);
                 }
-                $tiepl = Catfish::db('tie')->where('id', $tid)->field('sid,pinglun')->find();
+                $tiepl = Catfish::db('tie')->where('id', $tid)->field('sid,isclose,pinglun')->find();
+                if($tiepl['isclose'] == 1){
+                    $re['result'] = 'error';
+                    $re['message'] = Catfish::lang('This post is closed');
+                    return json($re);
+                }
                 $resmz = Catfish::getForum();
                 $secreview = Catfish::db('msort')->where('id',$tiepl['sid'])->field('fpreaudit')->find();
                 $review = 1;
