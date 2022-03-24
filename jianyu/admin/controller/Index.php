@@ -567,7 +567,7 @@ class Index extends CatfishCMS
                 $file = request()->file('image');
                 if($file){
                     $validate = [
-                        'ext' => 'jpg,png,gif,jpeg'
+                        'ext' => 'jpg,png,gif,jpeg,webp'
                     ];
                     $info = $file->validate($validate)->move(ROOT_PATH . 'data' . DS . 'uploads');
                     if($info){
@@ -744,7 +744,7 @@ class Index extends CatfishCMS
                 $file = request()->file('image');
                 if($file){
                     $validate = [
-                        'ext' => 'jpg,png,gif,jpeg'
+                        'ext' => 'jpg,png,gif,jpeg,webp'
                     ];
                     $info = $file->validate($validate)->move(ROOT_PATH . 'data' . DS . 'uploads');
                     if($info){
@@ -767,25 +767,25 @@ class Index extends CatfishCMS
                 $ismenu = Catfish::getPost('ismenu') == 'on' ? 1 : 0;
                 $subclasses = Catfish::getPost('subclasses') == 'on' ? 1 : 0;
                 $virtual = Catfish::getPost('virtual') == 'on' ? 1 : 0;
-                $re = Catfish::db('msort')->where('id', $sid)->update([
-                    'sname' => $data['sname'],
-                    'bieming' => Catfish::getPost('bieming'),
-                    'guanjianzi' => str_replace('，', ',', Catfish::getPost('guanjianzi')),
-                    'description' => Catfish::getPost('description'),
-                    'ismenu' => $ismenu,
-                    'virtual' => $virtual,
-                    'icon' => Catfish::getPost('icon', false),
-                    'icons' => Catfish::getPost('icons', false),
-                    'image' => $image,
-                    'islink' => $islink,
-                    'linkurl' => $linkurl,
-                    'ismodule' => $ismodule,
-                    'subclasses' => $subclasses,
-                    'parentid' => Catfish::getPost('parentid'),
-                    'preaudit' => Catfish::getPost('preaudit'),
-                    'fpreaudit' => Catfish::getPost('fpreaudit')
-                ]);
-                if($re == 1){
+                try{
+                    $re = Catfish::db('msort')->where('id', $sid)->update([
+                        'sname' => $data['sname'],
+                        'bieming' => Catfish::getPost('bieming'),
+                        'guanjianzi' => str_replace('，', ',', Catfish::getPost('guanjianzi')),
+                        'description' => Catfish::getPost('description'),
+                        'ismenu' => $ismenu,
+                        'virtual' => $virtual,
+                        'icon' => Catfish::getPost('icon', false),
+                        'icons' => Catfish::getPost('icons', false),
+                        'image' => $image,
+                        'islink' => $islink,
+                        'linkurl' => $linkurl,
+                        'ismodule' => $ismodule,
+                        'subclasses' => $subclasses,
+                        'parentid' => Catfish::getPost('parentid'),
+                        'preaudit' => Catfish::getPost('preaudit'),
+                        'fpreaudit' => Catfish::getPost('fpreaudit')
+                    ]);
                     Catfish::clearCache('fenlei_id_name');
                     Catfish::clearCache('sortcache');
                     Catfish::clearCache('caidan');
@@ -793,7 +793,7 @@ class Index extends CatfishCMS
                     Catfish::removeCache('sort_id_sname_virtual_parentid');
                     echo 'ok';
                 }
-                else{
+                catch(\Exception $e){
                     echo Catfish::lang('Failure to submit');
                 }
                 exit();
@@ -1727,7 +1727,7 @@ class Index extends CatfishCMS
         if(Catfish::isPost(3)){
             $file = request()->file('file');
             $validate = [
-                'ext' => 'jpg,png,gif,jpeg'
+                'ext' => 'jpg,png,gif,jpeg,webp'
             ];
             $info = $file->validate($validate)->move(ROOT_PATH . 'data' . DS . 'uploads');
             if($info){

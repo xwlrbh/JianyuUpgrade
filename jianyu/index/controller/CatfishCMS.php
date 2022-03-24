@@ -1784,7 +1784,7 @@ class CatfishCMS
             'jianyu' => $column
         ];
         $this->plantHook('type', $params);
-		$columntop = '';
+        $columntop = '';
         $this->plantHook('columntop', $columntop);
         Catfish::allot('columntop', $columntop);
         $columnbottom = '';
@@ -2362,13 +2362,14 @@ class CatfishCMS
                 ->order('slides_group.listorder asc,slides.listorder asc')
                 ->select();
             $slidesarr = [];
+            $domain = Catfish::domain();
             foreach($slides as $key => $val){
                 if(empty($val['zuming'])){
                     $val['zuming'] = Catfish::lang('Default group');
                 }
                 $slidesarr[$val['gid']][] = [
                     'mingcheng' => $val['mingcheng'],
-                    'tupian' => $val['tupian'],
+                    'tupian' => $domain . $val['tupian'],
                     'lianjie' => $val['lianjie'],
                     'miaoshu' => $val['miaoshu']
                 ];
