@@ -75,7 +75,12 @@ class Index extends CatfishCMS
             }
         }
         if(Catfish::hasGet('jumpto')){
-            Catfish::allot('jumpto', Catfish::getGet('jumpto'));
+            $jumpto = Catfish::getGet('jumpto');
+            $host = parse_url($jumpto,  PHP_URL_HOST);
+            if(stripos(Catfish::domain(), $host) === false){
+                $jumpto = '';
+            }
+            Catfish::allot('jumpto', $jumpto);
         }
         else{
             Catfish::allot('jumpto', '');

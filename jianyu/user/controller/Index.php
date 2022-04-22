@@ -414,7 +414,7 @@ class Index extends CatfishCMS
     public function modifymainpost()
     {
         $this->checkUser();
-        $tid = Catfish::getGet('c');
+        $tid = intval(Catfish::getGet('c'));
         $forum = $this->myforum();
         if(Catfish::isPost(20)){
             if($tid == false){
@@ -665,6 +665,10 @@ class Index extends CatfishCMS
         $jumpto = '';
         if(Catfish::hasGet('jumpto')){
             $jumpto = Catfish::getGet('jumpto');
+            $host = parse_url($jumpto,  PHP_URL_HOST);
+            if(stripos(Catfish::domain(), $host) === false){
+                $jumpto = '';
+            }
         }
         Catfish::allot('jumpto', $jumpto);
         Catfish::allot('maxfilesize', ini_get('upload_max_filesize'));

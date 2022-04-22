@@ -1760,7 +1760,7 @@ class Index extends CatfishCMS
         if(Catfish::isPost(3)){
             $template = Catfish::getPost('theme');
             Catfish::set('template', $template);
-            Catfish::removeCache('options');
+            Catfish::clearCache();
             $params = [
                 'original' => $this->template,
                 'target' => $template
@@ -1771,6 +1771,7 @@ class Index extends CatfishCMS
                 'target' => $template
             ];
             $this->themeHook('openTheme', $params, $template);
+            Catfish::curl(Catfish::domain());
             echo 'ok';
             exit();
         }

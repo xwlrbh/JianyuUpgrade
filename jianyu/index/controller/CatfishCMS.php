@@ -180,7 +180,9 @@ class CatfishCMS
         if(!empty($getarr)){
             unset($getarr['order']);
             foreach((array)$getarr as $key => $val){
-                $order .= empty($order) ? $key.'='.$val : '&'.$key.'='.$val;
+                if(preg_match('/^\w+$/', $key) && preg_match('/^\w+$/', $val)){
+                    $order .= empty($order) ? $key.'='.$val : '&'.$key.'='.$val;
+                }
             }
         }
         $urlarr = Catfish::getCache('urlarr_'.$order);
