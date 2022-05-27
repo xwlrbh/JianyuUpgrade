@@ -655,7 +655,7 @@ class Catfish
         }
         return $domain;
     }
-	public static function isSsl()
+    public static function isSsl()
     {
         $isSsl = Request::instance()->isSsl();
         if(!$isSsl && isset($_SERVER['HTTP_X_CLIENT_SCHEME']) && strtolower($_SERVER['HTTP_X_CLIENT_SCHEME']) == 'https'){

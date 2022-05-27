@@ -277,6 +277,7 @@ class Index extends CatfishCMS
                     Catfish::db('msort')
                         ->where('id', $sid)
                         ->update([
+                            'zuihoufabu' => $now,
                             'zhutie' => Catfish::dbRaw('zhutie+1'),
                             $ttname => Catfish::dbRaw($ttname.'+1')
                         ]);

@@ -614,6 +614,9 @@ class Loader
     public static function parseName($name, $type = 0, $ucfirst = true)
     {
         if ($type) {
+            if(is_null($name)){
+                $name = '';
+            }
             $name = preg_replace_callback('/_([a-zA-Z])/', function ($match) {
                 return strtoupper($match[1]);
             }, $name);

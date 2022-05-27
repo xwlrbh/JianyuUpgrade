@@ -388,6 +388,7 @@ class CatfishCMS
         $cachename = 'shouye_'.$order.'_'.$page;
         $shouye = Catfish::getCache($cachename);
         if($shouye === false){
+            $shouye = [];
             $subQuery = $this->getfstop();
             $cachezhiding = 'shouye_'.$order.'_'.md5($subQuery).'_zhiding';
             $zhiding = Catfish::getCache($cachezhiding);
@@ -446,6 +447,7 @@ class CatfishCMS
         $find = intval($find);
         $subSort = Catfish::getCache('subsortcache_'.$find);
         if($subSort === false){
+            $subSort = [];
             $fenleiarr = $this->getSortCache('id,sname,bieming,guanjianzi,description,icon,parentid');
             $ctl = false;
             $levelen = 0;
@@ -505,6 +507,7 @@ class CatfishCMS
         $cachename = 'column_'.$order.'_'.$find.'_'.$page;
         $column = Catfish::getCache($cachename);
         if($column === false){
+            $column = [];
             $subQuery = $this->gettop($find, $subSort['idstr']);
             $cachezhiding = 'column_'.$order.'_'.$find.'_'.md5($subQuery).'_zhiding';
             $zhiding = Catfish::getCache($cachezhiding);
@@ -649,6 +652,7 @@ class CatfishCMS
         $cachename = 'postgentie_'.$find.'_'.$subcachename;
         $gentie = Catfish::getCache($cachename);
         if($gentie === false){
+            $gentie = [];
             $cdata = Catfish::db('tie_comm_ontact')
                 ->where('tid', $find)
                 ->where('status',1)
@@ -1675,6 +1679,7 @@ class CatfishCMS
         $cachename = 'search_'.$order.'_'.$find.'_'.$page;
         $column = Catfish::getCache($cachename);
         if($column === false){
+            $column = [];
             $column['zhiding'] = [];
             $data = Catfish::view('tie','id,uid,sid,fabushijian,xiugai as xiugaishijian,biaoti,zhaiyao,isclose as jietie,lastvisit as zuijinfangwen,commentime as zuijinpinglun,luid,pinglunshu as gentieliang,yuedu,zan,cai,shoucang,cangtime as zuijinshoucang,fstop as zhiding,fsrecommended as tuijian,jingpin,tietype as leixing,annex as daifujian,video as daishipin,shipin,tu,pinglun,jifenleixing,jinbileixing,huiyuanleixing,zhifufangshi')
                 ->view('users','nicheng,touxiang,qianming,createtime as jiaru,lastlogin as zuijindenglu,lastonline as zuijinzaixian,dengji,fatie as uzhutie,pinglun as ugentie','users.id=tie.uid')
@@ -1737,6 +1742,7 @@ class CatfishCMS
         $cachename = 'type_'.$order.'_'.$find.'_'.$page;
         $column = Catfish::getCache($cachename);
         if($column === false){
+            $column = [];
             $column['zhiding'] = [];
             $tparr = Catfish::db('tietype')->where('id', $find)->field('tpname')->find();
             $tpname = Catfish::lang($tparr['tpname']);
@@ -1866,7 +1872,7 @@ class CatfishCMS
         $modules = Catfish::getCache('module_'.$order);
         if($modules === false){
             $module = Catfish::db('msort')
-                ->field('id,sname,bieming,urlbm,guanjianzi,description as miaoshu,icon,icons,image,ismodule,subclasses,parentid,zhutie,gentie')
+                ->field('id,sname,bieming,urlbm,guanjianzi,description as miaoshu,icon,icons,image,ismodule,subclasses,parentid,zuihoufabu,zhutie,gentie')
                 ->order('listorder asc,id asc')
                 ->select();
             $modules = [];
@@ -1874,6 +1880,14 @@ class CatfishCMS
                 foreach($module as $key => $val){
                     if(!empty($val['image'])){
                         $module[$key]['image'] = Catfish::domain() . $val['image'];
+                    }
+                    if($val['zuihoufabu'] == '2000-01-01 00:00:00'){
+                        $module[$key]['zuihoufabu'] = '';
+                        $module[$key]['shicha']['zuihoufabu'] = '';
+                    }
+                    else{
+                        $module[$key]['zuihoufabu'] = $this->decompositiontime($val['zuihoufabu']);
+                        $module[$key]['shicha']['zuihoufabu'] = $this->timedif($val['zuihoufabu'], time());
                     }
                     if(!empty($val['icons'])){
                         $module[$key]['icon'] = $val['icons'];
@@ -2204,6 +2218,7 @@ class CatfishCMS
         $total = Catfish::getCache($cachezongjilu);
         $qiandaobiao = Catfish::getCache('qiandaobiao_' . $page);
         if($qiandaobiao === false){
+            $qiandaobiao = [];
             $data = Catfish::view('sign_in_statistics','id,uid,qiandaoshijian,leijiqiandao,leijijiangli,jinrijiangli,lianxu')
                 ->view('users','nicheng,touxiang','users.id=sign_in_statistics.uid')
                 ->order('sign_in_statistics.leijiqiandao desc')
@@ -2246,6 +2261,7 @@ class CatfishCMS
         $total = Catfish::getCache($cachezongjilu);
         $jinriqiandao = Catfish::getCache('jinriqiandao_' . $page);
         if($jinriqiandao === false){
+            $jinriqiandao = [];
             $data = Catfish::view('sign_in_statistics','id,uid,qiandaoshijian,leijiqiandao,leijijiangli,jinrijiangli,lianxu')
                 ->view('users','nicheng,touxiang','users.id=sign_in_statistics.uid')
                 ->whereTime('sign_in_statistics.qiandaoshijian', 'between', [$start, $end])
@@ -2283,6 +2299,7 @@ class CatfishCMS
         $end = Catfish::now();
         $qiandaotongji = Catfish::getCache('qiandaotongji');
         if($qiandaotongji === false){
+            $qiandaotongji = [];
             $qiandaozongshu = Catfish::db('sign_in_statistics')->count();
             $jinriqiandaozongshu = $this->jinriqiandao();
             $diyi = Catfish::db('sign_in_statistics')->whereTime('qiandaoshijian', 'between', [$start, $end])->field('uid')->order('qiandaoshijian asc')->find();
